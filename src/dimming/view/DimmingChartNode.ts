@@ -13,6 +13,7 @@ import { Circle, Node, RichText, Text } from "scenerystack/scenery";
 import { ChartFrameNode } from "../../common/view/ChartFrameNode.js";
 import { formatSignificant } from "../../common/view/chartUtils.js";
 import { niceCeil } from "../../common/view/formatters.js";
+import { linkUntilDisposed } from "../../common/view/linkUntilDisposed.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import { FONTS } from "../../TransitHunterConstants.js";
@@ -67,7 +68,7 @@ export class DimmingChartNode extends Node {
         maxWidth: width + 40,
       },
     );
-    zoomNote.boundsProperty.link(() => {
+    linkUntilDisposed(this, zoomNote.boundsProperty, () => {
       zoomNote.left = -40;
       zoomNote.top = height + 40;
     });

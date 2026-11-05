@@ -1,135 +1,65 @@
-# Implementation Notes - Transit Hunter
+# Transit Hunter — implementation notes
 
-Developer-facing notes on the **SceneryStackTemplate** scaffold. **Replace and expand this file when
-forking** to describe your sim's real architecture (see Stern Gerlach or Light Propagation for
-target quality). Until then, this documents what the template provides out of the box.
+This note covers architecture and decisions; the physics and data are in [model.md](model.md).
 
-## Architecture Overview
-
-SceneryStackTemplate is the fleet-canonical starting point for new SceneryStack sims (one or N screens).
-It demonstrates Model–View separation, color profiles, localization, reset behavior, accessibility
-reference wiring, and reusable common components — **without** domain physics.
+## Layout
 
 ```
-main.ts
-  └─ DimmingScreen             (Screen<DimmingModel, DimmingScreenView>)
-       ├─ DimmingModel          state + logic  (src/dimming/model/)  ← stub: add physics here
-       └─ DimmingScreenView     visuals        (src/dimming/view/)
-            ├─ DimmingScreenSummaryContent     (PDOM overview — reference a11y pattern)
-            └─ DimmingKeyboardHelpContent      (keyboard help dialog)
-
-src/common/
-  ├─ TransitHunterPanel.ts           pre-themed panel (uses TransitHunterColors)
-  ├─ TransitHunterButtonOptions.ts   flat button / combo-box option bundles
-  └─ TimeModel.ts          composable play/pause + elapsed time
-
-src/preferences/
-  ├─ TransitHunterPreferencesModel   sim-specific pref state
-  ├─ TransitHunterPreferencesNode    pref UI in Preferences → Simulation
-  └─ transitHunterQueryParameters    QueryStringMachine declarations
+src/
+  TransitHunter{Colors,Constants,Namespace}.ts   colours (default + projector), constants (SI), namespace
+  common/
+    model/transitPhysics.ts     overlap, limb darkening, sky geometry, durations, probability (pure)
+    model/orbitPhysics.ts       Kepler's third law, mass from the wobble (pure)
+    model/lightCurveTools.ts    noise, folding, binning (pure)
+    model/composition.ts        density, rocky radius, planet kind, Solar System
+    model/archive.ts + data/archive.json   NASA Exoplanet Archive parameters
+    model/PlanetPreset.ts, StarPreset.ts   enumerations shared by Dimming and Light Curve
+    view/ChartFrameNode.ts, chartUtils.ts  bamboo chart frame (from StellarWobble / RelativisticDynamics)
+    view/controls.ts            number controls, checkboxes, push buttons, explanation dialog, equations
+    view/StarNode.ts, PlanetNode.ts, planetName.ts, formatters.ts
+  dimming/        DimmingModel, DimmingViews (side view + view from Earth), DimmingChartNode
+  lining-up/      LiningUpModel, Orbit3DViewNode, SkyViewNode, LiningUpChartNode, RandomSkyNode
+  light-curve/    LightCurveModel, LightCurveChartNode
+  hunt/           PlanetHuntModel, HuntTarget, LightCurveData + data/*.json, HuntChartNode, PointCloudNode, timeWindow
+  composition/    RockOrGasModel, CompositionPlanet, DensityScaleNode, MassRadiusDiagramNode
+  preferences/    Show equations (?showEquations), a module-level singleton
+scripts/lightcurves/  offline Python data pipeline (venv and cache gitignored)
 ```
 
-Data flows Model → View through AXON `Property` objects (`.link()` / `.lazyLink()`). The view never
-integrates physics; the model never imports scenery.
+## Decisions
 
-## Forking checklist
+- **Separate from ExtrasolarPlanets.** That sim is a faithful NAAP port (uniform disks, eccentric
+  orbits). This one teaches the method from the beginning and ends with real data, so it keeps
+  orbits circular and adds limb darkening, folding and real light curves.
+- **Real photometry, not curves made from parameters.** The user asked for actual measurements, so
+  Planet Hunt uses pipeline light curves from MAST. They are small after binning (216 KB for seven
+  stars) and load lazily, so the first screens do not wait for them.
+- **Compact data format.** A uniform time grid (start, step) and whole-ppm values with null for gaps:
+  four years of Kepler-22 data is 63 KB.
+- **Canvas for Planet Hunt points.** A bamboo ScatterPlot builds one Shape from every point; with
+  17 500 points that is too slow to redraw while scrolling. `PointCloudNode` paints squares on a
+  CanvasNode and skips points outside the ranges.
+- **Clicks mark dips, drags scroll.** A press on the Planet Hunt chart that moves less than 4 px
+  marks a dip at that time. "Mark the middle" gives keyboard users the same action.
+- **The brightness axis of Planet Hunt** ignores only the two most extreme points at each end. A
+  fraction-based clip removed Kepler-22's transits, which are only a few points in 17 500.
+- **Dimming draws both views at one horizontal scale** so the planet lines up between them. The
+  orbit is tiny (a/R★ = 2.2) so that a transit takes a visible part of each orbit; it says so.
+- **Lining Up loops a transit-centred window** instead of whole orbits, because at real orbit sizes a
+  transit is a few per cent of an orbit and would flash by.
+- **Rock or Gas? recomputes the mass** from K, P, M★ and i rather than displaying the archive mass,
+  so the steps on screen are the real ones.
+- **Number readouts** have a minimum width (100 px): NumberDisplay sizes its box from the range's
+  end values, which shrank "0.8375 days" and similar values.
 
-### Automated rename + scaffold (recommended)
+## Testing
 
-```sh
-npm run rename -- --id my-sim --name "My Simulation"
-npm run scaffold-screens -- --screens Intro,Lab   # or omit --screens for one screen
-npm run check
-```
+- `transitPhysics`, `orbitPhysics`, `lightCurveTools`, `composition`: known systems and limits.
+- `realData.test.ts`: every bundled light curve, folded at the archive period, gives the archive
+  radius within 15 %; densities of the Rock or Gas? planets.
+- One model test per screen (`DimmingModel`, `LiningUpModel`, `LightCurveModel`, `PlanetHuntModel`,
+  `RockOrGasModel`), plus `timeWindow` and `TimeModel`.
+- `memory-leak.test.ts` covers the shared nodes and the chart nodes.
 
-Or from the workspace: `Baton/scripts/create-sim.sh --repo MySim --name "My Simulation"`.
-
-`scripts/rename-sim.ts` updates sim-level identifiers (package id, Colors, Preferences).
-`scripts/scaffold-screens.ts` emits fleet-named screen folders and wires main/strings/icons.
-
-### Manual steps (after rename/scaffold or if skipping the scripts)
-
-1. **`doc/model.md`** — educator physics (equations, ranges, simplifications).
-2. **`doc/implementation-notes.md`** — this file, rewritten for your architecture.
-3. **Screen model(s)** — real Properties, `step(dt)`, `reset()`; compose `TimeModel` if animated.
-4. **Screen view(s)** — play area + controls; wire `ResetAllButton` to `model.reset()`.
-5. **`*Colors.ts`** — sim palette (default + projector profiles).
-6. **Locale JSON** — title, strings, `a11y` keys; register locales in `init.ts`.
-7. **`public/icons/icon.svg`** → `npm run icons`; align theme color in `index.html` / vite config.
-8. **`tests/setup.ts`** — `init({ name: … })` must match `package.json` name after rename.
-9. **`AGENTS.md`** — sim-specific file map and pitfalls for AI assistants.
-
-## Common components (keep when forking)
-
-### TransitHunterPanel
-
-Every control panel should use `TransitHunterPanel` so projector-mode switching is automatic:
-
-```typescript
-import { TransitHunterPanel } from "../../common/TransitHunterPanel.js";
-const panel = new TransitHunterPanel(content);
-const panelWide = new TransitHunterPanel(content, { xMargin: 20 });
-```
-
-### TimeModel
-
-Compose into your screen model for animation (do not subclass `TimeModel`):
-
-```typescript
-export class MyModel implements TModel {
-  public readonly timer = new TimeModel();  // pass true to auto-play on startup
-
-  public step(dt: number): void {
-    this.timer.step(dt);
-    // physics uses this.timer.timeProperty.value
-  }
-  public reset(): void { this.timer.reset(); /* restore initial state */ }
-}
-```
-
-Wire `TimeControlNode` to `model.timer.isPlayingProperty` in the view.
-
-### TransitHunterButtonOptions
-
-Spread flat button options into every push/round button and `TimeControlNode` (see `AGENTS.md`).
-Use `TRANSIT_HUNTER_COMBO_BOX_OPTIONS` + `LIGHT_SURFACE_TEXT_FILL` for light control surfaces on dark panels.
-
-## Accessibility (reference implementation)
-
-The template is the **canonical OpenLyceum a11y reference**:
-
-- PDOM `accessibleName` on interactive nodes (prefer live `StringProperty`s).
-- `DimmingScreenSummaryContent` with a live `currentDetailsContent` `DerivedProperty` over model state.
-- Explicit `pdomOrder` + `DimmingKeyboardHelpContent`.
-- Strings under `a11y` in locale JSON → `StringManager.getDimmingA11yStrings()`.
-
-Full checklist: [Baton/ACCESSIBILITY.md](https://github.com/OpenLyceum/Baton/blob/main/ACCESSIBILITY.md).
-
-## Testing (fleet layout — keep when forking)
-
-| Path | Purpose |
-|---|---|
-| `vitest.config.ts` | `happy-dom`; `setupFiles: ["./tests/setup.ts"]`; `execArgv: ["--expose-gc"]` |
-| `tests/setup.ts` | Canvas/AudioContext mocks + `init()` before SceneryStack imports |
-| `tests/TimeModel.test.ts` | **Replace** with real model/physics tests mirroring `src/` |
-| `tests/memory-leak.test.ts` | WeakRef + `forceGC` dispose regression |
-| `tests/fuzz/fuzz.spec.ts` | Optional Playwright smoke via `?fuzz` |
-
-Run `npm test`. Expand `memory-leak.test.ts` when adding runtime-created nodes or Property links.
-
-## Multi-screen simulations
-
-Default is single-screen. To add screens, see **`doc/multi-screen.md`**: per-screen folders mirroring
-`src/dimming/`, `StringManager` screen-name getters, optional shared root model, a shared
-`src/common/TransitHunterScreenIcons.ts` module (`create{Screen}Icon()` factories wired as
-`homeScreenIcon` / `navigationBarIcon`), and register all screens in `main.ts`.
-
-## PWA
-
-After `npm run build`, the sim is installable offline via Workbox (`dist/manifest.webmanifest`).
-
-## Known template stubs (remove when forking)
-
-- `DimmingModel.step()` / `reset()` — empty placeholders until you add physics.
-- Placeholder play-area content in `DimmingScreenView` — replace with real UI.
-- `tests/TimeModel.test.ts` — sample only; add tests for your model under `tests/`.
+Fuzz with `npm run test:fuzz`. In the dev console the screen models are
+`phet.joist.sim.screens[i].model`, at index 0 when the URL has `?screens=n`.

@@ -21,6 +21,7 @@ import { Shape } from "scenerystack/kite";
 import { DragListener, KeyboardListener, Node, Path, Rectangle, RichText, Text } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
 import { skyPosition } from "../../common/model/transitPhysics.js";
+import { linkUntilDisposed } from "../../common/view/linkUntilDisposed.js";
 import { drawnPlanet, PlanetNode } from "../../common/view/PlanetNode.js";
 import { StarNode } from "../../common/view/StarNode.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -98,7 +99,7 @@ export class SideViewNode extends Node {
       fill: TransitHunterColors.earthColorProperty,
       maxWidth: 120,
     });
-    toEarthLabel.boundsProperty.link(() => {
+    linkUntilDisposed(this, toEarthLabel.boundsProperty, () => {
       toEarthLabel.left = toEarth.right + 6;
       toEarthLabel.bottom = height - 8;
     });
@@ -117,7 +118,7 @@ export class SideViewNode extends Node {
       fill: TransitHunterColors.mutedTextColorProperty,
       lineWrap: width - 40,
     });
-    telescopeCaption.boundsProperty.link(() => {
+    linkUntilDisposed(this, telescopeCaption.boundsProperty, () => {
       telescopeCaption.center = background.center;
     });
 
@@ -222,7 +223,7 @@ export class EarthViewNode extends Node {
       ),
       { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, maxWidth: width - 16 },
     );
-    magnificationText.boundsProperty.link(() => {
+    linkUntilDisposed(this, magnificationText.boundsProperty, () => {
       magnificationText.left = 8;
       magnificationText.bottom = height - 6;
     });
@@ -231,7 +232,7 @@ export class EarthViewNode extends Node {
       fill: TransitHunterColors.mutedTextColorProperty,
       maxWidth: width - 16,
     });
-    dragHint.boundsProperty.link(() => {
+    linkUntilDisposed(this, dragHint.boundsProperty, () => {
       dragHint.left = 8;
       dragHint.top = 6;
     });

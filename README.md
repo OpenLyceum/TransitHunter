@@ -2,23 +2,52 @@
 
 [![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 
-A reusable SceneryStack simulation template for one or N screens, built with
-[SceneryStack](https://scenerystack.org/), Vite 8, TypeScript 7, and Biome 2.
+Find exoplanets by the shadows they cast, with the transit method. Start with why a star gets
+dimmer when a planet crosses it, see why only lined-up orbits show transits, learn to read a
+planet's size and distance from a light curve, then hunt for planets in **real Kepler and TESS
+measurements** and combine the transit with the star's wobble to tell rock from gas. The planet
+itself is never seen: everything comes from the star's light. It starts at middle and high school
+level and builds up to introductory astronomy. Companion to
+[Stellar Wobble](https://github.com/OpenLyceum/StellarWobble) (the radial-velocity method). Built with
+[SceneryStack](https://scenerystack.org/); runs offline as a Progressive Web App.
 
 ## Features
 
-- SceneryStack scaffold with model/view separation (`rename` + `scaffold-screens` for one or N screens)
-- English, Spanish, and French localization via `StringManager`
-- Default and projector color profiles
-- Progressive Web App (installable, offline-capable)
-- Git hooks for Biome pre-commit checks
-- Shared GitHub Actions CI via `OpenLyceum/Baton`
+- **Dimming.** A planet orbits its star, seen from the side and from Earth (zoomed in) at the same
+  horizontal scale. A brightness readout and a live light curve show the dip. Choose Earth, Neptune,
+  Jupiter or any size, and a Sun-like star, a red dwarf or a big hot star. Readouts say in words how
+  much light is blocked ("about 1 part in 95"). Drag the planet across the star, or use the arrow
+  keys. **Telescope view** turns the star into a point of light.
+- **Lining Up.** The orbit in 3D with an arrow toward Earth that tilts with the inclination. The
+  planet's path across the star, as Earth sees it. The dip against the edge-on dip: shorter, then
+  V-shaped (grazing), then gone. Readouts give the tilt limit and the chance that a random orbit
+  lines up, and 100 randomly tilted systems show how few transit.
+- **Light Curve.** Single noisy measurements over several orbits with the period marked, and one
+  transit zoomed in from many folded transits, with the depth and duration marked. Readouts turn the
+  depth into the planet's radius and the period into its distance (Kepler's third law). A limb
+  darkening option, and a signal-to-noise verdict as you add noise and fold more transits.
+- **Planet Hunt.** Real light curves of seven stars, easiest first: HD 189733 and HD 209458 (TESS),
+  HAT-P-7, Kepler-7, Kepler-10, Kepler-22 and Kepler-11 (Kepler). Zoom and scroll, mark dips, use
+  their spacing as a trial period, fold, and drag a depth line to get the planet's size. Folding
+  reveals Kepler-10 b, invisible in the raw data. Then reveal the planets in the NASA Exoplanet
+  Archive.
+- **Rock or Gas?** For seven real planets, the transit gives the radius and an edge-on orbit, so the
+  star's wobble gives the true mass. The resulting density is placed on a scale of familiar
+  materials ("it would float!") and on a mass–radius diagram with rocky and iron curves and the
+  Solar System.
+- **Accessible:**
+  - Every control works from the keyboard.
+  - Each screen has a live screen summary and a keyboard-help dialog.
+  - Each screen has a "How does it work?" explanation.
+  - English, French and Spanish.
+  - Default and projector colour profiles.
+  - Installable PWA.
+  - A preference (or `?showEquations`) shows the equations beside the readouts.
 
 ## Quick Start
 
 ```bash
 npm install
-npm run icons    # generate PNG icons from public/icons/icon.svg
 npm start        # dev server → http://localhost:5173
 ```
 
@@ -39,12 +68,12 @@ npm start        # dev server → http://localhost:5173
 | `npm run format` | Auto-format all files |
 | `npm run fix` | Lint + auto-fix |
 | `npm run icons` | Regenerate PNG icons from `public/icons/icon.svg` |
-| `npm run rename` | Sim-level fork/rename (`--id`, `--name`) |
-| `npm run scaffold-screens` | Emit N fleet-named screen packages from `dimming/` (`--shared-model` optional) |
 | `npm run release` | `check && lint && build && test`, then version patch + push tags |
 | `npm run clean` | Remove `dist/` |
 
-New sims start at `version: "0.0.0"` in `package.json`. Bump only when cutting a release (for example `npm version patch` and a matching git tag). Keep `name` in kebab-case; it is separate from the SceneryStack sim identifier in `src/init.ts`, which reads its `version` from `package.json`.
+The real data come from an offline Python pipeline, `scripts/lightcurves/fetch_lightcurves.py`
+(lightkurve + the NASA Exoplanet Archive). Its outputs are committed, so you only run it to
+change the targets; see the script's header.
 
 ## Tech Stack
 
@@ -53,12 +82,14 @@ New sims start at `version: "0.0.0"` in `package.json`. Bump only when cutting a
 | [SceneryStack](https://scenerystack.org/) | ^3.0.0 | Simulation framework |
 | [Vite](https://vitejs.dev/) | ^8 | Build tool + dev server |
 | [TypeScript](https://www.typescriptlang.org/) | ^7 | Type-safe JavaScript |
-| [Biome](https://biomejs.dev/) | ^2.5 | Linting + formatting |
+| [Biome](https://biomejs.dev/) | ^2.6 | Linting + formatting |
 | [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) | ^2 | PWA + service worker |
+| [lightkurve](https://lightkurve.github.io/lightkurve/) | ≥2.5 | Offline data pipeline (Python) |
 
 ## License
 
 GNU Affero General Public License v3.0 — see [OpenLyceum org license](https://github.com/OpenLyceum/.github/blob/main/LICENSE).
+The Kepler, K2 and TESS data are public domain; see [CREDITS.md](CREDITS.md) for data credits.
 
 ## Contributing
 

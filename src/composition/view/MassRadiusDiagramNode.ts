@@ -13,6 +13,7 @@ import { Shape } from "scenerystack/kite";
 import { Circle, Node, Path, Rectangle, Text } from "scenerystack/scenery";
 import { archivePlanet } from "../../common/model/archive.js";
 import { constantDensityRadius, rockyRadius, SOLAR_SYSTEM_PLANETS } from "../../common/model/composition.js";
+import { linkUntilDisposed } from "../../common/view/linkUntilDisposed.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import { FONTS, WATER_DENSITY_G_CM3 } from "../../TransitHunterConstants.js";
@@ -86,8 +87,8 @@ export class MassRadiusDiagramNode extends Node {
       yLabel.centerY = height / 2;
       yLabel.right = -26;
     };
-    xLabel.boundsProperty.link(placeAxisLabels);
-    yLabel.boundsProperty.link(placeAxisLabels);
+    linkUntilDisposed(this, xLabel.boundsProperty, placeAxisLabels);
+    linkUntilDisposed(this, yLabel.boundsProperty, placeAxisLabels);
 
     // Guide curves.
     const curve = (radiusOf: (mass: number) => number, maxMass: number): Shape => {

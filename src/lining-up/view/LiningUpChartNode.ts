@@ -14,6 +14,7 @@ import { relativeFlux, uniformDepth } from "../../common/model/transitPhysics.js
 import { ChartFrameNode } from "../../common/view/ChartFrameNode.js";
 import { formatSignificant } from "../../common/view/chartUtils.js";
 import { niceCeil } from "../../common/view/formatters.js";
+import { linkUntilDisposed } from "../../common/view/linkUntilDisposed.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import { FONTS } from "../../TransitHunterConstants.js";
@@ -68,11 +69,11 @@ export class LiningUpChartNode extends Node {
       new PatternStringProperty(common.axisZoomPatternStringProperty, { percent: spanTextProperty }),
       { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, maxWidth: width + 40 },
     );
-    legend.boundsProperty.link(() => {
+    linkUntilDisposed(this, legend.boundsProperty, () => {
       legend.left = -40;
       legend.top = height + 38;
     });
-    zoomNote.boundsProperty.link(() => {
+    linkUntilDisposed(this, zoomNote.boundsProperty, () => {
       zoomNote.left = -40;
       zoomNote.top = height + 54;
     });

@@ -6,8 +6,7 @@
  * to the parent Screen class.
  *
  * Registered in the screens array in src/main.ts. Its home-screen and navigation-bar
- * icons come from createDimmingIcon() in src/common/TransitHunterScreenIcons.ts
- * (see doc/multi-screen.md).
+ * icons come from createDimmingIcon() in src/common/TransitHunterScreenIcons.ts.
  */
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import type { ScreenOptions } from "scenerystack/sim";

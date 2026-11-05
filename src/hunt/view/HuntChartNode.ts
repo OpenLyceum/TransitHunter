@@ -36,6 +36,7 @@ import { ArrowButton, TextPushButton } from "scenerystack/sun";
 import { binPoints } from "../../common/model/lightCurveTools.js";
 import { FLAT_PANEL_PUSH_BUTTON_OPTIONS, LIGHT_SURFACE_TEXT_FILL } from "../../common/TransitHunterButtonOptions.js";
 import { ChartFrameNode } from "../../common/view/ChartFrameNode.js";
+import { linkUntilDisposed } from "../../common/view/linkUntilDisposed.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import { FONTS } from "../../TransitHunterConstants.js";
@@ -416,13 +417,15 @@ export class HuntChartNode extends Node {
     const markMiddleButton = textButton(strings.markMiddleStringProperty, () => markAt(shownRange().getCenter()));
     markMiddleButton.accessibleName = a11y.controls.markMiddleStringProperty;
 
-    const hint = new Text(
-      new DerivedProperty(
-        [model.foldProperty, strings.chartHintStringProperty, strings.foldedHintStringProperty],
-        (fold, unfolded, folded) => (fold ? folded : unfolded),
-      ),
-      { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, maxWidth: width },
+    const hintProperty = new DerivedProperty(
+      [model.foldProperty, strings.chartHintStringProperty, strings.foldedHintStringProperty],
+      (fold, unfolded, folded) => (fold ? folded : unfolded),
     );
+    const hint = new Text(hintProperty, {
+      font: FONTS.SMALL,
+      fill: TransitHunterColors.mutedTextColorProperty,
+      maxWidth: width,
+    });
     const controls = new VBox({
       spacing: 4,
       children: [
@@ -440,7 +443,7 @@ export class HuntChartNode extends Node {
         hint,
       ],
     });
-    controls.boundsProperty.link(() => {
+    linkUntilDisposed(this, controls.boundsProperty, () => {
       controls.centerX = width / 2;
       controls.top = height + 44;
     });
@@ -477,6 +480,11 @@ export class HuntChartNode extends Node {
       model.periodProperty.unlink(onPeriod);
       model.marks.removeItemAddedListener(update);
       model.marks.removeItemRemovedListener(update);
+      // The frame and the buttons hold global string and colour links, and their listeners reach
+      // this node (zoom, scroll); dispose them so nothing global keeps this node alive.
+      frame.disposeSubtree();
+      controls.disposeSubtree();
+      hintProperty.dispose();
       xAxisLabelProperty.dispose();
     });
   }

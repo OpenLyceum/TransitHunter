@@ -20,6 +20,7 @@ import { Range, Vector2, Vector3 } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
 import { DragListener, KeyboardListener, Line, Node, Path, Rectangle, Text } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
+import { linkUntilDisposed } from "../../common/view/linkUntilDisposed.js";
 import { PlanetNode } from "../../common/view/PlanetNode.js";
 import { StarNode } from "../../common/view/StarNode.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -90,7 +91,7 @@ export class Orbit3DViewNode extends Node {
       fill: TransitHunterColors.mutedTextColorProperty,
       maxWidth: width - 16,
     });
-    rotateHint.boundsProperty.link(() => {
+    linkUntilDisposed(this, rotateHint.boundsProperty, () => {
       rotateHint.left = 8;
       rotateHint.bottom = height - 6;
     });

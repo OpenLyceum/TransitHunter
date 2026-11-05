@@ -13,6 +13,7 @@ import { Line, Node, Rectangle, RichText, Text } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
 import { skyPosition } from "../../common/model/transitPhysics.js";
 import { formatSignificant } from "../../common/view/chartUtils.js";
+import { linkUntilDisposed } from "../../common/view/linkUntilDisposed.js";
 import { drawnPlanet, PlanetNode } from "../../common/view/PlanetNode.js";
 import { StarNode } from "../../common/view/StarNode.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -66,7 +67,7 @@ export class SkyViewNode extends Node {
       }),
       { font: FONTS.SMALL, fill: TransitHunterColors.textColorProperty, maxWidth: width / 2 - 20 },
     );
-    farAboveText.boundsProperty.link(() => {
+    linkUntilDisposed(this, farAboveText.boundsProperty, () => {
       farAboveText.left = cx + 12;
       farAboveText.centerY = 23;
     });
