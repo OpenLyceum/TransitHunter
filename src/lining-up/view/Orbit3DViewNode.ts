@@ -13,12 +13,15 @@
  *
  * Not to scale: the orbit has a fixed drawn size and the star and planet are
  * drawn much larger than they would be.
+ *
+ * Near transit the planet sits on the Earth arrow, so it gets a dark halo that
+ * separates it from the arrow and a "Planet" label just below it.
  */
 
 import { Multilink, NumberProperty } from "scenerystack/axon";
 import { Range, Vector2, Vector3 } from "scenerystack/dot";
 import { Shape } from "scenerystack/kite";
-import { DragListener, KeyboardListener, Line, Node, Path, Rectangle, Text } from "scenerystack/scenery";
+import { Circle, DragListener, KeyboardListener, Line, Node, Path, Rectangle, Text } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
 import { linkUntilDisposed } from "../../common/view/linkUntilDisposed.js";
 import { PlanetNode } from "../../common/view/PlanetNode.js";
@@ -33,7 +36,13 @@ const DEG = Math.PI / 180;
 /** Drawn orbit radius, star radius and planet radius, px. */
 const ORBIT_RADIUS = 105;
 const STAR_RADIUS = 14;
-const PLANET_RADIUS = 5;
+const PLANET_RADIUS = 7;
+
+/** Width of the dark ring around the planet that separates it from the Earth arrow, px. */
+const PLANET_HALO_WIDTH = 2.5;
+
+/** Gap between the planet and its label, px. */
+const PLANET_LABEL_GAP = 3;
 
 /** Length of the Earth arrow, px. */
 const EARTH_ARROW_LENGTH = 140;
@@ -101,6 +110,13 @@ export class Orbit3DViewNode extends Node {
     const normalLine = new Line(0, 0, 0, 0, { stroke: TransitHunterColors.orbitPathColorProperty, lineDash: [1, 4] });
     const star = new StarNode(SUN_TEMPERATURE_K, STAR_RADIUS);
     const planet = new PlanetNode();
+    const planetHalo = new Circle(PLANET_RADIUS + PLANET_HALO_WIDTH, { fill: TransitHunterColors.spaceColorProperty });
+    const planetLabel = new Text(common.planetStringProperty, {
+      font: FONTS.SMALL,
+      fill: TransitHunterColors.textColorProperty,
+      maxWidth: 80,
+    });
+    const planetGroup = new Node({ children: [planetHalo, planet, planetLabel] });
 
     const earthArrow = new ArrowNode(0, 0, 1, 0, {
       stroke: null,
@@ -110,7 +126,7 @@ export class Orbit3DViewNode extends Node {
     });
     const earthLabel = new Text(common.toEarthStringProperty, { font: FONTS.LABEL, maxWidth: 90 });
 
-    const bodies = new Node({ children: [planet, star] });
+    const bodies = new Node({ children: [planetGroup, star] });
     const scene = new Node({ children: [planeFill, normalLine, orbit, earthArrow, earthLabel, bodies] });
 
     const update = (): void => {
@@ -145,11 +161,13 @@ export class Orbit3DViewNode extends Node {
       const planetProjected = project(new Vector3(ORBIT_RADIUS * Math.cos(theta), ORBIT_RADIUS * Math.sin(theta), 0));
       planet.setAppearance(PLANET_RADIUS, model.planetPresetProperty.value, false);
       planet.center = planetProjected.point;
+      planetHalo.center = planetProjected.point;
+      planetLabel.centerTop = planet.centerBottom.plusXY(0, PLANET_HALO_WIDTH + PLANET_LABEL_GAP);
       star.center = center;
       if (planetProjected.depth < 0) {
-        planet.moveToBack();
+        planetGroup.moveToBack();
       } else {
-        planet.moveToFront();
+        planetGroup.moveToFront();
       }
 
       const inclination = model.inclinationProperty.value * DEG;
@@ -181,6 +199,7 @@ export class Orbit3DViewNode extends Node {
         model.inclinationProperty,
         model.planetPresetProperty,
         model.transitsProperty,
+        planetLabel.localBoundsProperty, // re-centre the label when its text changes
       ],
       update,
     );
