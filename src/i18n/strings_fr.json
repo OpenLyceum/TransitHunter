@@ -114,7 +114,7 @@
     "detected": "Une détection nette !",
     "pointsReadoutPattern": "{{points}} mesures dans la baisse (une toutes les {{cadence}} min)",
     "equation": "R<sub>planète</sub> = R<sub>étoile</sub> √profondeur    distance<sup>3</sup> = G M<sub>étoile</sub> P<sup>2</sup> ÷ 4π<sup>2</sup>    S/B = profondeur ÷ (σ ÷ √n)",
-    "limbDarkening": "Bord plus sombre (assombrissement centre-bord)",
+    "limbDarkening": "Bord plus sombre",
     "noise": "Bruit de mesure",
     "stack": "Transits observés",
     "newObservations": "Nouvelles observations",

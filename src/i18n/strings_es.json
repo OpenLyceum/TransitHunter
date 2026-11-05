@@ -114,7 +114,7 @@
     "detected": "¡Una detección clara!",
     "pointsReadoutPattern": "{{points}} mediciones dentro de la caída (una cada {{cadence}} min)",
     "equation": "R<sub>planeta</sub> = R<sub>estrella</sub> √profundidad    distancia<sup>3</sup> = G M<sub>estrella</sub> P<sup>2</sup> ÷ 4π<sup>2</sup>    S/R = profundidad ÷ (σ ÷ √n)",
-    "limbDarkening": "Borde más oscuro (oscurecimiento del limbo)",
+    "limbDarkening": "Borde más oscuro",
     "noise": "Ruido de medición",
     "stack": "Tránsitos observados",
     "newObservations": "Nuevas observaciones",

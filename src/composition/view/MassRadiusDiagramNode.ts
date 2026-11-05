@@ -100,14 +100,19 @@ export class MassRadiusDiagramNode extends Node {
       }
       return shape;
     };
-    const curveLabel = (labelProperty: TReadOnlyProperty<string>, mass: number, radius: number): Text =>
-      new Text(labelProperty, {
+    const curveLabel = (labelProperty: TReadOnlyProperty<string>, mass: number, radius: number): Text => {
+      const label = new Text(labelProperty, {
         font: FONTS.SMALL,
         fill: TransitHunterColors.mutedTextColorProperty,
         maxWidth: 110,
-        left: x(mass) + 4,
-        centerY: y(radius),
       });
+      // At the curve's end, kept inside the plot.
+      linkUntilDisposed(this, label.boundsProperty, () => {
+        label.left = Math.min(x(mass) + 4, width - 3 - label.width);
+        label.centerY = y(radius);
+      });
+      return label;
+    };
     const ironCurve = new Path(
       curve((m) => rockyRadius(m, 1), ROCKY_MAX_MASS),
       {
