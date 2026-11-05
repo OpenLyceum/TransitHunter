@@ -93,21 +93,16 @@ export class LiningUpScreenView extends ScreenView {
       new Text(stringProperty, {
         font: FONTS.LABEL,
         fill: TransitHunterColors.textColorProperty,
-        maxWidth: CONTROL_PANEL_WIDTH / 3,
+        maxWidth: CONTROL_PANEL_WIDTH - 40,
       });
     const planetRadios = new AquaRadioButtonGroup(
       model.planetPresetProperty,
       [
-        { value: PlanetPreset.EARTH, createNode: () => label(common.earthStringProperty) },
-        { value: PlanetPreset.NEPTUNE, createNode: () => label(common.neptuneStringProperty) },
-        { value: PlanetPreset.JUPITER, createNode: () => label(common.jupiterStringProperty) },
+        { value: PlanetPreset.EARTH, createNode: () => label(common.earthSizedStringProperty) },
+        { value: PlanetPreset.NEPTUNE, createNode: () => label(common.neptuneSizedStringProperty) },
+        { value: PlanetPreset.JUPITER, createNode: () => label(common.jupiterSizedStringProperty) },
       ],
-      {
-        orientation: "horizontal",
-        spacing: 10,
-        radioButtonOptions: { radius: 7 },
-        accessibleName: a11y.controls.planetStringProperty,
-      },
+      { spacing: 5, radioButtonOptions: { radius: 7 }, accessibleName: a11y.controls.planetStringProperty },
     );
     const inclinationControl = createNumberControl(
       common.inclinationStringProperty,
@@ -128,7 +123,20 @@ export class LiningUpScreenView extends ScreenView {
       accessibleName: a11y.controls.distanceStringProperty,
     });
     const controlPanel = new TransitHunterPanel(
-      new VBox({ spacing: 12, align: "left", children: [planetRadios, inclinationControl, distanceControl] }),
+      new VBox({
+        spacing: 10,
+        align: "left",
+        children: [
+          new Text(common.planetSizeHeadingStringProperty, {
+            font: FONTS.TITLE,
+            fill: TransitHunterColors.textColorProperty,
+            maxWidth: CONTROL_PANEL_WIDTH,
+          }),
+          planetRadios,
+          inclinationControl,
+          distanceControl,
+        ],
+      }),
       { minWidth: CONTROL_PANEL_WIDTH + 24 },
     );
     controlPanel.right = bounds.maxX - SCREEN_VIEW_MARGIN;

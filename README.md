@@ -14,8 +14,9 @@ level and builds up to introductory astronomy. Companion to
 ## Features
 
 - **Dimming.** A planet orbits its star, seen from the side and from Earth (zoomed in) at the same
-  horizontal scale. A brightness readout and a live light curve show the dip. Choose Earth, Neptune,
-  Jupiter or any size, and a Sun-like star, a red dwarf or a big hot star. Readouts say in words how
+  horizontal scale. A brightness readout and a live light curve show the dip. Choose an Earth-,
+  Neptune- or Jupiter-sized planet (around a distant star) or any size, and a Sun-like star, a red
+  dwarf or a big hot star. Readouts say in words how
   much light is blocked ("about 1 part in 95"). Drag the planet across the star, or use the arrow
   keys. **Telescope view** turns the star into a point of light.
 - **Lining Up.** The orbit in 3D with an arrow toward Earth that tilts with the inclination. The

@@ -130,9 +130,13 @@ export function relativeFlux(phase: number, geometry: TransitGeometry): number {
   return 1 - blockedFraction(geometry.radiusRatio, Math.hypot(sky.x, sky.y), geometry.limbDarkening);
 }
 
+/** Below this an impact parameter is rounding error (cos 90° is 6 × 10⁻¹⁷ in floating point), and is 0. */
+const IMPACT_PARAMETER_EPSILON = 1e-9;
+
 /** Impact parameter b = (a/R★) cos i. */
 export function impactParameter(orbitInStarRadii: number, inclinationRad: number): number {
-  return orbitInStarRadii * Math.cos(inclinationRad);
+  const b = orbitInStarRadii * Math.cos(inclinationRad);
+  return Math.abs(b) < IMPACT_PARAMETER_EPSILON ? 0 : b;
 }
 
 /** Whether any part of the planet crosses the star: b < 1 + k. */

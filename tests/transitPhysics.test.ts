@@ -124,6 +124,11 @@ describe("transit geometry", () => {
     expect(hours).toBeCloseTo(13, 0);
   });
 
+  it("an edge-on orbit has an impact parameter of exactly 0", () => {
+    expect(impactParameter(215, EDGE_ON)).toBe(0);
+    expect(impactParameter(10, 80 * DEG)).toBeCloseTo(1.736, 3);
+  });
+
   it("recovers the radius from the depth", () => {
     expect(radiusFromDepth(0.01, 1)).toBeCloseTo(0.1, 12);
     expect(radiusFromDepth(-1, 1)).toBe(0);

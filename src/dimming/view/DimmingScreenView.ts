@@ -170,9 +170,9 @@ export class DimmingScreenView extends ScreenView {
     const planetRadios = new AquaRadioButtonGroup(
       model.planetPresetProperty,
       [
-        { value: PlanetPreset.EARTH, createNode: () => label(common.earthStringProperty) },
-        { value: PlanetPreset.NEPTUNE, createNode: () => label(common.neptuneStringProperty) },
-        { value: PlanetPreset.JUPITER, createNode: () => label(common.jupiterStringProperty) },
+        { value: PlanetPreset.EARTH, createNode: () => label(common.earthSizedStringProperty) },
+        { value: PlanetPreset.NEPTUNE, createNode: () => label(common.neptuneSizedStringProperty) },
+        { value: PlanetPreset.JUPITER, createNode: () => label(common.jupiterSizedStringProperty) },
         { value: PlanetPreset.CUSTOM, createNode: () => label(common.customPlanetStringProperty) },
       ],
       { ...radioOptions, accessibleName: a11y.controls.planetStringProperty },

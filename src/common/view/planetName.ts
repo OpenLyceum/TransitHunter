@@ -1,7 +1,10 @@
 /**
  * planetName.ts
  *
- * The localized name of the selected planet preset, as a live string.
+ * The selected planet preset as the subject of a sentence ("A Jupiter-sized
+ * planet"), as a live string. The presets are planets around a distant star of
+ * the size of Earth, Neptune or Jupiter, never those planets themselves (we
+ * watch from Earth, and we never see Jupiter transit).
  */
 
 import { DerivedProperty, type ReadOnlyProperty, type TReadOnlyProperty } from "scenerystack/axon";
@@ -20,9 +23,9 @@ export function createPlanetNameProperty(
   return new DerivedProperty(
     [
       presetProperty,
-      common.earthStringProperty,
-      common.neptuneStringProperty,
-      common.jupiterStringProperty,
+      common.earthSizedPlanetStringProperty,
+      common.neptuneSizedPlanetStringProperty,
+      common.jupiterSizedPlanetStringProperty,
       customNameProperty,
     ],
     (preset, earth, neptune, jupiter, custom) =>

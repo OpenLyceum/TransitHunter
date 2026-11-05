@@ -1,8 +1,10 @@
 /**
  * PlanetPreset.ts
  *
- * The planets a beginner can choose: Earth, Neptune and Jupiter (radii from the
- * NASA planetary fact sheet), or a planet of any size.
+ * The planet sizes a beginner can choose: planets around a distant star the size
+ * of Earth, Neptune or Jupiter (radii from the NASA planetary fact sheet), or any
+ * size. The views call them "Earth-sized" etc., never "Earth": the observer is on
+ * Earth, and Jupiter is never seen to transit.
  */
 
 import { Enumeration, EnumerationValue } from "scenerystack/phet-core";

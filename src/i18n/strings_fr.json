@@ -51,7 +51,14 @@
     "periodPattern": "Période orbitale : {{value}}",
     "durationPattern": "Durée du transit : {{value}}",
     "noTransit": "Pas de transit : la planète passe à côté de l'étoile.",
-    "daysAxis": "Temps (jours)"
+    "daysAxis": "Temps (jours)",
+    "earthSized": "Taille de la Terre",
+    "neptuneSized": "Taille de Neptune",
+    "jupiterSized": "Taille de Jupiter",
+    "earthSizedPlanet": "Une planète de la taille de la Terre",
+    "neptuneSizedPlanet": "Une planète de la taille de Neptune",
+    "jupiterSizedPlanet": "Une planète de la taille de Jupiter",
+    "planetSizeHeading": "Taille de la planète"
   },
   "dimming": {
     "sideViewTitle": "Vue de côté",
@@ -64,14 +71,14 @@
     "blocksAllPattern": "{{planet}} est aussi grosse que l'étoile et la cache entièrement.",
     "thisPlanet": "Cette planète",
     "starSizePattern": "Rayon de l'étoile : {{value}} × celui du Soleil",
-    "planetHeading": "Planète",
+    "planetHeading": "Taille de la planète",
     "starHeading": "Étoile",
     "equation": "fraction bloquée = (R<sub>planète</sub> ÷ R<sub>étoile</sub>)<sup>2</sup>",
     "dragHint": "Fais glisser la planète devant l'étoile.",
     "explanationTitle": "Pourquoi l'étoile faiblit-elle ?",
-    "explanation1": "Quand une planète passe entre son étoile et nous, elle cache une petite partie de l'étoile. La lumière de cette partie ne nous parvient pas : l'étoile paraît un peu moins brillante. Les astronomes appellent cela un <b>transit</b>.",
-    "explanation2": "Plus la planète est grosse par rapport à son étoile, plus elle bloque de lumière. Jupiter bloquerait environ 1 % de la lumière du Soleil ; la Terre seulement 0,008 %, moins de 1 part sur 10 000.",
-    "explanation3": "Une petite étoile rend la même planète plus facile à trouver : la Terre devant une naine rouge cinq fois plus petite que le Soleil bloque 25 fois plus de la lumière de l'étoile.",
+    "explanation1": "Quand une planète passe entre son étoile et nous, elle cache une petite partie de l'étoile. La lumière de cette partie ne nous parvient pas : l'étoile paraît un peu moins brillante. Les astronomes appellent cela un <b>transit</b>. Les planètes ici tournent autour d'une étoile lointaine : « de la taille de la Terre » ou « de Jupiter » indique seulement leur taille.",
+    "explanation2": "Plus la planète est grosse par rapport à son étoile, plus elle bloque de lumière. Une planète de la taille de Jupiter bloquerait environ 1 % de la lumière d'une étoile comme le Soleil ; une planète de la taille de la Terre seulement 0,008 %, moins de 1 part sur 10 000.",
+    "explanation3": "Une petite étoile rend la même planète plus facile à trouver : une planète de la taille de la Terre devant une naine rouge cinq fois plus petite que le Soleil bloque 25 fois plus de la lumière de l'étoile.",
     "explanation4": "Les vraies étoiles sont si lointaines que les télescopes les voient comme des points. On ne voit jamais la planète elle-même : on la trouve parce que son étoile faiblit, encore et encore, à chaque tour de la planète.",
     "keyboardHelpHeading": "Planète",
     "keyboardHelpMove": "Déplacer la planète sur son orbite"
@@ -93,7 +100,7 @@
     "explanationTitle": "Pourquoi ne voit-on pas toutes les planètes transiter ?",
     "explanation1": "Une planète ne bloque la lumière de son étoile que si elle passe entre l'étoile et nous. Il faut pour cela que son orbite soit vue presque exactement par la tranche.",
     "explanation2": "Incline un peu l'orbite et la planète passe devant l'étoile hors du centre : le transit raccourcit. Incline-la davantage : la planète effleure le bord, puis manque complètement l'étoile.",
-    "explanation3": "Les orbites sont orientées dans toutes les directions : seule une fraction des planètes transitent pour nous, environ le rayon de l'étoile divisé par la distance de la planète. Les planètes proches de leur étoile transitent bien plus souvent. Pour la Terre vue de loin, c'est seulement 1 chance sur 200.",
+    "explanation3": "Les orbites sont orientées dans toutes les directions : seule une fraction des planètes transitent pour nous, environ le rayon de l'étoile divisé par la distance de la planète. Les planètes proches de leur étoile transitent bien plus souvent. Dans l'autre sens : un astronome sur un monde lointain ne verrait notre Terre transiter devant le Soleil que depuis environ 1 direction sur 200.",
     "explanation4": "C'est pourquoi des missions comme Kepler et TESS observent des centaines de milliers d'étoiles à la fois : pour attraper les rares dont les planètes sont alignées.",
     "keyboardHelpHeading": "Vue 3D",
     "keyboardHelpRotate": "Tourner la vue"
@@ -198,7 +205,7 @@
     "dimming": {
       "screenSummary": {
         "playArea": "La zone de jeu montre une planète en orbite autour de son étoile de deux façons : vue de côté, et vue depuis la Terre, agrandie. Un graphique trace la luminosité apparente de l'étoile au cours du temps.",
-        "controlArea": "La zone de contrôle contient des boutons radio pour choisir la planète et l'étoile, un curseur pour une planète de taille au choix, une case Vue au télescope, des commandes de temps, un bouton d'explication et un bouton Tout réinitialiser.",
+        "controlArea": "La zone de contrôle contient des boutons radio pour choisir la taille de la planète et l'étoile, un curseur pour une planète de taille au choix, une case Vue au télescope, des commandes de temps, un bouton d'explication et un bouton Tout réinitialiser.",
         "interactionHint": "Lance l'animation, ou déplace la planète avec les flèches, et observe la luminosité baisser quand la planète passe devant l'étoile. Essaie une planète plus petite ou une étoile plus petite."
       },
       "currentDetailsPattern": "{{planet}} tourne autour d'une étoile de {{starRadius}} fois le rayon du Soleil. Au plus, elle bloque {{percent}} pour cent de la lumière de l'étoile. La luminosité de l'étoile est maintenant de {{brightness}} pour cent ; la planète est {{where}}.",
@@ -206,7 +213,7 @@
       "beside": "à côté de l'étoile",
       "behind": "derrière l'étoile",
       "controls": {
-        "planet": "Planète",
+        "planet": "Taille de la planète",
         "star": "Étoile",
         "customRadius": "Rayon de la planète",
         "explanation": "Explication",
@@ -220,14 +227,14 @@
     "liningUp": {
       "screenSummary": {
         "playArea": "La zone de jeu montre l'orbite d'une planète en 3D avec une flèche vers la Terre, l'étoile vue depuis la Terre avec la trajectoire de la planète, un graphique de la baisse de lumière comparée à une orbite vue par la tranche, et 100 systèmes inclinés au hasard où ceux qui transitent sont mis en évidence.",
-        "controlArea": "La zone de contrôle contient des boutons radio pour la planète, des curseurs pour l'inclinaison et la distance étoile–planète, un bouton pour un nouveau ciel au hasard, des commandes de temps, un bouton d'explication et un bouton Tout réinitialiser.",
+        "controlArea": "La zone de contrôle contient des boutons radio pour la taille de la planète, des curseurs pour l'inclinaison et la distance étoile–planète, un bouton pour un nouveau ciel au hasard, des commandes de temps, un bouton d'explication et un bouton Tout réinitialiser.",
         "interactionHint": "Diminue lentement l'inclinaison depuis 90 degrés et observe le transit raccourcir, puis disparaître. Éloigne ensuite la planète de son étoile."
       },
       "currentDetailsPattern": "{{planet}} à {{distance}} UA d'une étoile comme le Soleil, période {{period}} jours, inclinaison {{inclination}} degrés. {{transit}} Elle ne transiterait qu'à moins de {{limit}} degrés de la tranche ; {{count}} systèmes sur 100 au hasard transitent.",
       "transitPattern": "Elle transite, pendant {{hours}} heures.",
       "noTransit": "Elle ne transite pas.",
       "controls": {
-        "planet": "Planète",
+        "planet": "Taille de la planète",
         "inclination": "Inclinaison",
         "distance": "Distance étoile–planète",
         "rotateView": "Vue 3D de l'orbite, orientable",

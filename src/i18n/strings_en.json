@@ -51,7 +51,14 @@
     "periodPattern": "Orbital period: {{value}}",
     "durationPattern": "Transit lasts: {{value}}",
     "noTransit": "No transit: the planet misses the star.",
-    "daysAxis": "Time (days)"
+    "daysAxis": "Time (days)",
+    "earthSized": "Earth-sized",
+    "neptuneSized": "Neptune-sized",
+    "jupiterSized": "Jupiter-sized",
+    "earthSizedPlanet": "An Earth-sized planet",
+    "neptuneSizedPlanet": "A Neptune-sized planet",
+    "jupiterSizedPlanet": "A Jupiter-sized planet",
+    "planetSizeHeading": "Planet size"
   },
   "dimming": {
     "sideViewTitle": "Seen from the side",
@@ -64,14 +71,14 @@
     "blocksAllPattern": "{{planet}} is as big as the star and hides all of it.",
     "thisPlanet": "This planet",
     "starSizePattern": "Star radius: {{value}} × the Sun's",
-    "planetHeading": "Planet",
+    "planetHeading": "Planet size",
     "starHeading": "Star",
     "equation": "fraction blocked = (R<sub>planet</sub> ÷ R<sub>star</sub>)<sup>2</sup>",
     "dragHint": "Drag the planet across the star.",
     "explanationTitle": "Why does the star get dimmer?",
-    "explanation1": "When a planet passes between its star and us, it covers a small part of the star. That part's light never reaches us, so the star looks a little dimmer. Astronomers call this a <b>transit</b>.",
-    "explanation2": "The bigger the planet compared with its star, the more light it blocks. Jupiter would block about 1 % of the Sun's light; Earth only about 0.008 %, less than 1 part in 10 000.",
-    "explanation3": "A small star makes the same planet easier to find: Earth in front of a red dwarf five times smaller than the Sun blocks 25 times more of the star's light.",
+    "explanation1": "When a planet passes between its star and us, it covers a small part of the star. That part's light never reaches us, so the star looks a little dimmer. Astronomers call this a <b>transit</b>. The planets here circle a distant star: \"Earth-sized\" or \"Jupiter-sized\" only says how big they are.",
+    "explanation2": "The bigger the planet compared with its star, the more light it blocks. A Jupiter-sized planet would block about 1 % of a Sun-like star's light; an Earth-sized planet only about 0.008 %, less than 1 part in 10 000.",
+    "explanation3": "A small star makes the same planet easier to find: an Earth-sized planet in front of a red dwarf five times smaller than the Sun blocks 25 times more of the star's light.",
     "explanation4": "Real stars are so far away that telescopes see them as points. We never see the planet itself: we find it because its star dims, again and again, every time the planet goes around.",
     "keyboardHelpHeading": "Planet",
     "keyboardHelpMove": "Move the planet along its orbit"
@@ -93,7 +100,7 @@
     "explanationTitle": "Why don't we see every planet transit?",
     "explanation1": "A planet blocks its star's light only if it passes between the star and us. That needs its orbit to be seen almost exactly edge-on.",
     "explanation2": "Tilt the orbit a little and the planet crosses the star off-centre: the transit gets shorter. Tilt it more and the planet only grazes the edge, then misses the star altogether.",
-    "explanation3": "Orbits point every which way, so only a fraction of planets transit for us: about the star's radius divided by the planet's distance. Planets close to their stars are far more likely to transit. For Earth seen from far away it is only 1 chance in 200.",
+    "explanation3": "Orbits point every which way, so only a fraction of planets transit for us: about the star's radius divided by the planet's distance. Planets close to their stars are far more likely to transit. Turn it around: an astronomer on a distant world would see our own Earth transit the Sun from only about 1 direction in 200.",
     "explanation4": "That is why missions like Kepler and TESS watch hundreds of thousands of stars at once: to catch the few whose planets line up.",
     "keyboardHelpHeading": "3-D view",
     "keyboardHelpRotate": "Turn the view"
@@ -198,7 +205,7 @@
     "dimming": {
       "screenSummary": {
         "playArea": "The play area shows a planet orbiting its star twice: seen from the side, and seen from Earth, zoomed in. A chart traces how bright the star looks over time.",
-        "controlArea": "The control area has radio buttons to choose the planet and the star, a slider for a planet of any size, a telescope-view checkbox, time controls, an explanation button, and a Reset All button.",
+        "controlArea": "The control area has radio buttons to choose the planet's size and the star, a slider for a planet of any size, a telescope-view checkbox, time controls, an explanation button, and a Reset All button.",
         "interactionHint": "Play the animation, or move the planet with the arrow keys, and watch the brightness drop while the planet is in front of the star. Try a smaller planet or a smaller star."
       },
       "currentDetailsPattern": "{{planet}} orbits a star with {{starRadius}} times the Sun's radius. At most it blocks {{percent}} percent of the star's light. The star's brightness is now {{brightness}} percent; the planet is {{where}}.",
@@ -206,7 +213,7 @@
       "beside": "beside the star",
       "behind": "behind the star",
       "controls": {
-        "planet": "Planet",
+        "planet": "Planet size",
         "star": "Star",
         "customRadius": "Planet radius",
         "explanation": "Explanation",
@@ -220,14 +227,14 @@
     "liningUp": {
       "screenSummary": {
         "playArea": "The play area shows a planet's orbit in 3-D with an arrow toward Earth, the star as seen from Earth with the planet's path, a chart of the dip in the star's light compared with an edge-on orbit, and 100 randomly tilted systems with the ones that transit highlighted.",
-        "controlArea": "The control area has radio buttons for the planet, sliders for the tilt and the star–planet distance, a button for a new random sky, time controls, an explanation button, and a Reset All button.",
+        "controlArea": "The control area has radio buttons for the planet's size, sliders for the tilt and the star–planet distance, a button for a new random sky, time controls, an explanation button, and a Reset All button.",
         "interactionHint": "Lower the tilt slowly from 90 degrees and watch the transit shorten, then vanish. Then move the planet farther from its star."
       },
       "currentDetailsPattern": "{{planet}} at {{distance}} AU from a Sun-like star, period {{period}} days, tilt {{inclination}} degrees. {{transit}} It would transit only within {{limit}} degrees of edge-on; {{count}} of 100 random systems transit.",
       "transitPattern": "It transits, lasting {{hours}} hours.",
       "noTransit": "It does not transit.",
       "controls": {
-        "planet": "Planet",
+        "planet": "Planet size",
         "inclination": "Tilt",
         "distance": "Star–planet distance",
         "rotateView": "3-D view of the orbit, rotatable",
