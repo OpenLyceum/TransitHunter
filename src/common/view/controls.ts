@@ -127,7 +127,7 @@ export function createNumberControl(
             ? [unitsProperty, units.valueUnitsPatternStringProperty]
             : [units.valueUnitsPatternStringProperty],
           maxWidth: 110,
-          minBackgroundWidth: 64,
+          minBackgroundWidth: 100,
         },
       },
       options.numberControlOptions,
