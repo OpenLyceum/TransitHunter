@@ -1,22 +1,94 @@
 {
-  "title": "Transit Hunter",
+  "title": "Cazador de tránsitos",
   "screens": {
-    "dimming": "Dimming",
-    "liningUp": "Lining Up",
-    "lightCurve": "Light Curve",
-    "hunt": "Planet Hunt",
-    "composition": "Rock or Gas?"
+    "dimming": "Atenuación",
+    "liningUp": "Alineación",
+    "lightCurve": "Curva de luz",
+    "hunt": "Caza de planetas",
+    "composition": "¿Roca o gas?"
+  },
+  "units": {
+    "valueUnitsPattern": "{{value}} {{units}}",
+    "percent": "%",
+    "days": "días",
+    "hours": "h",
+    "au": "UA",
+    "degrees": "°",
+    "earthRadii": "R<sub>⊕</sub>",
+    "jupiterRadii": "R<sub>J</sub>",
+    "solarRadii": "R<sub>☉</sub>",
+    "solarMasses": "M<sub>☉</sub>",
+    "earthMasses": "M<sub>⊕</sub>",
+    "jupiterMasses": "M<sub>J</sub>",
+    "gramsPerCubicCentimeter": "g/cm<sup>3</sup>",
+    "metersPerSecond": "m/s"
+  },
+  "common": {
+    "earth": "Tierra",
+    "neptune": "Neptuno",
+    "jupiter": "Júpiter",
+    "customPlanet": "Cualquier tamaño",
+    "sunLikeStar": "Estrella como el Sol",
+    "redDwarf": "Enana roja",
+    "bigStar": "Estrella grande y caliente",
+    "planet": "Planeta",
+    "star": "Estrella",
+    "planetRadius": "Radio del planeta",
+    "telescopeView": "Vista del telescopio",
+    "telescopeCaption": "Un telescopio solo ve un punto de luz. Su brillo es lo único que podemos medir.",
+    "toEarth": "Hacia la Tierra",
+    "notToScale": "No a escala",
+    "explanationButton": "¿Cómo funciona?",
+    "brightnessAxis": "Brillo (%)",
+    "orbitsAxis": "Tiempo (órbitas)",
+    "planetMagnifiedPattern": "planeta dibujado ×{{factor}} demasiado grande",
+    "planetToScale": "planeta a escala",
+    "axisZoomPattern": "ampliado: el eje solo muestra el {{percent}} % superior"
+  },
+  "dimming": {
+    "sideViewTitle": "Visto de lado",
+    "earthViewTitle": "Visto desde la Tierra (ampliado)",
+    "telescopeViewTitle": "Visto con un telescopio",
+    "orbitNotToScale": "No a escala: los planetas reales orbitan mucho más lejos de su estrella.",
+    "chartTitle": "Qué tan brillante se ve la estrella",
+    "brightnessNowPattern": "Brillo ahora: {{value}} %",
+    "blocksPattern": "{{planet}} bloquea el {{percent}} % de la luz de la estrella: alrededor de 1 parte en {{parts}}.",
+    "blocksAllPattern": "{{planet}} es tan grande como la estrella y la oculta por completo.",
+    "thisPlanet": "Este planeta",
+    "starSizePattern": "Radio de la estrella: {{value}} × el del Sol",
+    "planetHeading": "Planeta",
+    "starHeading": "Estrella",
+    "equation": "fracción bloqueada = (R<sub>planeta</sub> ÷ R<sub>estrella</sub>)<sup>2</sup>",
+    "dragHint": "Arrastra el planeta frente a la estrella.",
+    "explanationTitle": "¿Por qué se atenúa la estrella?",
+    "explanation1": "Cuando un planeta pasa entre su estrella y nosotros, cubre una pequeña parte de la estrella. La luz de esa parte no nos llega, así que la estrella se ve un poco más tenue. Los astrónomos llaman a esto un <b>tránsito</b>.",
+    "explanation2": "Cuanto más grande es el planeta comparado con su estrella, más luz bloquea. Júpiter bloquearía cerca del 1 % de la luz del Sol; la Tierra solo un 0,008 %, menos de 1 parte en 10 000.",
+    "explanation3": "Una estrella pequeña hace que el mismo planeta sea más fácil de encontrar: la Tierra frente a una enana roja cinco veces más pequeña que el Sol bloquea 25 veces más luz de la estrella.",
+    "explanation4": "Las estrellas reales están tan lejos que los telescopios las ven como puntos. Nunca vemos el planeta en sí: lo encontramos porque su estrella se atenúa, una y otra vez, cada vez que el planeta da una vuelta.",
+    "keyboardHelpHeading": "Planeta",
+    "keyboardHelpMove": "Mover el planeta a lo largo de su órbita"
   },
   "a11y": {
     "dimming": {
       "screenSummary": {
-        "playArea": "El área de juego muestra el contenido principal de la simulación.",
-        "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
-        "interactionHint": "Explora la simulación interactuando con sus controles."
+        "playArea": "El área de juego muestra un planeta orbitando su estrella de dos maneras: visto de lado y visto desde la Tierra, ampliado. Un gráfico traza qué tan brillante se ve la estrella con el tiempo.",
+        "controlArea": "El área de control tiene botones de opción para elegir el planeta y la estrella, un deslizador para un planeta de cualquier tamaño, una casilla de vista del telescopio, controles de tiempo, un botón de explicación y un botón Restablecer todo.",
+        "interactionHint": "Reproduce la animación, o mueve el planeta con las flechas, y observa cómo baja el brillo cuando el planeta pasa frente a la estrella. Prueba un planeta o una estrella más pequeños."
       },
-      "currentDetails": "La simulación está en su estado inicial.",
+      "currentDetailsPattern": "{{planet}} orbita una estrella de {{starRadius}} veces el radio del Sol. Como máximo bloquea el {{percent}} por ciento de la luz de la estrella. El brillo de la estrella es ahora del {{brightness}} por ciento; el planeta está {{where}}.",
+      "inFront": "frente a la estrella",
+      "beside": "al lado de la estrella",
+      "behind": "detrás de la estrella",
       "controls": {
-        "exampleControl": "Control de ejemplo"
+        "planet": "Planeta",
+        "star": "Estrella",
+        "customRadius": "Radio del planeta",
+        "explanation": "Explicación",
+        "movePlanet": "Planeta, movible a lo largo de su órbita"
+      },
+      "responses": {
+        "transitStart": "El planeta empieza a cruzar la estrella.",
+        "transitEnd": "El planeta terminó de cruzar la estrella."
       }
     },
     "liningUp": {
@@ -25,10 +97,7 @@
         "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
         "interactionHint": "Explora la simulación interactuando con sus controles."
       },
-      "currentDetails": "La simulación está en su estado inicial.",
-      "controls": {
-        "exampleControl": "Control de ejemplo"
-      }
+      "currentDetails": "La simulación está en su estado inicial."
     },
     "lightCurve": {
       "screenSummary": {
@@ -36,10 +105,7 @@
         "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
         "interactionHint": "Explora la simulación interactuando con sus controles."
       },
-      "currentDetails": "La simulación está en su estado inicial.",
-      "controls": {
-        "exampleControl": "Control de ejemplo"
-      }
+      "currentDetails": "La simulación está en su estado inicial."
     },
     "hunt": {
       "screenSummary": {
@@ -47,10 +113,7 @@
         "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
         "interactionHint": "Explora la simulación interactuando con sus controles."
       },
-      "currentDetails": "La simulación está en su estado inicial.",
-      "controls": {
-        "exampleControl": "Control de ejemplo"
-      }
+      "currentDetails": "La simulación está en su estado inicial."
     },
     "composition": {
       "screenSummary": {
@@ -58,10 +121,7 @@
         "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
         "interactionHint": "Explora la simulación interactuando con sus controles."
       },
-      "currentDetails": "La simulación está en su estado inicial.",
-      "controls": {
-        "exampleControl": "Control de ejemplo"
-      }
+      "currentDetails": "La simulación está en su estado inicial."
     }
   },
   "preferences": {

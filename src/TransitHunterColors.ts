@@ -72,6 +72,141 @@ const TransitHunterColors = {
     projector: "#1a1a1a",
   }),
 
+  /** Secondary text: captions, "not to scale" notes, units. */
+  mutedTextColorProperty: new ProfileColorProperty(TransitHunterNamespace, "mutedText", {
+    default: "#9aa4b8",
+    projector: "#555555",
+  }),
+
+  // ── Space scenes ─────────────────────────────────────────────────────────────
+
+  /** Fill of the space views (orbit view, Doppler wave view). */
+  spaceColorProperty: new ProfileColorProperty(TransitHunterNamespace, "space", {
+    default: "#05070f",
+    projector: "#eef1f7",
+  }),
+
+  /** Border of the space views. */
+  spaceBorderColorProperty: new ProfileColorProperty(TransitHunterNamespace, "spaceBorder", {
+    default: "#2c3a5a",
+    projector: "#9aa4b8",
+  }),
+
+  /** Background stars drawn in the space views. */
+  backgroundStarColorProperty: new ProfileColorProperty(TransitHunterNamespace, "backgroundStar", {
+    default: "#c8d0e0",
+    projector: "#9aa4b8",
+  }),
+
+  /** The planet disc. */
+  planetColorProperty: new ProfileColorProperty(TransitHunterNamespace, "planet", {
+    default: "#6fb3ff",
+    projector: "#1f5fbf",
+  }),
+
+  /** Orbit paths. */
+  orbitPathColorProperty: new ProfileColorProperty(TransitHunterNamespace, "orbitPath", {
+    default: "#5c6b8a",
+    projector: "#8a94a8",
+  }),
+
+  /** Direction-to-Earth arrow and Earth icon. */
+  earthColorProperty: new ProfileColorProperty(TransitHunterNamespace, "earth", {
+    default: "#3fd19a",
+    projector: "#0b7a52",
+  }),
+
+  // ── Charts ───────────────────────────────────────────────────────────────────
+
+  chartBackgroundColorProperty: new ProfileColorProperty(TransitHunterNamespace, "chartBackground", {
+    default: "#0b1020",
+    projector: "#ffffff",
+  }),
+
+  chartAxisColorProperty: new ProfileColorProperty(TransitHunterNamespace, "chartAxis", {
+    default: "#8090b0",
+    projector: "#333333",
+  }),
+
+  chartGridColorProperty: new ProfileColorProperty(TransitHunterNamespace, "chartGrid", {
+    default: "#1f2a44",
+    projector: "#dddddd",
+  }),
+
+  /** Zero line of a radial-velocity chart. */
+  chartZeroLineColorProperty: new ProfileColorProperty(TransitHunterNamespace, "chartZeroLine", {
+    default: "#56648a",
+    projector: "#888888",
+  }),
+
+  /** Measured data points. */
+  measurementColorProperty: new ProfileColorProperty(TransitHunterNamespace, "measurement", {
+    default: "#e8ecf5",
+    projector: "#222222",
+  }),
+
+  /** The user's fitted model curve. */
+  fitCurveColorProperty: new ProfileColorProperty(TransitHunterNamespace, "fitCurve", {
+    default: "#3fd19a",
+    projector: "#0b7a52",
+  }),
+
+  /** The true (revealed) curve. */
+  answerCurveColorProperty: new ProfileColorProperty(TransitHunterNamespace, "answerCurve", {
+    default: "#ff5ca8",
+    projector: "#c2185b",
+  }),
+
+  /** Time / phase cursor on a chart. */
+  cursorColorProperty: new ProfileColorProperty(TransitHunterNamespace, "cursor", {
+    default: "#ffffff",
+    projector: "#222222",
+  }),
+
+  // ── Transits ─────────────────────────────────────────────────────────────────
+
+  /** Earth in the planet presets. */
+  earthPlanetColorProperty: new ProfileColorProperty(TransitHunterNamespace, "earthPlanet", {
+    default: "#3f8fe0",
+    projector: "#1f5fbf",
+  }),
+
+  /** Neptune in the planet presets. */
+  neptunePlanetColorProperty: new ProfileColorProperty(TransitHunterNamespace, "neptunePlanet", {
+    default: "#5fd0e8",
+    projector: "#0f7f99",
+  }),
+
+  /** Jupiter in the planet presets. */
+  jupiterPlanetColorProperty: new ProfileColorProperty(TransitHunterNamespace, "jupiterPlanet", {
+    default: "#d9a066",
+    projector: "#8a5a20",
+  }),
+
+  /** A planet seen against its star: its dark night side. */
+  planetSilhouetteColorProperty: new ProfileColorProperty(TransitHunterNamespace, "planetSilhouette", {
+    default: "#0a0a14",
+    projector: "#0a0a14",
+  }),
+
+  /** The planet's path across the star (the transit chord). */
+  chordColorProperty: new ProfileColorProperty(TransitHunterNamespace, "chord", {
+    default: "rgba(255,255,255,0.5)",
+    projector: "rgba(0,0,0,0.5)",
+  }),
+
+  /** A light curve (brightness against time). */
+  lightCurveColorProperty: new ProfileColorProperty(TransitHunterNamespace, "lightCurve", {
+    default: "#ffcf5c",
+    projector: "#b07800",
+  }),
+
+  /** The live point on a light curve. */
+  liveDotColorProperty: new ProfileColorProperty(TransitHunterNamespace, "liveDot", {
+    default: "#ffffff",
+    projector: "#222222",
+  }),
+
   // ── Light control surfaces ───────────────────────────────────────────────────
   // White chrome (combo boxes, flat push buttons, editable input fields) stays light
   // in both profiles; its text stays dark. Same values in default and projector mode,

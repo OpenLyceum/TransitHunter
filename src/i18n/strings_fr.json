@@ -1,22 +1,94 @@
 {
-  "title": "Transit Hunter",
+  "title": "Chasseur de transits",
   "screens": {
-    "dimming": "Dimming",
-    "liningUp": "Lining Up",
-    "lightCurve": "Light Curve",
-    "hunt": "Planet Hunt",
-    "composition": "Rock or Gas?"
+    "dimming": "Baisse de lumière",
+    "liningUp": "Alignement",
+    "lightCurve": "Courbe de lumière",
+    "hunt": "Chasse aux planètes",
+    "composition": "Roche ou gaz ?"
+  },
+  "units": {
+    "valueUnitsPattern": "{{value}} {{units}}",
+    "percent": "%",
+    "days": "jours",
+    "hours": "h",
+    "au": "UA",
+    "degrees": "°",
+    "earthRadii": "R<sub>⊕</sub>",
+    "jupiterRadii": "R<sub>J</sub>",
+    "solarRadii": "R<sub>☉</sub>",
+    "solarMasses": "M<sub>☉</sub>",
+    "earthMasses": "M<sub>⊕</sub>",
+    "jupiterMasses": "M<sub>J</sub>",
+    "gramsPerCubicCentimeter": "g/cm<sup>3</sup>",
+    "metersPerSecond": "m/s"
+  },
+  "common": {
+    "earth": "Terre",
+    "neptune": "Neptune",
+    "jupiter": "Jupiter",
+    "customPlanet": "Taille au choix",
+    "sunLikeStar": "Étoile comme le Soleil",
+    "redDwarf": "Naine rouge",
+    "bigStar": "Grosse étoile chaude",
+    "planet": "Planète",
+    "star": "Étoile",
+    "planetRadius": "Rayon de la planète",
+    "telescopeView": "Vue au télescope",
+    "telescopeCaption": "Un télescope ne voit qu'un point lumineux. Sa luminosité est tout ce qu'on peut mesurer.",
+    "toEarth": "Vers la Terre",
+    "notToScale": "Pas à l'échelle",
+    "explanationButton": "Comment ça marche ?",
+    "brightnessAxis": "Luminosité (%)",
+    "orbitsAxis": "Temps (orbites)",
+    "planetMagnifiedPattern": "planète dessinée ×{{factor}} trop grosse",
+    "planetToScale": "planète à l'échelle",
+    "axisZoomPattern": "agrandi : l'axe ne montre que les {{percent}} % du haut"
+  },
+  "dimming": {
+    "sideViewTitle": "Vue de côté",
+    "earthViewTitle": "Vue depuis la Terre (agrandie)",
+    "telescopeViewTitle": "Vue au télescope",
+    "orbitNotToScale": "Pas à l'échelle : les vraies planètes orbitent beaucoup plus loin de leur étoile.",
+    "chartTitle": "Luminosité apparente de l'étoile",
+    "brightnessNowPattern": "Luminosité actuelle : {{value}} %",
+    "blocksPattern": "{{planet}} bloque {{percent}} % de la lumière de l'étoile : environ 1 part sur {{parts}}.",
+    "blocksAllPattern": "{{planet}} est aussi grosse que l'étoile et la cache entièrement.",
+    "thisPlanet": "Cette planète",
+    "starSizePattern": "Rayon de l'étoile : {{value}} × celui du Soleil",
+    "planetHeading": "Planète",
+    "starHeading": "Étoile",
+    "equation": "fraction bloquée = (R<sub>planète</sub> ÷ R<sub>étoile</sub>)<sup>2</sup>",
+    "dragHint": "Fais glisser la planète devant l'étoile.",
+    "explanationTitle": "Pourquoi l'étoile faiblit-elle ?",
+    "explanation1": "Quand une planète passe entre son étoile et nous, elle cache une petite partie de l'étoile. La lumière de cette partie ne nous parvient pas : l'étoile paraît un peu moins brillante. Les astronomes appellent cela un <b>transit</b>.",
+    "explanation2": "Plus la planète est grosse par rapport à son étoile, plus elle bloque de lumière. Jupiter bloquerait environ 1 % de la lumière du Soleil ; la Terre seulement 0,008 %, moins de 1 part sur 10 000.",
+    "explanation3": "Une petite étoile rend la même planète plus facile à trouver : la Terre devant une naine rouge cinq fois plus petite que le Soleil bloque 25 fois plus de la lumière de l'étoile.",
+    "explanation4": "Les vraies étoiles sont si lointaines que les télescopes les voient comme des points. On ne voit jamais la planète elle-même : on la trouve parce que son étoile faiblit, encore et encore, à chaque tour de la planète.",
+    "keyboardHelpHeading": "Planète",
+    "keyboardHelpMove": "Déplacer la planète sur son orbite"
   },
   "a11y": {
     "dimming": {
       "screenSummary": {
-        "playArea": "La zone de jeu affiche le contenu principal de la simulation.",
-        "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
-        "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
+        "playArea": "La zone de jeu montre une planète en orbite autour de son étoile de deux façons : vue de côté, et vue depuis la Terre, agrandie. Un graphique trace la luminosité apparente de l'étoile au cours du temps.",
+        "controlArea": "La zone de contrôle contient des boutons radio pour choisir la planète et l'étoile, un curseur pour une planète de taille au choix, une case Vue au télescope, des commandes de temps, un bouton d'explication et un bouton Tout réinitialiser.",
+        "interactionHint": "Lance l'animation, ou déplace la planète avec les flèches, et observe la luminosité baisser quand la planète passe devant l'étoile. Essaie une planète plus petite ou une étoile plus petite."
       },
-      "currentDetails": "La simulation est dans son état initial.",
+      "currentDetailsPattern": "{{planet}} tourne autour d'une étoile de {{starRadius}} fois le rayon du Soleil. Au plus, elle bloque {{percent}} pour cent de la lumière de l'étoile. La luminosité de l'étoile est maintenant de {{brightness}} pour cent ; la planète est {{where}}.",
+      "inFront": "devant l'étoile",
+      "beside": "à côté de l'étoile",
+      "behind": "derrière l'étoile",
       "controls": {
-        "exampleControl": "Contrôle d'exemple"
+        "planet": "Planète",
+        "star": "Étoile",
+        "customRadius": "Rayon de la planète",
+        "explanation": "Explication",
+        "movePlanet": "Planète, déplaçable sur son orbite"
+      },
+      "responses": {
+        "transitStart": "La planète commence à passer devant l'étoile.",
+        "transitEnd": "La planète a fini de passer devant l'étoile."
       }
     },
     "liningUp": {
@@ -25,10 +97,7 @@
         "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
         "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
       },
-      "currentDetails": "La simulation est dans son état initial.",
-      "controls": {
-        "exampleControl": "Contrôle d'exemple"
-      }
+      "currentDetails": "La simulation est dans son état initial."
     },
     "lightCurve": {
       "screenSummary": {
@@ -36,10 +105,7 @@
         "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
         "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
       },
-      "currentDetails": "La simulation est dans son état initial.",
-      "controls": {
-        "exampleControl": "Contrôle d'exemple"
-      }
+      "currentDetails": "La simulation est dans son état initial."
     },
     "hunt": {
       "screenSummary": {
@@ -47,10 +113,7 @@
         "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
         "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
       },
-      "currentDetails": "La simulation est dans son état initial.",
-      "controls": {
-        "exampleControl": "Contrôle d'exemple"
-      }
+      "currentDetails": "La simulation est dans son état initial."
     },
     "composition": {
       "screenSummary": {
@@ -58,10 +121,7 @@
         "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
         "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
       },
-      "currentDetails": "La simulation est dans son état initial.",
-      "controls": {
-        "exampleControl": "Contrôle d'exemple"
-      }
+      "currentDetails": "La simulation est dans son état initial."
     }
   },
   "preferences": {

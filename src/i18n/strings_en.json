@@ -7,16 +7,88 @@
     "hunt": "Planet Hunt",
     "composition": "Rock or Gas?"
   },
+  "units": {
+    "valueUnitsPattern": "{{value}} {{units}}",
+    "percent": "%",
+    "days": "days",
+    "hours": "h",
+    "au": "AU",
+    "degrees": "°",
+    "earthRadii": "R<sub>⊕</sub>",
+    "jupiterRadii": "R<sub>J</sub>",
+    "solarRadii": "R<sub>☉</sub>",
+    "solarMasses": "M<sub>☉</sub>",
+    "earthMasses": "M<sub>⊕</sub>",
+    "jupiterMasses": "M<sub>J</sub>",
+    "gramsPerCubicCentimeter": "g/cm<sup>3</sup>",
+    "metersPerSecond": "m/s"
+  },
+  "common": {
+    "earth": "Earth",
+    "neptune": "Neptune",
+    "jupiter": "Jupiter",
+    "customPlanet": "Any size",
+    "sunLikeStar": "Star like the Sun",
+    "redDwarf": "Red dwarf",
+    "bigStar": "Big hot star",
+    "planet": "Planet",
+    "star": "Star",
+    "planetRadius": "Planet radius",
+    "telescopeView": "Telescope view",
+    "telescopeCaption": "A telescope sees only a point of light. Its brightness is all we can measure.",
+    "toEarth": "To Earth",
+    "notToScale": "Not to scale",
+    "explanationButton": "How does it work?",
+    "brightnessAxis": "Brightness (%)",
+    "orbitsAxis": "Time (orbits)",
+    "planetMagnifiedPattern": "planet drawn ×{{factor}} too big",
+    "planetToScale": "planet drawn to scale",
+    "axisZoomPattern": "zoomed in: the axis shows only the top {{percent}} %"
+  },
+  "dimming": {
+    "sideViewTitle": "Seen from the side",
+    "earthViewTitle": "Seen from Earth (zoomed in)",
+    "telescopeViewTitle": "Seen through a telescope",
+    "orbitNotToScale": "Not to scale: real planets orbit much farther from their stars.",
+    "chartTitle": "How bright the star looks",
+    "brightnessNowPattern": "Brightness now: {{value}} %",
+    "blocksPattern": "{{planet}} blocks {{percent}} % of the star's light: about 1 part in {{parts}}.",
+    "blocksAllPattern": "{{planet}} is as big as the star and hides all of it.",
+    "thisPlanet": "This planet",
+    "starSizePattern": "Star radius: {{value}} × the Sun's",
+    "planetHeading": "Planet",
+    "starHeading": "Star",
+    "equation": "fraction blocked = (R<sub>planet</sub> ÷ R<sub>star</sub>)<sup>2</sup>",
+    "dragHint": "Drag the planet across the star.",
+    "explanationTitle": "Why does the star get dimmer?",
+    "explanation1": "When a planet passes between its star and us, it covers a small part of the star. That part's light never reaches us, so the star looks a little dimmer. Astronomers call this a <b>transit</b>.",
+    "explanation2": "The bigger the planet compared with its star, the more light it blocks. Jupiter would block about 1 % of the Sun's light; Earth only about 0.008 %, less than 1 part in 10 000.",
+    "explanation3": "A small star makes the same planet easier to find: Earth in front of a red dwarf five times smaller than the Sun blocks 25 times more of the star's light.",
+    "explanation4": "Real stars are so far away that telescopes see them as points. We never see the planet itself: we find it because its star dims, again and again, every time the planet goes around.",
+    "keyboardHelpHeading": "Planet",
+    "keyboardHelpMove": "Move the planet along its orbit"
+  },
   "a11y": {
     "dimming": {
       "screenSummary": {
-        "playArea": "The play area shows the main simulation content.",
-        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-        "interactionHint": "Explore the simulation by interacting with its controls."
+        "playArea": "The play area shows a planet orbiting its star twice: seen from the side, and seen from Earth, zoomed in. A chart traces how bright the star looks over time.",
+        "controlArea": "The control area has radio buttons to choose the planet and the star, a slider for a planet of any size, a telescope-view checkbox, time controls, an explanation button, and a Reset All button.",
+        "interactionHint": "Play the animation, or move the planet with the arrow keys, and watch the brightness drop while the planet is in front of the star. Try a smaller planet or a smaller star."
       },
-      "currentDetails": "The simulation is in its initial state.",
+      "currentDetailsPattern": "{{planet}} orbits a star with {{starRadius}} times the Sun's radius. At most it blocks {{percent}} percent of the star's light. The star's brightness is now {{brightness}} percent; the planet is {{where}}.",
+      "inFront": "in front of the star",
+      "beside": "beside the star",
+      "behind": "behind the star",
       "controls": {
-        "exampleControl": "Example control"
+        "planet": "Planet",
+        "star": "Star",
+        "customRadius": "Planet radius",
+        "explanation": "Explanation",
+        "movePlanet": "Planet, movable along its orbit"
+      },
+      "responses": {
+        "transitStart": "The planet starts to cross the star.",
+        "transitEnd": "The planet has crossed the star."
       }
     },
     "liningUp": {
@@ -25,10 +97,7 @@
         "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
         "interactionHint": "Explore the simulation by interacting with its controls."
       },
-      "currentDetails": "The simulation is in its initial state.",
-      "controls": {
-        "exampleControl": "Example control"
-      }
+      "currentDetails": "The simulation is in its initial state."
     },
     "lightCurve": {
       "screenSummary": {
@@ -36,10 +105,7 @@
         "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
         "interactionHint": "Explore the simulation by interacting with its controls."
       },
-      "currentDetails": "The simulation is in its initial state.",
-      "controls": {
-        "exampleControl": "Example control"
-      }
+      "currentDetails": "The simulation is in its initial state."
     },
     "hunt": {
       "screenSummary": {
@@ -47,10 +113,7 @@
         "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
         "interactionHint": "Explore the simulation by interacting with its controls."
       },
-      "currentDetails": "The simulation is in its initial state.",
-      "controls": {
-        "exampleControl": "Example control"
-      }
+      "currentDetails": "The simulation is in its initial state."
     },
     "composition": {
       "screenSummary": {
@@ -58,10 +121,7 @@
         "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
         "interactionHint": "Explore the simulation by interacting with its controls."
       },
-      "currentDetails": "The simulation is in its initial state.",
-      "controls": {
-        "exampleControl": "Example control"
-      }
+      "currentDetails": "The simulation is in its initial state."
     }
   },
   "preferences": {

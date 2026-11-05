@@ -1,44 +1,62 @@
 /**
  * DimmingScreenView.ts
  *
- * The top-level view for the simulation screen.
+ * The Dimming screen: a planet passing in front of its star blocks some of its
+ * light.
  *
- * All visual nodes are added here. Follow these conventions:
- *   - Use this.layoutBounds for positioning (never magic pixel values)
- *   - Keep a ResetAllButton that calls model.reset() and this.reset()
- *   - Override step(dt) for frame-by-frame animation
- *
- * ── Adding content ────────────────────────────────────────────────────────────
- * 1. Create Node subclasses in separate files (e.g. TransitHunterControlPanel.ts)
- * 2. Instantiate them here and call this.addChild(...)
- * 3. Link them to model properties:
- *      model.isRunningProperty.link( isRunning => { ... } );
- *
- * ── Layout bounds ─────────────────────────────────────────────────────────────
- * SceneryStack uses a virtual 1024×618 coordinate space by default.
- * this.layoutBounds gives you the full rectangle; use it for alignment:
- *   center, minX, maxX, minY, maxY, width, height
+ *  - Left: the orbit seen from the side, and below it the star seen from Earth
+ *    (zoomed in), at the same horizontal scale so the planet lines up.
+ *  - Middle: the star's brightness over time, and readouts in words.
+ *  - Right: the planet and star choices and the telescope view.
  */
 
+import { BooleanProperty, DerivedProperty, PatternStringProperty, type TReadOnlyProperty } from "scenerystack/axon";
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
-import { Node, Rectangle, Text } from "scenerystack/scenery";
-import { ResetAllButton } from "scenerystack/scenery-phet";
+import { HBox, Node, RichText, Text, VBox } from "scenerystack/scenery";
+import { ResetAllButton, TimeControlNode, TimeSpeed } from "scenerystack/scenery-phet";
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
-import { FLAT_RESET_ALL_BUTTON_OPTIONS } from "../../common/TransitHunterButtonOptions.js";
+import { AquaRadioButtonGroup } from "scenerystack/sun";
+import { PlanetPreset } from "../../common/model/PlanetPreset.js";
+import { StarPreset } from "../../common/model/StarPreset.js";
+import {
+  FLAT_PLAY_PAUSE_STEP_BUTTON_OPTIONS,
+  FLAT_RESET_ALL_BUTTON_OPTIONS,
+  TIME_CONTROL_SPEED_RADIO_OPTIONS,
+} from "../../common/TransitHunterButtonOptions.js";
+import { TransitHunterPanel } from "../../common/TransitHunterPanel.js";
+import { formatSignificant, formatTickValue } from "../../common/view/chartUtils.js";
+import {
+  createCheckbox,
+  createEquationNode,
+  createExplanationButton,
+  createNumberControl,
+} from "../../common/view/controls.js";
+import { brightnessDecimals, formatPartsIn, formatPercent } from "../../common/view/formatters.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
-import { SCREEN_VIEW_MARGIN } from "../../TransitHunterConstants.js";
+import { CONTROL_PANEL_WIDTH, FONTS, PLANET_RADIUS_RANGE, SCREEN_VIEW_MARGIN } from "../../TransitHunterConstants.js";
 import type { DimmingModel } from "../model/DimmingModel.js";
+import { DimmingChartNode } from "./DimmingChartNode.js";
 import { DimmingScreenSummaryContent } from "./DimmingScreenSummaryContent.js";
+import { EarthViewNode, SideViewNode } from "./DimmingViews.js";
 
 export type DimmingScreenViewOptions = ScreenViewOptions;
 
+const VIEW_WIDTH = 360;
+const SIDE_VIEW_HEIGHT = 170;
+const EARTH_VIEW_HEIGHT = 180;
+const STAR_RADIUS = 65;
+const CHART_WIDTH = 250;
+const CHART_HEIGHT = 200;
+const READOUT_WIDTH = 300;
+
+/** Fraction blocked above which the planet is said to hide the whole star. */
+const WHOLE_STAR = 0.9999;
+
 export class DimmingScreenView extends ScreenView {
+  private readonly telescopeViewProperty = new BooleanProperty(false);
+
   public constructor(model: DimmingModel, providedOptions?: DimmingScreenViewOptions) {
-    // ── Accessibility: screen summary ───────────────────────────────────────────
-    // The screen summary is the first thing a screen-reader user encounters. It
-    // is registered here, in the ScreenView's super() options, so every sim wires
-    // it the same way. See DimmingScreenSummaryContent for the four content regions.
     const options = optionize<DimmingScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       {
         screenSummaryContent: new DimmingScreenSummaryContent(model),
@@ -47,114 +65,234 @@ export class DimmingScreenView extends ScreenView {
     );
     super(options);
 
-    // ── Background ────────────────────────────────────────────────────────────
-    // A full-screen rectangle that follows the active color profile.
-    // Replace or remove once you add real content.
-    const backgroundRect = new Rectangle(0, 0, this.layoutBounds.width, this.layoutBounds.height, {
-      fill: TransitHunterColors.backgroundColorProperty,
+    const stringManager = StringManager.getInstance();
+    const strings = stringManager.getDimmingStrings();
+    const common = stringManager.getCommonStrings();
+    const units = stringManager.getUnits();
+    const a11y = stringManager.getDimmingA11yStrings();
+    const bounds = this.layoutBounds;
+
+    // ── Side view and view from Earth ─────────────────────────────────────────
+    const sideView = new SideViewNode(model, this.telescopeViewProperty, VIEW_WIDTH, SIDE_VIEW_HEIGHT, STAR_RADIUS);
+    sideView.left = bounds.minX + SCREEN_VIEW_MARGIN;
+    sideView.top = bounds.minY + SCREEN_VIEW_MARGIN + 20;
+    const earthView = new EarthViewNode(model, this.telescopeViewProperty, VIEW_WIDTH, EARTH_VIEW_HEIGHT, STAR_RADIUS);
+    earthView.left = sideView.left;
+    earthView.top = sideView.bottom + 32;
+
+    // ── Light curve ───────────────────────────────────────────────────────────
+    const chart = new DimmingChartNode(model, CHART_WIDTH, CHART_HEIGHT);
+    chart.left = sideView.right + 70;
+    chart.top = bounds.minY + SCREEN_VIEW_MARGIN + 22;
+
+    // ── Readouts ──────────────────────────────────────────────────────────────
+    const planetNameProperty: TReadOnlyProperty<string> = new DerivedProperty(
+      [
+        model.planetPresetProperty,
+        common.earthStringProperty,
+        common.neptuneStringProperty,
+        common.jupiterStringProperty,
+        strings.thisPlanetStringProperty,
+      ],
+      (preset, earth, neptune, jupiter, thisPlanet) =>
+        preset === PlanetPreset.EARTH
+          ? earth
+          : preset === PlanetPreset.NEPTUNE
+            ? neptune
+            : preset === PlanetPreset.JUPITER
+              ? jupiter
+              : thisPlanet,
+    );
+    const brightnessText = new RichText(
+      new PatternStringProperty(strings.brightnessNowPatternStringProperty, {
+        value: new DerivedProperty([model.brightnessProperty, model.maxBlockedFractionProperty], (brightness, depth) =>
+          formatTickValue(brightness * 100, brightnessDecimals(depth)),
+        ),
+      }),
+      { font: FONTS.BIG_READOUT, fill: TransitHunterColors.textColorProperty, maxWidth: READOUT_WIDTH },
+    );
+    const blocksPattern = new PatternStringProperty(strings.blocksPatternStringProperty, {
+      planet: planetNameProperty,
+      percent: new DerivedProperty([model.maxBlockedFractionProperty], formatPercent),
+      parts: new DerivedProperty([model.maxBlockedFractionProperty], formatPartsIn),
     });
-    this.addChild(backgroundRect);
-
-    // ── Placeholder label ─────────────────────────────────────────────────────
-    // Replace this with your actual simulation content.
-    const placeholderText = new Text(StringManager.getInstance().getScreenNames().dimmingStringProperty, {
-      font: "bold 36px sans-serif",
-      fill: TransitHunterColors.textColorProperty,
-      center: this.layoutBounds.center,
+    const blocksAllPattern = new PatternStringProperty(strings.blocksAllPatternStringProperty, {
+      planet: planetNameProperty,
     });
-    this.addChild(placeholderText);
+    const blocksText = new RichText(
+      new DerivedProperty(
+        [model.maxBlockedFractionProperty, blocksPattern, blocksAllPattern],
+        (depth, blocks, blocksAll) => (depth >= WHOLE_STAR ? blocksAll : blocks),
+      ),
+      { font: FONTS.READOUT, fill: TransitHunterColors.textColorProperty, lineWrap: READOUT_WIDTH },
+    );
+    const starSizeText = new RichText(
+      new PatternStringProperty(strings.starSizePatternStringProperty, {
+        value: new DerivedProperty([model.starPresetProperty], (star) => formatSignificant(star.radiusSun, 2)),
+      }),
+      { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, maxWidth: READOUT_WIDTH },
+    );
+    const equation = createEquationNode(strings.equationStringProperty, READOUT_WIDTH);
+    const explanationButton = createExplanationButton(
+      strings.explanationTitleStringProperty,
+      [
+        strings.explanation1StringProperty,
+        strings.explanation2StringProperty,
+        strings.explanation3StringProperty,
+        strings.explanation4StringProperty,
+      ],
+      a11y.controls.explanationStringProperty,
+    );
+    const explanationRow = new HBox({
+      spacing: 8,
+      children: [
+        explanationButton,
+        new Text(common.explanationButtonStringProperty, {
+          font: FONTS.LABEL,
+          fill: TransitHunterColors.textColorProperty,
+          maxWidth: READOUT_WIDTH - 40,
+        }),
+      ],
+    });
+    const readoutPanel = new TransitHunterPanel(
+      new VBox({
+        spacing: 8,
+        align: "left",
+        children: [brightnessText, blocksText, starSizeText, equation, explanationRow],
+      }),
+      { minWidth: READOUT_WIDTH + 24, maxWidth: READOUT_WIDTH + 24 },
+    );
+    readoutPanel.left = sideView.right + 20;
+    readoutPanel.top = chart.bottom + 62;
 
-    // ── Accessibility: per-control names ────────────────────────────────────────
-    // EVERY interactive node must carry an `accessibleName` (and an
-    // `accessibleHelpText` where useful), sourced from the StringManager `a11y`
-    // string group — never a hard-coded English literal. Sun/scenery-phet controls
-    // (NumberControl, Checkbox, ComboBox, AquaRadioButtonGroup, …) accept it as an
-    // option; a draggable plain Node needs `tagName: "div", focusable: true` too.
-    // Example (uncomment and adapt when you add a real control):
-    //
-    //   const a11y = StringManager.getInstance().getDimmingA11yStrings();
-    //   const exampleButton = new RectangularPushButton({
-    //     ...FLAT_RECTANGULAR_BUTTON_OPTIONS, // flat appearance, not SceneryStack's default 3-D look
-    //     content: someIcon,
-    //     listener: () => model.doSomething(),
-    //     accessibleName: a11y.controls.exampleControlStringProperty,
-    //   });
-    //   this.addChild(exampleButton);
+    // ── Controls ──────────────────────────────────────────────────────────────
+    const label = (stringProperty: TReadOnlyProperty<string>): Text =>
+      new Text(stringProperty, {
+        font: FONTS.LABEL,
+        fill: TransitHunterColors.textColorProperty,
+        maxWidth: CONTROL_PANEL_WIDTH - 40,
+      });
+    const heading = (stringProperty: TReadOnlyProperty<string>): Text =>
+      new Text(stringProperty, {
+        font: FONTS.TITLE,
+        fill: TransitHunterColors.textColorProperty,
+        maxWidth: CONTROL_PANEL_WIDTH,
+      });
+    const radioOptions = { spacing: 6, radioButtonOptions: { radius: 7 } };
+    const planetRadios = new AquaRadioButtonGroup(
+      model.planetPresetProperty,
+      [
+        { value: PlanetPreset.EARTH, createNode: () => label(common.earthStringProperty) },
+        { value: PlanetPreset.NEPTUNE, createNode: () => label(common.neptuneStringProperty) },
+        { value: PlanetPreset.JUPITER, createNode: () => label(common.jupiterStringProperty) },
+        { value: PlanetPreset.CUSTOM, createNode: () => label(common.customPlanetStringProperty) },
+      ],
+      { ...radioOptions, accessibleName: a11y.controls.planetStringProperty },
+    );
+    const customRadiusControl = createNumberControl(
+      common.planetRadiusStringProperty,
+      model.customRadiusProperty,
+      PLANET_RADIUS_RANGE,
+      {
+        unitsProperty: units.earthRadiiStringProperty,
+        logarithmic: true,
+        significantFigures: 2,
+        accessibleName: a11y.controls.customRadiusStringProperty,
+        numberControlOptions: {
+          visibleProperty: new DerivedProperty(
+            [model.planetPresetProperty],
+            (preset) => preset === PlanetPreset.CUSTOM,
+          ),
+        },
+      },
+    );
+    const starRadios = new AquaRadioButtonGroup(
+      model.starPresetProperty,
+      [
+        { value: StarPreset.SUN_LIKE, createNode: () => label(common.sunLikeStarStringProperty) },
+        { value: StarPreset.RED_DWARF, createNode: () => label(common.redDwarfStringProperty) },
+        { value: StarPreset.BIG_STAR, createNode: () => label(common.bigStarStringProperty) },
+      ],
+      { ...radioOptions, accessibleName: a11y.controls.starStringProperty },
+    );
+    const telescopeCheckbox = createCheckbox(this.telescopeViewProperty, common.telescopeViewStringProperty);
 
-    // ── Reset All button ──────────────────────────────────────────────────────
-    // Always position at bottom-right (PhET convention).
+    const controlPanel = new TransitHunterPanel(
+      new VBox({
+        spacing: 10,
+        align: "left",
+        children: [
+          heading(strings.planetHeadingStringProperty),
+          planetRadios,
+          customRadiusControl,
+          heading(strings.starHeadingStringProperty),
+          starRadios,
+          telescopeCheckbox,
+        ],
+      }),
+      { minWidth: CONTROL_PANEL_WIDTH + 24 },
+    );
+    controlPanel.right = bounds.maxX - SCREEN_VIEW_MARGIN;
+    controlPanel.top = bounds.minY + SCREEN_VIEW_MARGIN;
+
+    // ── Time controls and Reset All ──────────────────────────────────────────
+    const timeControlNode = new TimeControlNode(model.timer.isPlayingProperty, {
+      timeSpeedProperty: model.timeSpeedProperty,
+      timeSpeeds: [TimeSpeed.FAST, TimeSpeed.NORMAL, TimeSpeed.SLOW],
+      ...TIME_CONTROL_SPEED_RADIO_OPTIONS,
+      playPauseStepButtonOptions: {
+        ...FLAT_PLAY_PAUSE_STEP_BUTTON_OPTIONS,
+        stepForwardButtonOptions: {
+          ...FLAT_PLAY_PAUSE_STEP_BUTTON_OPTIONS.stepForwardButtonOptions,
+          listener: () => model.advance(0.01),
+        },
+      },
+    });
     const resetAllButton = new ResetAllButton({
       ...FLAT_RESET_ALL_BUTTON_OPTIONS,
       listener: () => {
         model.reset();
         this.reset();
       },
-      right: this.layoutBounds.maxX - SCREEN_VIEW_MARGIN,
-      bottom: this.layoutBounds.maxY - SCREEN_VIEW_MARGIN,
+      right: bounds.maxX - SCREEN_VIEW_MARGIN,
+      bottom: bounds.maxY - SCREEN_VIEW_MARGIN,
     });
-    this.addChild(resetAllButton);
+    timeControlNode.right = resetAllButton.left - 30;
+    timeControlNode.bottom = resetAllButton.bottom;
 
-    // ── Accessibility: keyboard / reading traversal order ───────────────────────
-    // Make the parallel DOM (Tab order and screen-reader reading order)
-    // deterministic and independent of child z-order. ScreenView throws if you
-    // set pdomOrder on itself, so add a lightweight wrapper Node that "borrows"
-    // the interactive nodes in the order a user should reach them — Reset All
-    // last. Non-interactive decoration (background, placeholder) is omitted.
+    this.children = [sideView, earthView, chart, readoutPanel, controlPanel, timeControlNode, resetAllButton];
+
+    // ── Spoken responses when the planet is moved by hand ─────────────────────
+    // While the animation plays a transit happens every few seconds, so the
+    // start and end are announced only when the user moves the planet.
+    let wasBlocking = model.brightnessProperty.value < 1;
+    model.brightnessProperty.lazyLink((brightness) => {
+      const blocking = brightness < 1;
+      if (blocking !== wasBlocking && !model.timer.isPlayingProperty.value) {
+        this.addAccessibleResponse(
+          blocking ? a11y.responses.transitStartStringProperty.value : a11y.responses.transitEndStringProperty.value,
+        );
+      }
+      wasBlocking = blocking;
+    });
+
     this.addChild(
       new Node({
         pdomOrder: [
-          // TODO: add the sim's interactive nodes here, in traversal order
+          earthView.planet,
+          planetRadios,
+          customRadiusControl,
+          starRadios,
+          telescopeCheckbox,
+          explanationButton,
+          timeControlNode,
           resetAllButton,
         ],
       }),
     );
   }
 
-  /**
-   * Resets view-side state (animations, panel visibility, etc.).
-   * Called by the Reset All button listener.
-   */
   public reset(): void {
-    // TODO: reset any view-side state here
+    this.telescopeViewProperty.reset();
   }
-
-  /**
-   * Steps the view forward by dt seconds for animation.
-   * @param _dt - elapsed time in seconds
-   */
-  public override step(_dt: number): void {
-    // TODO: implement animation updates here
-  }
-
-  // ── Accessibility / listeners: dispose ─────────────────────────────────────
-  // ScreenView is `isDisposable: false` and lives for the whole sim, so this
-  // class rarely needs dispose(). Child Nodes (and a live currentDetails
-  // DerivedProperty you own on a short-lived object) do. When you add
-  // DerivedProperty / Multilink / Property.link against model state, keep the
-  // references and tear them down — forks copy what they see. Pattern:
-  //
-  // private readonly disposeDimmingScreenView: () => void;
-  //
-  // // in the constructor, after creating the listeners:
-  // const statusMultilink = Multilink.multilink(
-  //   [model.someProperty, model.otherProperty],
-  //   (a, b) => { /* update view from model */ },
-  // );
-  // const detailsProperty = new DerivedProperty(
-  //   [model.stateProperty],
-  //   (state) => `State: ${state}`,
-  // ); // → pass as currentDetailsContent in DimmingScreenSummaryContent
-  // const onExternal = (v: number) => { /* … */ };
-  // model.externalProperty.link(onExternal); // Property you do NOT own
-  //
-  // this.disposeDimmingScreenView = () => {
-  //   statusMultilink.dispose();                 // Multilink you created
-  //   detailsProperty.dispose();                 // DerivedProperty you created
-  //   model.externalProperty.unlink(onExternal); // undo external link
-  // };
-  //
-  // public override dispose(): void {
-  //   this.disposeDimmingScreenView();
-  //   super.dispose();
-  // }
 }
