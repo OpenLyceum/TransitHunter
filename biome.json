@@ -8,7 +8,19 @@
     }
   },
   "files": {
-    "includes": ["**/*.ts", "**/*.js", "**/*.json", "**/*.html", "!dist", "!node_modules", "!.claude"]
+    "includes": [
+      "**/*.ts",
+      "**/*.js",
+      "**/*.json",
+      "**/*.html",
+      "!dist",
+      "!node_modules",
+      "!.claude",
+      "!src/hunt/model/data",
+      "!src/common/model/data",
+      "!scripts/lightcurves/.venv",
+      "!scripts/lightcurves/cache"
+    ]
   },
   "formatter": {
     "enabled": true,
