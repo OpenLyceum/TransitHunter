@@ -75,3 +75,20 @@ export function formatHours(hours: number): string {
   const units = StringManager.getInstance().getUnits();
   return valueWithUnits(formatSignificant(hours, 2), units.hoursStringProperty.value);
 }
+
+/** Earth masses above which a planet mass reads in Jupiter masses. */
+const JUPITER_MASS_THRESHOLD_EARTH = 30;
+
+/** Earth masses per Jupiter mass. */
+const EARTH_MASSES_PER_JUPITER = 317.83;
+
+/** A planet mass given in Earth masses: in Earth masses when small, Jupiter masses when large. */
+export function formatPlanetMass(massEarth: number): string {
+  const units = StringManager.getInstance().getUnits();
+  return massEarth < JUPITER_MASS_THRESHOLD_EARTH
+    ? valueWithUnits(formatSignificant(massEarth, 2), units.earthMassesStringProperty.value)
+    : valueWithUnits(
+        formatSignificant(massEarth / EARTH_MASSES_PER_JUPITER, 2),
+        units.jupiterMassesStringProperty.value,
+      );
+}

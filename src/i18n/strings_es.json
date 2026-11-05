@@ -164,6 +164,36 @@
     "keyboardHelpHeading": "Línea de profundidad",
     "keyboardHelpMove": "Mover la línea de profundidad"
   },
+  "composition": {
+    "transitTitle": "Según el tránsito",
+    "depthPattern": "La estrella se atenúa un {{depth}} %. Radio de la estrella: {{starRadius}}.",
+    "radiusPattern": "→ radio del planeta {{radius}}",
+    "tiltPattern": "Inclinación de la órbita {{tilt}}°: casi de canto, si no no habría tránsito.",
+    "sizeCompare": "Tamaño comparado con la Tierra y Júpiter:",
+    "wobbleTitle": "Según el bamboleo de la estrella (velocidad radial)",
+    "wobblePattern": "La estrella se acerca y se aleja de nosotros ±{{k}} m/s, una vez cada {{period}}. Masa de la estrella: {{starMass}}.<br>El bamboleo solo: al menos {{minimum}}.<br>El tránsito dice que la órbita está casi de canto, así que la masa del planeta es <b>{{mass}}</b>.",
+    "timingPattern": "El bamboleo de esta estrella es demasiado pequeño para medirlo. En cambio, los planetas vecinos tiran de este, así que sus tránsitos llegan unos minutos antes o después. Esos cambios de horario dan su masa: <b>{{mass}}</b>.",
+    "densityPattern": "Densidad: {{value}} g/cm<sup>3</sup>",
+    "rocky": "Rocoso, como la Tierra: roca y hierro.",
+    "inBetween": "Intermedio: demasiado grande para su masa para ser roca desnuda, así que debe tener una gruesa capa de agua o gas.",
+    "giant": "Un gigante gaseoso, como Júpiter y Saturno: sobre todo hidrógeno y helio.",
+    "floats": "Menos denso que el agua: en una bañera suficientemente grande, ¡flotaría!",
+    "saturn": "Saturno",
+    "water": "agua",
+    "iron": "hierro",
+    "equation": "densidad = masa ÷ (<sup>4</sup>⁄<sub>3</sub> π R<sup>3</sup>)",
+    "massAxis": "Masa (Tierra = 1)",
+    "radiusAxis": "Radio (Tierra = 1)",
+    "ironCurve": "hierro puro",
+    "rockCurve": "roca como la Tierra",
+    "waterGuide": "referencia: tan denso como el agua",
+    "choosePlanet": "Elige un planeta",
+    "explanationTitle": "¿Roca o gas?",
+    "explanation1": "Un tránsito da el <b>tamaño</b> de un planeta. El bamboleo de la estrella (ver la simulación Bamboleo estelar) da su <b>masa</b>, pero solo un mínimo, porque no sabemos cuánto está inclinada la órbita.",
+    "explanation2": "Un planeta que transita debe tener la órbita casi de canto. Así, el tránsito elimina la duda: la masa mínima se convierte en la masa real.",
+    "explanation3": "La masa dividida por el volumen es la <b>densidad</b>. El hierro tiene unos 8 g/cm³, la roca unos 3, el agua 1. La Tierra, con su núcleo de hierro, promedia 5,5. Los gigantes gaseosos rondan 1 o menos: Saturno flotaría en el agua.",
+    "explanation4": "En el diagrama masa–radio, los planetas sobre la curva rocosa son de roca y hierro; los que están bastante por encima deben estar envueltos en agua o gas. Los planetas grandes se comprimen por su propia gravedad, así que son más densos de lo que su tamaño sugiere."
+  },
   "a11y": {
     "dimming": {
       "screenSummary": {
@@ -253,11 +283,17 @@
     },
     "composition": {
       "screenSummary": {
-        "playArea": "El área de juego muestra el contenido principal de la simulación.",
-        "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
-        "interactionHint": "Explora la simulación interactuando con sus controles."
+        "playArea": "El área de juego muestra lo que el tránsito nos dice del planeta elegido (su radio, comparado con la Tierra y Júpiter) y lo que nos dice el bamboleo de su estrella (su masa), la densidad resultante en una escala de materiales conocidos y el planeta en un diagrama masa–radio con los planetas del Sistema Solar.",
+        "controlArea": "El área de control tiene botones de opción para elegir un planeta, un botón de explicación y un botón Restablecer todo.",
+        "interactionHint": "Compara Kepler-7 b, Kepler-10 b y GJ 1214 b: ¿cuál es roca, cuál es gas y cuál es intermedio?"
       },
-      "currentDetails": "La simulación está en su estado inicial."
+      "currentDetailsPattern": "{{planet}}: radio {{radius}} radios terrestres según el tránsito, masa {{mass}} masas terrestres según {{source}}. Densidad {{density}} gramos por centímetro cúbico. {{kind}}",
+      "fromWobble": "el bamboleo de la estrella",
+      "fromTiming": "el horario de los tránsitos",
+      "controls": {
+        "planet": "Planeta",
+        "explanation": "Explicación"
+      }
     }
   },
   "preferences": {

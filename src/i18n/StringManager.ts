@@ -118,6 +118,10 @@ export class StringManager {
     return stringProperties.hunt;
   }
 
+  public getCompositionStrings() {
+    return stringProperties.composition;
+  }
+
   /** Accessibility strings for the Dimming screen. */
   public getDimmingA11yStrings() {
     return stringProperties.a11y.dimming;

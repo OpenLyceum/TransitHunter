@@ -164,6 +164,36 @@
     "keyboardHelpHeading": "Depth line",
     "keyboardHelpMove": "Move the depth line"
   },
+  "composition": {
+    "transitTitle": "From the transit",
+    "depthPattern": "The star dims by {{depth}} %. Star radius: {{starRadius}}.",
+    "radiusPattern": "→ planet radius {{radius}}",
+    "tiltPattern": "Orbit tilt {{tilt}}°: almost edge-on, or there would be no transit.",
+    "sizeCompare": "Size compared with Earth and Jupiter:",
+    "wobbleTitle": "From the star's wobble (radial velocity)",
+    "wobblePattern": "The star wobbles toward and away from us by ±{{k}} m/s, once every {{period}}. Star mass: {{starMass}}.<br>The wobble alone: at least {{minimum}}.<br>The transit says the orbit is almost edge-on, so the planet's mass is <b>{{mass}}</b>.",
+    "timingPattern": "This star's wobble is too small to measure. Instead, the planet's neighbours tug on it, so its transits come a few minutes early or late. Those timing changes give its mass: <b>{{mass}}</b>.",
+    "densityPattern": "Density: {{value}} g/cm<sup>3</sup>",
+    "rocky": "Rocky, like Earth: rock and iron.",
+    "inBetween": "In between: too big for its mass to be bare rock, so it must have a thick layer of water or gas.",
+    "giant": "A gas giant, like Jupiter and Saturn: mostly hydrogen and helium.",
+    "floats": "Less dense than water: in a big enough bathtub, it would float!",
+    "saturn": "Saturn",
+    "water": "water",
+    "iron": "iron",
+    "equation": "density = mass ÷ (<sup>4</sup>⁄<sub>3</sub> π R<sup>3</sup>)",
+    "massAxis": "Mass (Earth = 1)",
+    "radiusAxis": "Radius (Earth = 1)",
+    "ironCurve": "pure iron",
+    "rockCurve": "rock like Earth",
+    "waterGuide": "guide: as dense as water",
+    "choosePlanet": "Choose a planet",
+    "explanationTitle": "Rock or gas?",
+    "explanation1": "A transit gives a planet's <b>size</b>. The star's wobble (see the Stellar Wobble simulation) gives its <b>mass</b>, but only a minimum, because we do not know how the orbit is tilted.",
+    "explanation2": "A planet that transits must have its orbit almost edge-on. So the transit removes the doubt: the minimum mass becomes the true mass.",
+    "explanation3": "Mass divided by volume is the <b>density</b>. Iron is about 8 g/cm³, rock about 3, water 1. Earth, with its iron core, averages 5.5. Gas giants are around 1 or less: Saturn would float in water.",
+    "explanation4": "On the mass–radius diagram, planets on the rocky curve are made of rock and iron; planets well above it must be wrapped in water or gas. Big planets get squeezed by their own gravity, so they are denser than their size alone suggests."
+  },
   "a11y": {
     "dimming": {
       "screenSummary": {
@@ -253,11 +283,17 @@
     },
     "composition": {
       "screenSummary": {
-        "playArea": "The play area shows the main simulation content.",
-        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-        "interactionHint": "Explore the simulation by interacting with its controls."
+        "playArea": "The play area shows what the transit tells us about the chosen planet (its radius, compared with Earth and Jupiter) and what its star's wobble tells us (its mass), the resulting density on a scale of familiar materials, and the planet on a mass–radius diagram with the Solar System's planets.",
+        "controlArea": "The control area has radio buttons to choose a planet, an explanation button, and a Reset All button.",
+        "interactionHint": "Compare Kepler-7 b, Kepler-10 b and GJ 1214 b: which is rock, which is gas, and which is in between?"
       },
-      "currentDetails": "The simulation is in its initial state."
+      "currentDetailsPattern": "{{planet}}: radius {{radius}} Earth radii from the transit, mass {{mass}} Earth masses from {{source}}. Density {{density}} grams per cubic centimeter. {{kind}}",
+      "fromWobble": "the star's wobble",
+      "fromTiming": "transit timing",
+      "controls": {
+        "planet": "Planet",
+        "explanation": "Explanation"
+      }
     }
   },
   "preferences": {

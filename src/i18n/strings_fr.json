@@ -164,6 +164,36 @@
     "keyboardHelpHeading": "Ligne de profondeur",
     "keyboardHelpMove": "Déplacer la ligne de profondeur"
   },
+  "composition": {
+    "transitTitle": "D'après le transit",
+    "depthPattern": "L'étoile faiblit de {{depth}} %. Rayon de l'étoile : {{starRadius}}.",
+    "radiusPattern": "→ rayon de la planète {{radius}}",
+    "tiltPattern": "Inclinaison de l'orbite {{tilt}}° : presque par la tranche, sinon il n'y aurait pas de transit.",
+    "sizeCompare": "Taille comparée à la Terre et à Jupiter :",
+    "wobbleTitle": "D'après l'oscillation de l'étoile (vitesse radiale)",
+    "wobblePattern": "L'étoile oscille vers nous et en s'éloignant de ±{{k}} m/s, une fois tous les {{period}}. Masse de l'étoile : {{starMass}}.<br>L'oscillation seule : au moins {{minimum}}.<br>Le transit dit que l'orbite est presque par la tranche : la masse de la planète est donc <b>{{mass}}</b>.",
+    "timingPattern": "L'oscillation de cette étoile est trop petite pour être mesurée. Mais les planètes voisines tirent sur celle-ci : ses transits arrivent quelques minutes en avance ou en retard. Ces décalages donnent sa masse : <b>{{mass}}</b>.",
+    "densityPattern": "Masse volumique : {{value}} g/cm<sup>3</sup>",
+    "rocky": "Rocheuse, comme la Terre : roche et fer.",
+    "inBetween": "Entre les deux : trop grosse pour sa masse pour être de la roche nue, elle doit avoir une épaisse couche d'eau ou de gaz.",
+    "giant": "Une géante gazeuse, comme Jupiter et Saturne : surtout de l'hydrogène et de l'hélium.",
+    "floats": "Moins dense que l'eau : dans une baignoire assez grande, elle flotterait !",
+    "saturn": "Saturne",
+    "water": "eau",
+    "iron": "fer",
+    "equation": "masse volumique = masse ÷ (<sup>4</sup>⁄<sub>3</sub> π R<sup>3</sup>)",
+    "massAxis": "Masse (Terre = 1)",
+    "radiusAxis": "Rayon (Terre = 1)",
+    "ironCurve": "fer pur",
+    "rockCurve": "roche comme la Terre",
+    "waterGuide": "repère : aussi dense que l'eau",
+    "choosePlanet": "Choisis une planète",
+    "explanationTitle": "Roche ou gaz ?",
+    "explanation1": "Un transit donne la <b>taille</b> d'une planète. L'oscillation de l'étoile (voir la simulation Valse stellaire) donne sa <b>masse</b>, mais seulement un minimum, car on ne connaît pas l'inclinaison de l'orbite.",
+    "explanation2": "Une planète qui transite a forcément une orbite presque par la tranche. Le transit lève donc le doute : la masse minimale devient la vraie masse.",
+    "explanation3": "La masse divisée par le volume est la <b>masse volumique</b>. Le fer fait environ 8 g/cm³, la roche environ 3, l'eau 1. La Terre, avec son noyau de fer, fait 5,5 en moyenne. Les géantes gazeuses sont autour de 1 ou moins : Saturne flotterait sur l'eau.",
+    "explanation4": "Sur le diagramme masse–rayon, les planètes sur la courbe rocheuse sont faites de roche et de fer ; celles bien au-dessus doivent être enveloppées d'eau ou de gaz. Les grosses planètes sont comprimées par leur propre gravité : elles sont plus denses que leur taille seule ne le laisse croire."
+  },
   "a11y": {
     "dimming": {
       "screenSummary": {
@@ -253,11 +283,17 @@
     },
     "composition": {
       "screenSummary": {
-        "playArea": "La zone de jeu affiche le contenu principal de la simulation.",
-        "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
-        "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
+        "playArea": "La zone de jeu montre ce que le transit nous apprend sur la planète choisie (son rayon, comparé à la Terre et à Jupiter) et ce que l'oscillation de son étoile nous apprend (sa masse), la masse volumique qui en découle sur une échelle de matériaux familiers, et la planète sur un diagramme masse–rayon avec les planètes du Système solaire.",
+        "controlArea": "La zone de contrôle contient des boutons radio pour choisir une planète, un bouton d'explication et un bouton Tout réinitialiser.",
+        "interactionHint": "Compare Kepler-7 b, Kepler-10 b et GJ 1214 b : laquelle est rocheuse, laquelle est gazeuse, et laquelle est entre les deux ?"
       },
-      "currentDetails": "La simulation est dans son état initial."
+      "currentDetailsPattern": "{{planet}} : rayon {{radius}} rayons terrestres d'après le transit, masse {{mass}} masses terrestres d'après {{source}}. Masse volumique {{density}} grammes par centimètre cube. {{kind}}",
+      "fromWobble": "l'oscillation de l'étoile",
+      "fromTiming": "le minutage des transits",
+      "controls": {
+        "planet": "Planète",
+        "explanation": "Explication"
+      }
     }
   },
   "preferences": {
