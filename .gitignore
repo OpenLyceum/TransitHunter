@@ -40,3 +40,8 @@ Thumbs.db
 
 # CI / local npm audit artifact (must not be linted)
 audit.json
+
+# Offline light-curve pipeline (scripts/lightcurves)
+scripts/lightcurves/.venv/
+scripts/lightcurves/cache/
+__pycache__/
