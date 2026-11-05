@@ -114,6 +114,10 @@ export class StringManager {
     return stringProperties.lightCurve;
   }
 
+  public getHuntStrings() {
+    return stringProperties.hunt;
+  }
+
   /** Accessibility strings for the Dimming screen. */
   public getDimmingA11yStrings() {
     return stringProperties.a11y.dimming;
@@ -130,12 +134,12 @@ export class StringManager {
   }
 
   /** Accessibility strings for the Planet Hunt screen. */
-  public getPlanetHuntA11yStrings() {
+  public getHuntA11yStrings() {
     return stringProperties.a11y.hunt;
   }
 
   /** Accessibility strings for the Rock or Gas? screen. */
-  public getRockOrGasA11yStrings() {
+  public getCompositionA11yStrings() {
     return stringProperties.a11y.composition;
   }
 

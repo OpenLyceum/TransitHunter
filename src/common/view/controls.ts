@@ -120,13 +120,14 @@ export function createNumberControl(
         titleNodeOptions: { fill: TransitHunterColors.textColorProperty, font: FONTS.LABEL, maxWidth: 130 },
         numberDisplayOptions: {
           useRichText: true,
-          textOptions: { fill: TransitHunterColors.controlSurfaceTextColorProperty, font: FONTS.LABEL },
+          textOptions: { fill: TransitHunterColors.controlSurfaceTextColorProperty, font: FONTS.LABEL, maxWidth: 96 },
           backgroundFill: TransitHunterColors.controlSurfaceColorProperty,
           numberFormatter: format,
           numberFormatterDependencies: unitsProperty
             ? [unitsProperty, units.valueUnitsPatternStringProperty]
             : [units.valueUnitsPatternStringProperty],
           maxWidth: 110,
+          minBackgroundWidth: 64,
         },
       },
       options.numberControlOptions,
@@ -193,10 +194,12 @@ export function createPushButton(
   labelProperty: TReadOnlyProperty<string>,
   listener: () => void,
   maxTextWidth = 180,
+  compact = false,
 ): TextPushButton {
   return new TextPushButton(labelProperty, {
     ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
-    font: FONTS.LABEL,
+    font: compact ? FONTS.SMALL : FONTS.LABEL,
+    yMargin: compact ? 2 : 5,
     textFill: LIGHT_SURFACE_TEXT_FILL,
     maxTextWidth: maxTextWidth,
     listener: listener,

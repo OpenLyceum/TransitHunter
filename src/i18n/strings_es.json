@@ -125,6 +125,45 @@
     "explanation3": "<b>Duración</b>: lo que tarda el planeta en cruzar la estrella. Los planetas lejanos se mueven despacio, así que sus tránsitos duran más, pero ocurren con mucha menos frecuencia.",
     "explanation4": "<b>Ruido</b>: cada medición fluctúa un poco. Superponer muchos tránsitos y promediarlos reduce la dispersión en un factor √n, así que incluso la caída de un planeta como la Tierra puede destacar, con suficientes tránsitos."
   },
+  "hunt": {
+    "foldedAxis": "Horas desde el tránsito previsto",
+    "loading": "Cargando la curva de luz…",
+    "depthLine": "línea de profundidad",
+    "showAll": "Mostrar todo",
+    "markMiddle": "Marcar el centro",
+    "chartHint": "Haz clic en una caída para marcarla. Arrastra para moverte; rueda para ampliar.",
+    "foldedHint": "Plegado: cada punto se coloca según el tiempo desde el último tránsito previsto. En amarillo: los promedios.",
+    "measurementsTitle": "Tus mediciones",
+    "marksCountPattern": "Caídas marcadas: {{count}}. Marca al menos dos caídas.",
+    "marksSpacingPattern": "Caídas marcadas: {{count}}; separación media {{spacing}}.",
+    "useSpacing": "Usar como período",
+    "clearMarks": "Borrar marcas",
+    "radiusPattern": "Profundidad {{depth}} % → radio del planeta ≈ {{earth}} = {{jupiter}}",
+    "starPattern": "Radio de la estrella (por su espectro): {{radius}} · datos: {{mission}}",
+    "equation": "R<sub>planeta</sub> = R<sub>estrella</sub> √profundidad",
+    "answerTitle": "La respuesta (NASA Exoplanet Archive)",
+    "answerRowPattern": "<b>{{name}}</b>: período {{period}}, radio {{radius}}, descubierto en {{year}}",
+    "answerSource": "Las marcas de colores bajo la curva muestran dónde se prevén los tránsitos de cada planeta.",
+    "foldOnIt": "Plegar",
+    "starTitle": "Elige una estrella",
+    "targetPattern": "{{star}} ({{difficulty}})",
+    "easy": "fácil",
+    "medium": "media",
+    "hard": "difícil",
+    "challenge": "desafío",
+    "period": "Período de prueba",
+    "shift": "Desplazar el plegado",
+    "fold": "Plegar la curva de luz",
+    "depth": "Línea de profundidad",
+    "reveal": "Revelar la respuesta",
+    "explanationTitle": "Cazar con datos reales",
+    "explanation1": "Son mediciones reales de estrellas reales hechas por los telescopios espaciales Kepler y TESS de la NASA, limpiadas de derivas lentas y promediadas en intervalos cortos. Cada punto es el brillo de la estrella en un momento.",
+    "explanation2": "<b>Encuentra el período.</b> Marca las caídas que veas; su separación media es una primera estimación. Luego pliega la curva: si el período es correcto, todas las caídas quedan superpuestas.",
+    "explanation3": "<b>Planetas ocultos.</b> Algunas caídas son más pequeñas que la dispersión de los puntos. Plegar muchos tránsitos y promediarlos las hace aparecer, como con Kepler-10 b, el primer planeta rocoso de Kepler (2011).",
+    "explanation4": "<b>Mide el tamaño.</b> Arrastra la línea de profundidad hasta el fondo de la caída plegada. Con el radio de la estrella, conocido por su espectro, la profundidad da el radio del planeta. Luego revela lo que encontraron los astrónomos.",
+    "keyboardHelpHeading": "Línea de profundidad",
+    "keyboardHelpMove": "Mover la línea de profundidad"
+  },
   "a11y": {
     "dimming": {
       "screenSummary": {
@@ -188,11 +227,29 @@
     },
     "hunt": {
       "screenSummary": {
-        "playArea": "El área de juego muestra el contenido principal de la simulación.",
-        "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
-        "interactionHint": "Explora la simulación interactuando con sus controles."
+        "playArea": "El área de juego muestra una curva de luz real de la estrella elegida, del telescopio espacial Kepler o TESS, que puede plegarse con un período de prueba, tus mediciones y, una vez reveladas, los planetas que encontraron los astrónomos.",
+        "controlArea": "El área de control tiene un selector de estrella, botones para ampliar, desplazarse y marcar caídas, deslizadores para el período de prueba, el desplazamiento del plegado y la línea de profundidad, casillas para plegar y revelar la respuesta, un botón de explicación y un botón Restablecer todo.",
+        "interactionHint": "Amplía hasta ver una caída, márcala con Marcar el centro, marca otra, luego usa su separación como período y pliega."
       },
-      "currentDetails": "La simulación está en su estado inicial."
+      "currentDetailsPattern": "{{star}}: {{days}} días de datos de {{mission}}. {{marks}} Período de prueba {{period}} días; la curva está {{folded}}. Línea de profundidad {{depth}} por ciento, es decir, un planeta de {{radius}} radios terrestres.",
+      "folded": "plegada",
+      "notFolded": "sin plegar",
+      "loading": "La curva de luz se está cargando.",
+      "controls": {
+        "target": "Estrella",
+        "period": "Período de prueba",
+        "shift": "Desplazar el plegado",
+        "depth": "Línea de profundidad",
+        "depthLine": "Línea de profundidad en el gráfico, movible arriba y abajo",
+        "scrollEarlier": "Retroceder",
+        "scrollLater": "Avanzar",
+        "zoomIn": "Ampliar el eje del tiempo",
+        "zoomOut": "Reducir el eje del tiempo",
+        "showAll": "Mostrar toda la curva",
+        "markMiddle": "Marcar una caída en el centro de la vista",
+        "foldOnPattern": "Plegar con {{name}}",
+        "explanation": "Explicación"
+      }
     },
     "composition": {
       "screenSummary": {

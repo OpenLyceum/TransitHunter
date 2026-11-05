@@ -29,7 +29,7 @@ export class RockOrGasScreenSummaryContent extends ScreenSummaryContent {
   // `model` is unused in the template but kept in the signature so real sims can
   // derive a live currentDetailsContent from it without changing call sites.
   public constructor(_model: RockOrGasModel) {
-    const a11y = StringManager.getInstance().getRockOrGasA11yStrings();
+    const a11y = StringManager.getInstance().getCompositionA11yStrings();
 
     super({
       playAreaContent: a11y.screenSummary.playAreaStringProperty,

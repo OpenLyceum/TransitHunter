@@ -72,7 +72,7 @@ export class RockOrGasScreenView extends ScreenView {
     // option; a draggable plain Node needs `tagName: "div", focusable: true` too.
     // Example (uncomment and adapt when you add a real control):
     //
-    //   const a11y = StringManager.getInstance().getRockOrGasA11yStrings();
+    //   const a11y = StringManager.getInstance().getCompositionA11yStrings();
     //   const exampleButton = new RectangularPushButton({
     //     ...FLAT_RECTANGULAR_BUTTON_OPTIONS, // flat appearance, not SceneryStack's default 3-D look
     //     content: someIcon,

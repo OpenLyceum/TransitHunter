@@ -1,30 +1,34 @@
 /**
  * PlanetHuntKeyboardHelpContent.ts
  *
- * Content for the keyboard-help dialog (the "?" button in the navigation bar).
- * The template's only interactions are buttons and Reset All, so a single
- * basic-actions section covers the available keyboard controls. When the sim
- * grows, fill the right column (pattern stubbed below).
+ * Keyboard-help dialog for the Planet Hunt screen: the depth line (up and down
+ * arrows), the star selector, buttons and checkboxes on the left; the sliders on
+ * the right.
  */
 
 import {
   BasicActionsKeyboardHelpSection,
-  // SliderControlsKeyboardHelpSection,
-  // TimeControlsKeyboardHelpSection,
+  ComboBoxKeyboardHelpSection,
+  KeyboardHelpIconFactory,
+  KeyboardHelpSection,
+  KeyboardHelpSectionRow,
+  SliderControlsKeyboardHelpSection,
   TwoColumnKeyboardHelpContent,
 } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 
 export class PlanetHuntKeyboardHelpContent extends TwoColumnKeyboardHelpContent {
   public constructor() {
-    const leftColumn = [new BasicActionsKeyboardHelpSection()];
-
-    // Right column — uncomment when the sim adds sliders and/or TimeControlNode:
-    // const rightColumn = [
-    //   new SliderControlsKeyboardHelpSection(),
-    //   // new TimeControlsKeyboardHelpSection(),
-    // ];
-    const rightColumn: never[] = [];
-
-    super(leftColumn, rightColumn);
+    const strings = StringManager.getInstance().getHuntStrings();
+    const depthSection = new KeyboardHelpSection(strings.keyboardHelpHeadingStringProperty, [
+      KeyboardHelpSectionRow.labelWithIcon(
+        strings.keyboardHelpMoveStringProperty,
+        KeyboardHelpIconFactory.upDownArrowKeysRowIcon(),
+      ),
+    ]);
+    super(
+      [depthSection, new BasicActionsKeyboardHelpSection({ withCheckboxContent: true })],
+      [new ComboBoxKeyboardHelpSection(), new SliderControlsKeyboardHelpSection()],
+    );
   }
 }

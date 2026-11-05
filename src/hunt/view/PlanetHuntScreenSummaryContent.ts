@@ -1,40 +1,61 @@
 /**
  * PlanetHuntScreenSummaryContent.ts
  *
- * The accessible screen summary read by screen readers (SceneryStack's
- * Interactive Description). It appears at the top of the parallel DOM and gives
- * a non-visual user a way to orient themselves and to re-read the simulation's
- * current state at any time.
- *
- * A summary has four regions (all optional, but provide at least the first
- * three in every sim for consistency across OpenLyceum):
- *   - playAreaContent       — what the play area contains
- *   - controlAreaContent    — what the controls do
- *   - currentDetailsContent — a LIVE paragraph describing current state
- *   - interactionHintContent — a short hint on how to get started
- *
- * ── Making "current details" live ─────────────────────────────────────────────
- * The template has no model state, so currentDetails is a static string. In a
- * real sim, build a DerivedProperty over the relevant model Properties and pass
- * it as `currentDetailsContent` so the paragraph updates as the sim runs.
- * See LunarLander/src/.../LunarLanderScreenSummaryContent.ts for the pattern.
- * If that DerivedProperty (or any Multilink) is owned by a short-lived object,
- * dispose it on teardown — see the commented dispose() stub in PlanetHuntScreenView.
+ * The accessible screen summary for the Planet Hunt screen. Its current-details
+ * paragraph stays live: the star and its data, the marks, the trial period,
+ * whether the light curve is folded, and the depth line's planet size.
  */
+
+import { DerivedProperty, PatternStringProperty, StringProperty } from "scenerystack/axon";
+import { StringUtils } from "scenerystack/phetcommon";
 import { ScreenSummaryContent } from "scenerystack/sim";
+import { formatSignificant, toPlainText } from "../../common/view/chartUtils.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import type { PlanetHuntModel } from "../model/PlanetHuntModel.js";
 
 export class PlanetHuntScreenSummaryContent extends ScreenSummaryContent {
-  // `model` is unused in the template but kept in the signature so real sims can
-  // derive a live currentDetailsContent from it without changing call sites.
-  public constructor(_model: PlanetHuntModel) {
-    const a11y = StringManager.getInstance().getPlanetHuntA11yStrings();
+  public constructor(model: PlanetHuntModel) {
+    const stringManager = StringManager.getInstance();
+    const a11y = stringManager.getHuntA11yStrings();
+    const strings = stringManager.getHuntStrings();
+    const plain = (value: number, digits: number): string => toPlainText(formatSignificant(value, digits));
+
+    const marksProperty = new StringProperty("");
+    const updateMarks = (): void => {
+      const spacing = model.markSpacing();
+      marksProperty.value =
+        spacing === null
+          ? StringUtils.fillIn(strings.marksCountPatternStringProperty.value, { count: model.marks.length })
+          : StringUtils.fillIn(strings.marksSpacingPatternStringProperty.value, {
+              count: model.marks.length,
+              spacing: plain(spacing, 4),
+            });
+    };
+    model.marks.addItemAddedListener(updateMarks);
+    model.marks.addItemRemovedListener(updateMarks);
+    strings.marksCountPatternStringProperty.link(updateMarks);
+
+    const details = new PatternStringProperty(a11y.currentDetailsPatternStringProperty, {
+      star: new DerivedProperty([model.targetProperty], (target) => target.starName),
+      days: new DerivedProperty([model.lightCurveProperty], (curve) => (curve ? plain(curve.spanDays, 3) : "—")),
+      mission: new DerivedProperty([model.lightCurveProperty], (curve) => (curve ? curve.file.mission : "—")),
+      marks: marksProperty,
+      period: new DerivedProperty([model.periodProperty], (p) => plain(p, 4)),
+      folded: new DerivedProperty(
+        [model.foldProperty, a11y.foldedStringProperty, a11y.notFoldedStringProperty],
+        (fold, folded, notFolded) => (fold ? folded : notFolded),
+      ),
+      depth: new DerivedProperty([model.depthProperty], (d) => plain(d, 2)),
+      radius: new DerivedProperty([model.inferredRadiusProperty], (r) => plain(r, 2)),
+    });
 
     super({
       playAreaContent: a11y.screenSummary.playAreaStringProperty,
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
-      currentDetailsContent: a11y.currentDetailsStringProperty,
+      currentDetailsContent: new DerivedProperty(
+        [model.lightCurveProperty, details, a11y.loadingStringProperty],
+        (curve, text: string, loading: string) => (curve ? text : loading),
+      ),
       interactionHintContent: a11y.screenSummary.interactionHintStringProperty,
     });
   }

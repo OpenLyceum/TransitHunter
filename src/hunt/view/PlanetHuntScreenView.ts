@@ -1,44 +1,62 @@
 /**
  * PlanetHuntScreenView.ts
  *
- * The top-level view for the simulation screen.
+ * The Planet Hunt screen: real Kepler and TESS light curves.
  *
- * All visual nodes are added here. Follow these conventions:
- *   - Use this.layoutBounds for positioning (never magic pixel values)
- *   - Keep a ResetAllButton that calls model.reset() and this.reset()
- *   - Override step(dt) for frame-by-frame animation
- *
- * ── Adding content ────────────────────────────────────────────────────────────
- * 1. Create Node subclasses in separate files (e.g. TransitHunterControlPanel.ts)
- * 2. Instantiate them here and call this.addChild(...)
- * 3. Link them to model properties:
- *      model.isRunningProperty.link( isRunning => { ... } );
- *
- * ── Layout bounds ─────────────────────────────────────────────────────────────
- * SceneryStack uses a virtual 1024×618 coordinate space by default.
- * this.layoutBounds gives you the full rectangle; use it for alignment:
- *   center, minX, maxX, minY, maxY, width, height
+ *  - Top left: the light curve (zoom, scroll, mark dips; or folded with the
+ *    averages and the depth line).
+ *  - Bottom left: the user's measurements (mark spacing, depth → radius) and,
+ *    once revealed, the archive's planets.
+ *  - Right: the star, the fold controls, and the reveal.
  */
 
+import { DerivedProperty, PatternStringProperty, StringProperty, type TReadOnlyProperty } from "scenerystack/axon";
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
-import { Node, Rectangle, Text } from "scenerystack/scenery";
+import { StringUtils } from "scenerystack/phetcommon";
+import { HBox, Node, RichText, Text, VBox } from "scenerystack/scenery";
 import { ResetAllButton } from "scenerystack/scenery-phet";
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
-import { FLAT_RESET_ALL_BUTTON_OPTIONS } from "../../common/TransitHunterButtonOptions.js";
+import { ComboBox } from "scenerystack/sun";
+import type { ArchivePlanet } from "../../common/model/archive.js";
+import {
+  FLAT_RESET_ALL_BUTTON_OPTIONS,
+  LIGHT_SURFACE_TEXT_FILL,
+  TRANSIT_HUNTER_COMBO_BOX_OPTIONS,
+} from "../../common/TransitHunterButtonOptions.js";
+import { TransitHunterPanel } from "../../common/TransitHunterPanel.js";
+import { formatSignificant } from "../../common/view/chartUtils.js";
+import {
+  createCheckbox,
+  createEquationNode,
+  createExplanationButton,
+  createNumberControl,
+  createPushButton,
+} from "../../common/view/controls.js";
+import { formatDays, valueWithUnits } from "../../common/view/formatters.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
-import { SCREEN_VIEW_MARGIN } from "../../TransitHunterConstants.js";
-import type { PlanetHuntModel } from "../model/PlanetHuntModel.js";
+import {
+  CONTROL_PANEL_WIDTH,
+  EARTH_RADIUS_M,
+  FONTS,
+  JUPITER_RADIUS_M,
+  SCREEN_VIEW_MARGIN,
+} from "../../TransitHunterConstants.js";
+import { type Difficulty, HuntTarget } from "../model/HuntTarget.js";
+import { HUNT_DEPTH_RANGE, HUNT_PERIOD_RANGE, type PlanetHuntModel } from "../model/PlanetHuntModel.js";
+import { HuntChartNode } from "./HuntChartNode.js";
 import { PlanetHuntScreenSummaryContent } from "./PlanetHuntScreenSummaryContent.js";
 
 export type PlanetHuntScreenViewOptions = ScreenViewOptions;
 
+const CHART_WIDTH = 610;
+const CHART_HEIGHT = 245;
+const PANEL_WIDTH = 318;
+
 export class PlanetHuntScreenView extends ScreenView {
+  private readonly chart: HuntChartNode;
+
   public constructor(model: PlanetHuntModel, providedOptions?: PlanetHuntScreenViewOptions) {
-    // ── Accessibility: screen summary ───────────────────────────────────────────
-    // The screen summary is the first thing a screen-reader user encounters. It
-    // is registered here, in the ScreenView's super() options, so every sim wires
-    // it the same way. See PlanetHuntScreenSummaryContent for the four content regions.
     const options = optionize<PlanetHuntScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       {
         screenSummaryContent: new PlanetHuntScreenSummaryContent(model),
@@ -47,114 +65,280 @@ export class PlanetHuntScreenView extends ScreenView {
     );
     super(options);
 
-    // ── Background ────────────────────────────────────────────────────────────
-    // A full-screen rectangle that follows the active color profile.
-    // Replace or remove once you add real content.
-    const backgroundRect = new Rectangle(0, 0, this.layoutBounds.width, this.layoutBounds.height, {
-      fill: TransitHunterColors.backgroundColorProperty,
+    const stringManager = StringManager.getInstance();
+    const strings = stringManager.getHuntStrings();
+    const common = stringManager.getCommonStrings();
+    const units = stringManager.getUnits();
+    const a11y = stringManager.getHuntA11yStrings();
+    const bounds = this.layoutBounds;
+
+    // ── Chart ─────────────────────────────────────────────────────────────────
+    this.chart = new HuntChartNode(model, CHART_WIDTH, CHART_HEIGHT);
+    this.chart.left = bounds.minX + SCREEN_VIEW_MARGIN + 60;
+    this.chart.top = bounds.minY + SCREEN_VIEW_MARGIN + 8;
+
+    // ── Measurements ──────────────────────────────────────────────────────────
+    const text = (stringProperty: TReadOnlyProperty<string>, font = FONTS.READOUT): RichText =>
+      new RichText(stringProperty, { font: font, fill: TransitHunterColors.textColorProperty, lineWrap: PANEL_WIDTH });
+    const marksTextProperty = new StringProperty("");
+    const updateMarksText = (): void => {
+      const spacing = model.markSpacing();
+      marksTextProperty.value =
+        spacing === null
+          ? StringUtils.fillIn(strings.marksCountPatternStringProperty.value, { count: model.marks.length })
+          : StringUtils.fillIn(strings.marksSpacingPatternStringProperty.value, {
+              count: model.marks.length,
+              spacing: formatDays(spacing),
+            });
+    };
+    model.marks.addItemAddedListener(updateMarksText);
+    model.marks.addItemRemovedListener(updateMarksText);
+    strings.marksCountPatternStringProperty.link(updateMarksText);
+    strings.marksSpacingPatternStringProperty.link(updateMarksText);
+    const useSpacingButton = createPushButton(strings.useSpacingStringProperty, () => model.useMarkSpacing(), 150);
+    const clearMarksButton = createPushButton(strings.clearMarksStringProperty, () => model.marks.clear(), 150);
+    const updateMarkButtons = (): void => {
+      useSpacingButton.enabled = model.marks.length >= 2;
+      clearMarksButton.enabled = model.marks.length > 0;
+    };
+    model.marks.addItemAddedListener(updateMarkButtons);
+    model.marks.addItemRemovedListener(updateMarkButtons);
+    updateMarkButtons();
+
+    const radiusText = text(
+      new PatternStringProperty(strings.radiusPatternStringProperty, {
+        depth: new DerivedProperty([model.depthProperty], (depth) => formatSignificant(depth, 2)),
+        earth: new DerivedProperty(
+          [model.inferredRadiusProperty, units.earthRadiiStringProperty, units.valueUnitsPatternStringProperty],
+          (radius, earthRadii) => valueWithUnits(formatSignificant(radius, 2), earthRadii),
+        ),
+        jupiter: new DerivedProperty(
+          [model.inferredRadiusProperty, units.jupiterRadiiStringProperty, units.valueUnitsPatternStringProperty],
+          (radius, jupiterRadii) =>
+            valueWithUnits(formatSignificant((radius * EARTH_RADIUS_M) / JUPITER_RADIUS_M, 2), jupiterRadii),
+        ),
+      }),
+    );
+    const starText = text(
+      new PatternStringProperty(strings.starPatternStringProperty, {
+        radius: new DerivedProperty(
+          [model.planetsProperty, units.solarRadiiStringProperty, units.valueUnitsPatternStringProperty],
+          (planets, solarRadii) =>
+            planets[0] ? valueWithUnits(formatSignificant(planets[0].starRadiusSun, 3), solarRadii) : "—",
+        ),
+        mission: new DerivedProperty([model.lightCurveProperty], (curve) =>
+          curve ? `${curve.file.mission} (${curve.file.pipeline})` : "—",
+        ),
+      }),
+      FONTS.SMALL,
+    );
+    const equation = createEquationNode(strings.equationStringProperty, PANEL_WIDTH);
+    const explanationButton = createExplanationButton(
+      strings.explanationTitleStringProperty,
+      [
+        strings.explanation1StringProperty,
+        strings.explanation2StringProperty,
+        strings.explanation3StringProperty,
+        strings.explanation4StringProperty,
+      ],
+      a11y.controls.explanationStringProperty,
+    );
+    const measurementPanel = new TransitHunterPanel(
+      new VBox({
+        spacing: 6,
+        align: "left",
+        children: [
+          new Text(strings.measurementsTitleStringProperty, {
+            font: FONTS.TITLE,
+            fill: TransitHunterColors.textColorProperty,
+            maxWidth: PANEL_WIDTH,
+          }),
+          text(marksTextProperty),
+          new HBox({ spacing: 8, children: [useSpacingButton, clearMarksButton] }),
+          radiusText,
+          starText,
+          equation,
+          new HBox({
+            spacing: 8,
+            children: [
+              explanationButton,
+              new Text(common.explanationButtonStringProperty, {
+                font: FONTS.LABEL,
+                fill: TransitHunterColors.textColorProperty,
+                maxWidth: PANEL_WIDTH - 40,
+              }),
+            ],
+          }),
+        ],
+      }),
+      { minWidth: PANEL_WIDTH + 24, maxWidth: PANEL_WIDTH + 24 },
+    );
+    measurementPanel.left = bounds.minX + SCREEN_VIEW_MARGIN;
+    measurementPanel.top = this.chart.bottom + 12;
+
+    // ── Archive answer ────────────────────────────────────────────────────────
+    const answerList = new VBox({ spacing: 3, align: "left" });
+    const answerPanel = new TransitHunterPanel(
+      new VBox({
+        spacing: 6,
+        align: "left",
+        children: [
+          new Text(strings.answerTitleStringProperty, {
+            font: FONTS.TITLE,
+            fill: TransitHunterColors.textColorProperty,
+            maxWidth: PANEL_WIDTH,
+          }),
+          answerList,
+          new RichText(strings.answerSourceStringProperty, {
+            font: FONTS.SMALL,
+            fill: TransitHunterColors.mutedTextColorProperty,
+            lineWrap: PANEL_WIDTH,
+          }),
+        ],
+      }),
+      { minWidth: PANEL_WIDTH + 24, maxWidth: PANEL_WIDTH + 24, visibleProperty: model.revealProperty },
+    );
+    answerPanel.left = measurementPanel.right + 12;
+    answerPanel.top = measurementPanel.top;
+    const answerRow = (planet: ArchivePlanet): Node => {
+      const line = new RichText(
+        StringUtils.fillIn(strings.answerRowPatternStringProperty.value, {
+          name: planet.name,
+          period: formatDays(planet.periodDays),
+          radius: valueWithUnits(formatSignificant(planet.radiusEarth, 2), units.earthRadiiStringProperty.value),
+          year: planet.discoveryYear,
+        }),
+        { font: FONTS.SMALL, fill: TransitHunterColors.textColorProperty, maxWidth: PANEL_WIDTH - 70 },
+      );
+      const foldButton = createPushButton(
+        strings.foldOnItStringProperty,
+        () => model.useArchiveEphemeris(planet),
+        60,
+        true,
+      );
+      foldButton.accessibleName = StringUtils.fillIn(a11y.controls.foldOnPatternStringProperty.value, {
+        name: planet.name,
+      });
+      return new HBox({ spacing: 8, children: [foldButton, line] });
+    };
+    const updateAnswers = (): void => {
+      for (const child of answerList.children) {
+        child.dispose();
+      }
+      answerList.children = model.planetsProperty.value.map(answerRow);
+    };
+    model.planetsProperty.link(updateAnswers);
+    strings.answerRowPatternStringProperty.lazyLink(updateAnswers);
+    units.earthRadiiStringProperty.lazyLink(updateAnswers);
+
+    // ── Controls ──────────────────────────────────────────────────────────────
+    const difficultyName = (difficulty: Difficulty): TReadOnlyProperty<string> =>
+      difficulty === "easy"
+        ? strings.easyStringProperty
+        : difficulty === "medium"
+          ? strings.mediumStringProperty
+          : difficulty === "hard"
+            ? strings.hardStringProperty
+            : strings.challengeStringProperty;
+    const comboListParent = new Node();
+    const targetComboBox = new ComboBox(
+      model.targetProperty,
+      HuntTarget.enumeration.values.map((target) => ({
+        value: target,
+        createNode: () =>
+          new Text(
+            new PatternStringProperty(strings.targetPatternStringProperty, {
+              star: target.starName,
+              difficulty: difficultyName(target.difficulty),
+            }),
+            { font: FONTS.LABEL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth: CONTROL_PANEL_WIDTH - 50 },
+          ),
+      })),
+      comboListParent,
+      { ...TRANSIT_HUNTER_COMBO_BOX_OPTIONS, accessibleName: a11y.controls.targetStringProperty },
+    );
+    const periodControl = createNumberControl(strings.periodStringProperty, model.periodProperty, HUNT_PERIOD_RANGE, {
+      unitsProperty: units.daysStringProperty,
+      logarithmic: true,
+      significantFigures: 4,
+      delta: 0.0005,
+      accessibleName: a11y.controls.periodStringProperty,
     });
-    this.addChild(backgroundRect);
-
-    // ── Placeholder label ─────────────────────────────────────────────────────
-    // Replace this with your actual simulation content.
-    const placeholderText = new Text(StringManager.getInstance().getScreenNames().huntStringProperty, {
-      font: "bold 36px sans-serif",
-      fill: TransitHunterColors.textColorProperty,
-      center: this.layoutBounds.center,
+    const shiftControl = createNumberControl(
+      strings.shiftStringProperty,
+      model.shiftProperty,
+      model.shiftProperty.range,
+      {
+        significantFigures: 3,
+        delta: 0.002,
+        accessibleName: a11y.controls.shiftStringProperty,
+      },
+    );
+    const foldCheckbox = createCheckbox(model.foldProperty, strings.foldStringProperty);
+    const depthControl = createNumberControl(strings.depthStringProperty, model.depthProperty, HUNT_DEPTH_RANGE, {
+      unitsProperty: units.percentStringProperty,
+      logarithmic: true,
+      significantFigures: 2,
+      accessibleName: a11y.controls.depthStringProperty,
     });
-    this.addChild(placeholderText);
+    const revealCheckbox = createCheckbox(model.revealProperty, strings.revealStringProperty);
+    const controlPanel = new TransitHunterPanel(
+      new VBox({
+        spacing: 10,
+        align: "left",
+        children: [
+          new Text(strings.starTitleStringProperty, {
+            font: FONTS.TITLE,
+            fill: TransitHunterColors.textColorProperty,
+            maxWidth: CONTROL_PANEL_WIDTH,
+          }),
+          targetComboBox,
+          periodControl,
+          shiftControl,
+          foldCheckbox,
+          depthControl,
+          revealCheckbox,
+        ],
+      }),
+      { minWidth: CONTROL_PANEL_WIDTH + 24 },
+    );
+    controlPanel.right = bounds.maxX - SCREEN_VIEW_MARGIN;
+    controlPanel.top = bounds.minY + SCREEN_VIEW_MARGIN;
 
-    // ── Accessibility: per-control names ────────────────────────────────────────
-    // EVERY interactive node must carry an `accessibleName` (and an
-    // `accessibleHelpText` where useful), sourced from the StringManager `a11y`
-    // string group — never a hard-coded English literal. Sun/scenery-phet controls
-    // (NumberControl, Checkbox, ComboBox, AquaRadioButtonGroup, …) accept it as an
-    // option; a draggable plain Node needs `tagName: "div", focusable: true` too.
-    // Example (uncomment and adapt when you add a real control):
-    //
-    //   const a11y = StringManager.getInstance().getPlanetHuntA11yStrings();
-    //   const exampleButton = new RectangularPushButton({
-    //     ...FLAT_RECTANGULAR_BUTTON_OPTIONS, // flat appearance, not SceneryStack's default 3-D look
-    //     content: someIcon,
-    //     listener: () => model.doSomething(),
-    //     accessibleName: a11y.controls.exampleControlStringProperty,
-    //   });
-    //   this.addChild(exampleButton);
-
-    // ── Reset All button ──────────────────────────────────────────────────────
-    // Always position at bottom-right (PhET convention).
     const resetAllButton = new ResetAllButton({
       ...FLAT_RESET_ALL_BUTTON_OPTIONS,
       listener: () => {
         model.reset();
         this.reset();
       },
-      right: this.layoutBounds.maxX - SCREEN_VIEW_MARGIN,
-      bottom: this.layoutBounds.maxY - SCREEN_VIEW_MARGIN,
+      right: bounds.maxX - SCREEN_VIEW_MARGIN,
+      bottom: bounds.maxY - SCREEN_VIEW_MARGIN,
     });
-    this.addChild(resetAllButton);
 
-    // ── Accessibility: keyboard / reading traversal order ───────────────────────
-    // Make the parallel DOM (Tab order and screen-reader reading order)
-    // deterministic and independent of child z-order. ScreenView throws if you
-    // set pdomOrder on itself, so add a lightweight wrapper Node that "borrows"
-    // the interactive nodes in the order a user should reach them — Reset All
-    // last. Non-interactive decoration (background, placeholder) is omitted.
+    this.children = [this.chart, measurementPanel, answerPanel, controlPanel, resetAllButton, comboListParent];
+
     this.addChild(
       new Node({
         pdomOrder: [
-          // TODO: add the sim's interactive nodes here, in traversal order
+          targetComboBox,
+          ...this.chart.buttons,
+          useSpacingButton,
+          clearMarksButton,
+          periodControl,
+          shiftControl,
+          foldCheckbox,
+          depthControl,
+          this.chart.depthLine,
+          revealCheckbox,
+          answerList,
+          explanationButton,
           resetAllButton,
         ],
       }),
     );
   }
 
-  /**
-   * Resets view-side state (animations, panel visibility, etc.).
-   * Called by the Reset All button listener.
-   */
   public reset(): void {
-    // TODO: reset any view-side state here
+    this.chart.reset();
   }
-
-  /**
-   * Steps the view forward by dt seconds for animation.
-   * @param _dt - elapsed time in seconds
-   */
-  public override step(_dt: number): void {
-    // TODO: implement animation updates here
-  }
-
-  // ── Accessibility / listeners: dispose ─────────────────────────────────────
-  // ScreenView is `isDisposable: false` and lives for the whole sim, so this
-  // class rarely needs dispose(). Child Nodes (and a live currentDetails
-  // DerivedProperty you own on a short-lived object) do. When you add
-  // DerivedProperty / Multilink / Property.link against model state, keep the
-  // references and tear them down — forks copy what they see. Pattern:
-  //
-  // private readonly disposePlanetHuntScreenView: () => void;
-  //
-  // // in the constructor, after creating the listeners:
-  // const statusMultilink = Multilink.multilink(
-  //   [model.someProperty, model.otherProperty],
-  //   (a, b) => { /* update view from model */ },
-  // );
-  // const detailsProperty = new DerivedProperty(
-  //   [model.stateProperty],
-  //   (state) => `State: ${state}`,
-  // ); // → pass as currentDetailsContent in PlanetHuntScreenSummaryContent
-  // const onExternal = (v: number) => { /* … */ };
-  // model.externalProperty.link(onExternal); // Property you do NOT own
-  //
-  // this.disposePlanetHuntScreenView = () => {
-  //   statusMultilink.dispose();                 // Multilink you created
-  //   detailsProperty.dispose();                 // DerivedProperty you created
-  //   model.externalProperty.unlink(onExternal); // undo external link
-  // };
-  //
-  // public override dispose(): void {
-  //   this.disposePlanetHuntScreenView();
-  //   super.dispose();
-  // }
 }

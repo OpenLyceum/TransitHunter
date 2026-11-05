@@ -125,6 +125,45 @@
     "explanation3": "<b>Duration</b>: how long the planet takes to cross the star. Far-out planets move slowly, so their transits last longer, but they come much less often.",
     "explanation4": "<b>Noise</b>: every measurement scatters a little. Folding many transits on top of each other and averaging shrinks the scatter by √n, so even an Earth-sized dip can stand out, given enough transits."
   },
+  "hunt": {
+    "foldedAxis": "Hours from the predicted transit",
+    "loading": "Loading the light curve…",
+    "depthLine": "depth line",
+    "showAll": "Show all",
+    "markMiddle": "Mark the middle",
+    "chartHint": "Click a dip to mark it. Drag or scroll to move; wheel to zoom.",
+    "foldedHint": "Folded: every point is placed by its time since the last predicted transit. Yellow: averages.",
+    "measurementsTitle": "Your measurements",
+    "marksCountPattern": "Dips marked: {{count}}. Mark at least two dips.",
+    "marksSpacingPattern": "Dips marked: {{count}}; average spacing {{spacing}}.",
+    "useSpacing": "Use as period",
+    "clearMarks": "Clear marks",
+    "radiusPattern": "Depth {{depth}} % → planet radius ≈ {{earth}} = {{jupiter}}",
+    "starPattern": "Star radius (from its spectrum): {{radius}} · data: {{mission}}",
+    "equation": "R<sub>planet</sub> = R<sub>star</sub> √depth",
+    "answerTitle": "The answer (NASA Exoplanet Archive)",
+    "answerRowPattern": "<b>{{name}}</b>: period {{period}}, radius {{radius}}, found {{year}}",
+    "answerSource": "Coloured ticks under the light curve show where each planet's transits are predicted.",
+    "foldOnIt": "Fold",
+    "starTitle": "Choose a star",
+    "targetPattern": "{{star}} ({{difficulty}})",
+    "easy": "easy",
+    "medium": "medium",
+    "hard": "hard",
+    "challenge": "challenge",
+    "period": "Trial period",
+    "shift": "Slide the fold",
+    "fold": "Fold the light curve",
+    "depth": "Depth line",
+    "reveal": "Reveal the answer",
+    "explanationTitle": "Hunting with real data",
+    "explanation1": "These are real measurements of real stars by NASA's Kepler and TESS space telescopes, cleaned of slow drifts and averaged into short bins. Each dot is the star's brightness at one moment.",
+    "explanation2": "<b>Find the period.</b> Mark the dips you can see; their average spacing is a first guess. Then fold the light curve: if the period is right, every dip lands on top of the others.",
+    "explanation3": "<b>Hidden planets.</b> Some dips are smaller than the scatter of the points. Folding many transits together and averaging makes them appear, as with Kepler-10 b, Kepler's first rocky planet (2011).",
+    "explanation4": "<b>Measure the size.</b> Drag the depth line to the bottom of the folded dip. With the star's radius, known from its spectrum, the depth gives the planet's radius. Then reveal what astronomers found.",
+    "keyboardHelpHeading": "Depth line",
+    "keyboardHelpMove": "Move the depth line"
+  },
   "a11y": {
     "dimming": {
       "screenSummary": {
@@ -188,11 +227,29 @@
     },
     "hunt": {
       "screenSummary": {
-        "playArea": "The play area shows the main simulation content.",
-        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-        "interactionHint": "Explore the simulation by interacting with its controls."
+        "playArea": "The play area shows a real light curve of the chosen star from the Kepler or TESS space telescope, which can be folded on a trial period, your measurements, and, once revealed, the planets astronomers found.",
+        "controlArea": "The control area has a star selector, buttons to zoom, scroll and mark dips, sliders for the trial period, the fold's slide and the depth line, checkboxes to fold and to reveal the answer, an explanation button, and a Reset All button.",
+        "interactionHint": "Zoom in until you see a dip, mark it with Mark the middle, mark another, then use their spacing as the period and fold."
       },
-      "currentDetails": "The simulation is in its initial state."
+      "currentDetailsPattern": "{{star}}: {{days}} days of {{mission}} data. {{marks}} Trial period {{period}} days; the light curve is {{folded}}. Depth line {{depth}} percent, which means a planet of {{radius}} Earth radii.",
+      "folded": "folded",
+      "notFolded": "not folded",
+      "loading": "The light curve is loading.",
+      "controls": {
+        "target": "Star",
+        "period": "Trial period",
+        "shift": "Slide the fold",
+        "depth": "Depth line",
+        "depthLine": "Depth line on the chart, movable up and down",
+        "scrollEarlier": "Scroll earlier",
+        "scrollLater": "Scroll later",
+        "zoomIn": "Zoom in on the time axis",
+        "zoomOut": "Zoom out on the time axis",
+        "showAll": "Show the whole light curve",
+        "markMiddle": "Mark a dip at the middle of the view",
+        "foldOnPattern": "Fold on {{name}}",
+        "explanation": "Explanation"
+      }
     },
     "composition": {
       "screenSummary": {

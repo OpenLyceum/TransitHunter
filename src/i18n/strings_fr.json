@@ -125,6 +125,45 @@
     "explanation3": "<b>Durée</b> : le temps que met la planète à traverser l'étoile. Les planètes lointaines vont lentement, donc leurs transits durent plus longtemps, mais ils reviennent bien moins souvent.",
     "explanation4": "<b>Bruit</b> : chaque mesure fluctue un peu. Superposer de nombreux transits et en faire la moyenne réduit la dispersion d'un facteur √n : même la baisse d'une planète comme la Terre peut ressortir, avec assez de transits."
   },
+  "hunt": {
+    "foldedAxis": "Heures depuis le transit prévu",
+    "loading": "Chargement de la courbe de lumière…",
+    "depthLine": "ligne de profondeur",
+    "showAll": "Tout afficher",
+    "markMiddle": "Marquer le milieu",
+    "chartHint": "Clique sur une baisse pour la marquer. Fais glisser pour te déplacer ; molette pour zoomer.",
+    "foldedHint": "Replié : chaque point est placé selon le temps écoulé depuis le dernier transit prévu. En jaune : les moyennes.",
+    "measurementsTitle": "Tes mesures",
+    "marksCountPattern": "Baisses marquées : {{count}}. Marque au moins deux baisses.",
+    "marksSpacingPattern": "Baisses marquées : {{count}} ; écart moyen {{spacing}}.",
+    "useSpacing": "Utiliser comme période",
+    "clearMarks": "Effacer les marques",
+    "radiusPattern": "Profondeur {{depth}} % → rayon de la planète ≈ {{earth}} = {{jupiter}}",
+    "starPattern": "Rayon de l'étoile (d'après son spectre) : {{radius}} · données : {{mission}}",
+    "equation": "R<sub>planète</sub> = R<sub>étoile</sub> √profondeur",
+    "answerTitle": "La réponse (NASA Exoplanet Archive)",
+    "answerRowPattern": "<b>{{name}}</b> : période {{period}}, rayon {{radius}}, découverte en {{year}}",
+    "answerSource": "Les traits colorés sous la courbe montrent où les transits de chaque planète sont prévus.",
+    "foldOnIt": "Replier",
+    "starTitle": "Choisis une étoile",
+    "targetPattern": "{{star}} ({{difficulty}})",
+    "easy": "facile",
+    "medium": "moyen",
+    "hard": "difficile",
+    "challenge": "défi",
+    "period": "Période d'essai",
+    "shift": "Décaler le repli",
+    "fold": "Replier la courbe de lumière",
+    "depth": "Ligne de profondeur",
+    "reveal": "Révéler la réponse",
+    "explanationTitle": "Chasser avec de vraies données",
+    "explanation1": "Ce sont de vraies mesures de vraies étoiles par les télescopes spatiaux Kepler et TESS de la NASA, débarrassées des dérives lentes et moyennées par petits intervalles. Chaque point est la luminosité de l'étoile à un instant.",
+    "explanation2": "<b>Trouve la période.</b> Marque les baisses que tu vois ; leur écart moyen donne une première estimation. Replie ensuite la courbe : si la période est juste, toutes les baisses se superposent.",
+    "explanation3": "<b>Planètes cachées.</b> Certaines baisses sont plus petites que la dispersion des points. Replier de nombreux transits et en faire la moyenne les fait apparaître, comme pour Kepler-10 b, la première planète rocheuse de Kepler (2011).",
+    "explanation4": "<b>Mesure la taille.</b> Fais glisser la ligne de profondeur jusqu'au fond de la baisse repliée. Avec le rayon de l'étoile, connu grâce à son spectre, la profondeur donne le rayon de la planète. Révèle ensuite ce que les astronomes ont trouvé.",
+    "keyboardHelpHeading": "Ligne de profondeur",
+    "keyboardHelpMove": "Déplacer la ligne de profondeur"
+  },
   "a11y": {
     "dimming": {
       "screenSummary": {
@@ -188,11 +227,29 @@
     },
     "hunt": {
       "screenSummary": {
-        "playArea": "La zone de jeu affiche le contenu principal de la simulation.",
-        "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
-        "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
+        "playArea": "La zone de jeu montre une vraie courbe de lumière de l'étoile choisie, prise par le télescope spatial Kepler ou TESS, qui peut être repliée sur une période d'essai, tes mesures et, une fois révélées, les planètes trouvées par les astronomes.",
+        "controlArea": "La zone de contrôle contient un sélecteur d'étoile, des boutons pour zoomer, se déplacer et marquer les baisses, des curseurs pour la période d'essai, le décalage du repli et la ligne de profondeur, des cases pour replier et révéler la réponse, un bouton d'explication et un bouton Tout réinitialiser.",
+        "interactionHint": "Zoome jusqu'à voir une baisse, marque-la avec Marquer le milieu, marques-en une autre, puis utilise leur écart comme période et replie."
       },
-      "currentDetails": "La simulation est dans son état initial."
+      "currentDetailsPattern": "{{star}} : {{days}} jours de données {{mission}}. {{marks}} Période d'essai {{period}} jours ; la courbe est {{folded}}. Ligne de profondeur {{depth}} pour cent, soit une planète de {{radius}} rayons terrestres.",
+      "folded": "repliée",
+      "notFolded": "non repliée",
+      "loading": "La courbe de lumière se charge.",
+      "controls": {
+        "target": "Étoile",
+        "period": "Période d'essai",
+        "shift": "Décaler le repli",
+        "depth": "Ligne de profondeur",
+        "depthLine": "Ligne de profondeur sur le graphique, déplaçable vers le haut et le bas",
+        "scrollEarlier": "Reculer",
+        "scrollLater": "Avancer",
+        "zoomIn": "Zoomer sur l'axe du temps",
+        "zoomOut": "Dézoomer sur l'axe du temps",
+        "showAll": "Afficher toute la courbe",
+        "markMiddle": "Marquer une baisse au milieu de la vue",
+        "foldOnPattern": "Replier sur {{name}}",
+        "explanation": "Explication"
+      }
     },
     "composition": {
       "screenSummary": {
