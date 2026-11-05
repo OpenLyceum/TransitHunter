@@ -21,7 +21,8 @@
     "earthMasses": "M<sub>⊕</sub>",
     "jupiterMasses": "M<sub>J</sub>",
     "gramsPerCubicCentimeter": "g/cm<sup>3</sup>",
-    "metersPerSecond": "m/s"
+    "metersPerSecond": "m/s",
+    "ppm": "ppm"
   },
   "common": {
     "earth": "Earth",
@@ -43,7 +44,14 @@
     "orbitsAxis": "Time (orbits)",
     "planetMagnifiedPattern": "planet drawn ×{{factor}} too big",
     "planetToScale": "planet drawn to scale",
-    "axisZoomPattern": "zoomed in: the axis shows only the top {{percent}} %"
+    "axisZoomPattern": "zoomed in: the axis shows only the top {{percent}} %",
+    "hoursFromMidTransitAxis": "Hours from mid-transit",
+    "inclination": "Tilt (90° = edge-on)",
+    "distance": "Star–planet distance",
+    "periodPattern": "Orbital period: {{value}}",
+    "durationPattern": "Transit lasts: {{value}}",
+    "noTransit": "No transit: the planet misses the star.",
+    "daysAxis": "Time (days)"
   },
   "dimming": {
     "sideViewTitle": "Seen from the side",
@@ -67,6 +75,55 @@
     "explanation4": "Real stars are so far away that telescopes see them as points. We never see the planet itself: we find it because its star dims, again and again, every time the planet goes around.",
     "keyboardHelpHeading": "Planet",
     "keyboardHelpMove": "Move the planet along its orbit"
+  },
+  "liningUp": {
+    "view3DTitle": "The orbit and the direction to Earth",
+    "rotateHint": "Drag to turn the view.",
+    "skyViewTitle": "Seen from Earth (zoomed in)",
+    "passesAbovePattern": "The planet passes {{value}} star radii above the star's centre.",
+    "chartTitle": "The dip in the star's light",
+    "ghostLegend": "dashed: the same planet seen exactly edge-on",
+    "randomSkyTitle": "100 stars like this one, tilted at random",
+    "randomSkyCountPattern": "{{count}} of {{total}} show transits (expected: {{expected}} %).",
+    "newSky": "New random sky",
+    "impactPattern": "Passes {{value}} star radii from the centre",
+    "tiltLimitPattern": "Transits only if the orbit is within {{value}}° of edge-on.",
+    "probabilityPattern": "Chance that a random orbit lines up: {{value}} %",
+    "equation": "chance ≈ R<sub>star</sub> ÷ distance",
+    "explanationTitle": "Why don't we see every planet transit?",
+    "explanation1": "A planet blocks its star's light only if it passes between the star and us. That needs its orbit to be seen almost exactly edge-on.",
+    "explanation2": "Tilt the orbit a little and the planet crosses the star off-centre: the transit gets shorter. Tilt it more and the planet only grazes the edge, then misses the star altogether.",
+    "explanation3": "Orbits point every which way, so only a fraction of planets transit for us: about the star's radius divided by the planet's distance. Planets close to their stars are far more likely to transit. For Earth seen from far away it is only 1 chance in 200.",
+    "explanation4": "That is why missions like Kepler and TESS watch hundreds of thousands of stars at once: to catch the few whose planets line up.",
+    "keyboardHelpHeading": "3-D view",
+    "keyboardHelpRotate": "Turn the view"
+  },
+  "lightCurve": {
+    "wideChartTitle": "Single measurements over several orbits",
+    "zoomChartTitle": "One transit, zoomed in (all observed transits folded together)",
+    "periodMarkPattern": "period {{value}}",
+    "depthMarkPattern": "depth {{value}} %",
+    "durationMarkPattern": "duration {{value}}",
+    "radiusReadoutPattern": "Depth {{depth}} % → planet radius ≈ {{radius}}",
+    "distanceReadoutPattern": "Period {{period}} → distance from the star {{distance}}",
+    "limbDarkeningNote": "The star's darker edge makes the middle of the dip deeper, so this radius comes out a little too big. Astronomers fit a model of the darkening.",
+    "snrReadoutPattern": "Signal ÷ noise: {{snr}}. {{verdict}}",
+    "noNoise": "Perfect measurements.",
+    "lost": "The dip is lost in the noise.",
+    "hint": "A hint of a dip: observe more transits.",
+    "detected": "A clear detection!",
+    "pointsReadoutPattern": "{{points}} measurements inside the dip (one every {{cadence}} min)",
+    "equation": "R<sub>planet</sub> = R<sub>star</sub> √depth    distance<sup>3</sup> = G M<sub>star</sub> P<sup>2</sup> ÷ 4π<sup>2</sup>    S/N = depth ÷ (σ ÷ √n)",
+    "limbDarkening": "Darker edge (limb darkening)",
+    "noise": "Measurement noise",
+    "stack": "Transits observed",
+    "newObservations": "New observations",
+    "showMeasurements": "Show measurements",
+    "explanationTitle": "Reading a light curve",
+    "explanation1": "<b>Depth</b>: the fraction of light blocked is the planet's area divided by the star's, so the planet's radius is the star's radius times √depth. We know the star's size from its spectrum.",
+    "explanation2": "<b>Period</b>: the time between dips is one orbit. With the star's mass, Kepler's third law turns it into the planet's distance from its star.",
+    "explanation3": "<b>Duration</b>: how long the planet takes to cross the star. Far-out planets move slowly, so their transits last longer, but they come much less often.",
+    "explanation4": "<b>Noise</b>: every measurement scatters a little. Folding many transits on top of each other and averaging shrinks the scatter by √n, so even an Earth-sized dip can stand out, given enough transits."
   },
   "a11y": {
     "dimming": {
@@ -93,19 +150,41 @@
     },
     "liningUp": {
       "screenSummary": {
-        "playArea": "The play area shows the main simulation content.",
-        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-        "interactionHint": "Explore the simulation by interacting with its controls."
+        "playArea": "The play area shows a planet's orbit in 3-D with an arrow toward Earth, the star as seen from Earth with the planet's path, a chart of the dip in the star's light compared with an edge-on orbit, and 100 randomly tilted systems with the ones that transit highlighted.",
+        "controlArea": "The control area has radio buttons for the planet, sliders for the tilt and the star–planet distance, a button for a new random sky, time controls, an explanation button, and a Reset All button.",
+        "interactionHint": "Lower the tilt slowly from 90 degrees and watch the transit shorten, then vanish. Then move the planet farther from its star."
       },
-      "currentDetails": "The simulation is in its initial state."
+      "currentDetailsPattern": "{{planet}} at {{distance}} AU from a Sun-like star, period {{period}} days, tilt {{inclination}} degrees. {{transit}} It would transit only within {{limit}} degrees of edge-on; {{count}} of 100 random systems transit.",
+      "transitPattern": "It transits, lasting {{hours}} hours.",
+      "noTransit": "It does not transit.",
+      "controls": {
+        "planet": "Planet",
+        "inclination": "Tilt",
+        "distance": "Star–planet distance",
+        "rotateView": "3-D view of the orbit, rotatable",
+        "newSky": "New random sky",
+        "explanation": "Explanation"
+      },
+      "responses": {
+        "transitStarts": "Now the planet transits.",
+        "transitStops": "Now the planet misses the star."
+      }
     },
     "lightCurve": {
       "screenSummary": {
-        "playArea": "The play area shows the main simulation content.",
-        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-        "interactionHint": "Explore the simulation by interacting with its controls."
+        "playArea": "The play area has two light-curve charts: single measurements over several orbits with the period marked, and one transit zoomed in, built from all observed transits folded together, with the depth and duration marked. Below them, readouts give the planet's radius and distance and whether the dip stands out of the noise.",
+        "controlArea": "The control area has sliders for the planet radius, the star–planet distance, the measurement noise and the number of transits observed, radio buttons for the star, checkboxes for limb darkening and for the measurement marks, a New observations button, an explanation button, and a Reset All button.",
+        "interactionHint": "Shrink the planet to Earth's size, add noise until the dip disappears, then raise the number of transits observed until it comes back."
       },
-      "currentDetails": "The simulation is in its initial state."
+      "currentDetailsPattern": "A planet of {{radius}} Earth radii at {{distance}} AU. Period {{period}} days; each transit lasts {{duration}} hours and dims the star by {{depth}} percent. Noise {{noise}} ppm per measurement, {{stack}} transits folded together: signal to noise {{snr}}. {{verdict}}",
+      "controls": {
+        "planetRadius": "Planet radius",
+        "distance": "Star–planet distance",
+        "star": "Star",
+        "noise": "Measurement noise",
+        "stack": "Transits observed",
+        "explanation": "Explanation"
+      }
     },
     "hunt": {
       "screenSummary": {

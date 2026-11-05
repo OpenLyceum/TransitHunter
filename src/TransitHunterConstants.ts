@@ -71,17 +71,26 @@ export const FAST_SPEED_FACTOR = 3;
 /** Planet radius, Earth radii (Mars-size up to a large hot Jupiter). */
 export const PLANET_RADIUS_RANGE = new Range(0.5, 25);
 
-/** Star radius, solar radii (red dwarf up to a subgiant). */
-export const STAR_RADIUS_RANGE = new Range(0.1, 2.5);
-
-/** Star mass, solar masses. */
-export const STAR_MASS_RANGE = new Range(0.1, 2);
-
 /** Star–planet distance, AU. */
 export const DISTANCE_RANGE = new Range(0.01, 2);
 
 /** Inclination, degrees (90 = edge-on, where the planet crosses the middle of the star). */
 export const INCLINATION_RANGE = new Range(0, 90);
+
+// ── Light Curve screen ────────────────────────────────────────────────────────
+
+/** Time between measurements, minutes (Kepler's short cadence is 1 min, its long cadence 30 min). */
+export const CADENCE_MINUTES = 10;
+
+/** Scatter of one measurement, ppm (Kepler reached ~30 ppm in 6 h on bright stars; 1000 ppm is a small telescope). */
+export const NOISE_RANGE_PPM = new Range(0, 1000);
+
+/** Transits folded together. */
+export const STACK_RANGE = new Range(1, 100);
+
+/** Signal-to-noise ratios above which a dip counts as a hint and as a clear detection. */
+export const HINT_SNR = 3;
+export const DETECTION_SNR = 7;
 
 // ── Layout / chrome (screen pixels) ───────────────────────────────────────────
 

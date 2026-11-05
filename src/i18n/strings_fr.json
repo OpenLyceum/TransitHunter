@@ -21,7 +21,8 @@
     "earthMasses": "M<sub>⊕</sub>",
     "jupiterMasses": "M<sub>J</sub>",
     "gramsPerCubicCentimeter": "g/cm<sup>3</sup>",
-    "metersPerSecond": "m/s"
+    "metersPerSecond": "m/s",
+    "ppm": "ppm"
   },
   "common": {
     "earth": "Terre",
@@ -43,7 +44,14 @@
     "orbitsAxis": "Temps (orbites)",
     "planetMagnifiedPattern": "planète dessinée ×{{factor}} trop grosse",
     "planetToScale": "planète à l'échelle",
-    "axisZoomPattern": "agrandi : l'axe ne montre que les {{percent}} % du haut"
+    "axisZoomPattern": "agrandi : l'axe ne montre que les {{percent}} % du haut",
+    "hoursFromMidTransitAxis": "Heures depuis le milieu du transit",
+    "inclination": "Inclinaison (90° = par la tranche)",
+    "distance": "Distance étoile–planète",
+    "periodPattern": "Période orbitale : {{value}}",
+    "durationPattern": "Durée du transit : {{value}}",
+    "noTransit": "Pas de transit : la planète passe à côté de l'étoile.",
+    "daysAxis": "Temps (jours)"
   },
   "dimming": {
     "sideViewTitle": "Vue de côté",
@@ -67,6 +75,55 @@
     "explanation4": "Les vraies étoiles sont si lointaines que les télescopes les voient comme des points. On ne voit jamais la planète elle-même : on la trouve parce que son étoile faiblit, encore et encore, à chaque tour de la planète.",
     "keyboardHelpHeading": "Planète",
     "keyboardHelpMove": "Déplacer la planète sur son orbite"
+  },
+  "liningUp": {
+    "view3DTitle": "L'orbite et la direction de la Terre",
+    "rotateHint": "Fais glisser pour tourner la vue.",
+    "skyViewTitle": "Vue depuis la Terre (agrandie)",
+    "passesAbovePattern": "La planète passe à {{value}} rayons stellaires au-dessus du centre de l'étoile.",
+    "chartTitle": "La baisse de lumière de l'étoile",
+    "ghostLegend": "tirets : la même planète vue exactement par la tranche",
+    "randomSkyTitle": "100 étoiles comme celle-ci, inclinées au hasard",
+    "randomSkyCountPattern": "{{count}} sur {{total}} montrent des transits (attendu : {{expected}} %).",
+    "newSky": "Nouveau ciel au hasard",
+    "impactPattern": "Passe à {{value}} rayons stellaires du centre",
+    "tiltLimitPattern": "Transits seulement si l'orbite est à moins de {{value}}° de la tranche.",
+    "probabilityPattern": "Chance qu'une orbite au hasard soit alignée : {{value}} %",
+    "equation": "chance ≈ R<sub>étoile</sub> ÷ distance",
+    "explanationTitle": "Pourquoi ne voit-on pas toutes les planètes transiter ?",
+    "explanation1": "Une planète ne bloque la lumière de son étoile que si elle passe entre l'étoile et nous. Il faut pour cela que son orbite soit vue presque exactement par la tranche.",
+    "explanation2": "Incline un peu l'orbite et la planète passe devant l'étoile hors du centre : le transit raccourcit. Incline-la davantage : la planète effleure le bord, puis manque complètement l'étoile.",
+    "explanation3": "Les orbites sont orientées dans toutes les directions : seule une fraction des planètes transitent pour nous, environ le rayon de l'étoile divisé par la distance de la planète. Les planètes proches de leur étoile transitent bien plus souvent. Pour la Terre vue de loin, c'est seulement 1 chance sur 200.",
+    "explanation4": "C'est pourquoi des missions comme Kepler et TESS observent des centaines de milliers d'étoiles à la fois : pour attraper les rares dont les planètes sont alignées.",
+    "keyboardHelpHeading": "Vue 3D",
+    "keyboardHelpRotate": "Tourner la vue"
+  },
+  "lightCurve": {
+    "wideChartTitle": "Mesures une à une sur plusieurs orbites",
+    "zoomChartTitle": "Un transit agrandi (tous les transits observés superposés)",
+    "periodMarkPattern": "période {{value}}",
+    "depthMarkPattern": "profondeur {{value}} %",
+    "durationMarkPattern": "durée {{value}}",
+    "radiusReadoutPattern": "Profondeur {{depth}} % → rayon de la planète ≈ {{radius}}",
+    "distanceReadoutPattern": "Période {{period}} → distance à l'étoile {{distance}}",
+    "limbDarkeningNote": "Le bord plus sombre de l'étoile creuse le milieu de la baisse : ce rayon sort donc un peu trop grand. Les astronomes ajustent un modèle de l'assombrissement.",
+    "snrReadoutPattern": "Signal ÷ bruit : {{snr}}. {{verdict}}",
+    "noNoise": "Mesures parfaites.",
+    "lost": "La baisse est noyée dans le bruit.",
+    "hint": "Un soupçon de baisse : observe plus de transits.",
+    "detected": "Une détection nette !",
+    "pointsReadoutPattern": "{{points}} mesures dans la baisse (une toutes les {{cadence}} min)",
+    "equation": "R<sub>planète</sub> = R<sub>étoile</sub> √profondeur    distance<sup>3</sup> = G M<sub>étoile</sub> P<sup>2</sup> ÷ 4π<sup>2</sup>    S/B = profondeur ÷ (σ ÷ √n)",
+    "limbDarkening": "Bord plus sombre (assombrissement centre-bord)",
+    "noise": "Bruit de mesure",
+    "stack": "Transits observés",
+    "newObservations": "Nouvelles observations",
+    "showMeasurements": "Afficher les mesures",
+    "explanationTitle": "Lire une courbe de lumière",
+    "explanation1": "<b>Profondeur</b> : la fraction de lumière bloquée est l'aire de la planète divisée par celle de l'étoile ; le rayon de la planète vaut donc le rayon de l'étoile fois √profondeur. On connaît la taille de l'étoile grâce à son spectre.",
+    "explanation2": "<b>Période</b> : le temps entre deux baisses est une orbite. Avec la masse de l'étoile, la troisième loi de Kepler la transforme en distance de la planète à son étoile.",
+    "explanation3": "<b>Durée</b> : le temps que met la planète à traverser l'étoile. Les planètes lointaines vont lentement, donc leurs transits durent plus longtemps, mais ils reviennent bien moins souvent.",
+    "explanation4": "<b>Bruit</b> : chaque mesure fluctue un peu. Superposer de nombreux transits et en faire la moyenne réduit la dispersion d'un facteur √n : même la baisse d'une planète comme la Terre peut ressortir, avec assez de transits."
   },
   "a11y": {
     "dimming": {
@@ -93,19 +150,41 @@
     },
     "liningUp": {
       "screenSummary": {
-        "playArea": "La zone de jeu affiche le contenu principal de la simulation.",
-        "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
-        "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
+        "playArea": "La zone de jeu montre l'orbite d'une planète en 3D avec une flèche vers la Terre, l'étoile vue depuis la Terre avec la trajectoire de la planète, un graphique de la baisse de lumière comparée à une orbite vue par la tranche, et 100 systèmes inclinés au hasard où ceux qui transitent sont mis en évidence.",
+        "controlArea": "La zone de contrôle contient des boutons radio pour la planète, des curseurs pour l'inclinaison et la distance étoile–planète, un bouton pour un nouveau ciel au hasard, des commandes de temps, un bouton d'explication et un bouton Tout réinitialiser.",
+        "interactionHint": "Diminue lentement l'inclinaison depuis 90 degrés et observe le transit raccourcir, puis disparaître. Éloigne ensuite la planète de son étoile."
       },
-      "currentDetails": "La simulation est dans son état initial."
+      "currentDetailsPattern": "{{planet}} à {{distance}} UA d'une étoile comme le Soleil, période {{period}} jours, inclinaison {{inclination}} degrés. {{transit}} Elle ne transiterait qu'à moins de {{limit}} degrés de la tranche ; {{count}} systèmes sur 100 au hasard transitent.",
+      "transitPattern": "Elle transite, pendant {{hours}} heures.",
+      "noTransit": "Elle ne transite pas.",
+      "controls": {
+        "planet": "Planète",
+        "inclination": "Inclinaison",
+        "distance": "Distance étoile–planète",
+        "rotateView": "Vue 3D de l'orbite, orientable",
+        "newSky": "Nouveau ciel au hasard",
+        "explanation": "Explication"
+      },
+      "responses": {
+        "transitStarts": "La planète transite maintenant.",
+        "transitStops": "La planète passe maintenant à côté de l'étoile."
+      }
     },
     "lightCurve": {
       "screenSummary": {
-        "playArea": "La zone de jeu affiche le contenu principal de la simulation.",
-        "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
-        "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
+        "playArea": "La zone de jeu contient deux courbes de lumière : des mesures une à une sur plusieurs orbites avec la période marquée, et un transit agrandi, construit en superposant tous les transits observés, avec la profondeur et la durée marquées. En dessous, des valeurs donnent le rayon et la distance de la planète et indiquent si la baisse ressort du bruit.",
+        "controlArea": "La zone de contrôle contient des curseurs pour le rayon de la planète, la distance étoile–planète, le bruit de mesure et le nombre de transits observés, des boutons radio pour l'étoile, des cases pour l'assombrissement centre-bord et les marques de mesure, un bouton Nouvelles observations, un bouton d'explication et un bouton Tout réinitialiser.",
+        "interactionHint": "Réduis la planète à la taille de la Terre, ajoute du bruit jusqu'à ce que la baisse disparaisse, puis augmente le nombre de transits observés jusqu'à ce qu'elle revienne."
       },
-      "currentDetails": "La simulation est dans son état initial."
+      "currentDetailsPattern": "Une planète de {{radius}} rayons terrestres à {{distance}} UA. Période {{period}} jours ; chaque transit dure {{duration}} heures et réduit la luminosité de {{depth}} pour cent. Bruit {{noise}} ppm par mesure, {{stack}} transits superposés : signal sur bruit {{snr}}. {{verdict}}",
+      "controls": {
+        "planetRadius": "Rayon de la planète",
+        "distance": "Distance étoile–planète",
+        "star": "Étoile",
+        "noise": "Bruit de mesure",
+        "stack": "Transits observés",
+        "explanation": "Explication"
+      }
     },
     "hunt": {
       "screenSummary": {

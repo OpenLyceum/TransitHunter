@@ -1,30 +1,33 @@
 /**
  * LiningUpKeyboardHelpContent.ts
  *
- * Content for the keyboard-help dialog (the "?" button in the navigation bar).
- * The template's only interactions are buttons and Reset All, so a single
- * basic-actions section covers the available keyboard controls. When the sim
- * grows, fill the right column (pattern stubbed below).
+ * Keyboard-help dialog for the Lining Up screen: turning the 3-D view (arrow
+ * keys) and the buttons on the left; the sliders and time controls on the right.
  */
 
 import {
   BasicActionsKeyboardHelpSection,
-  // SliderControlsKeyboardHelpSection,
-  // TimeControlsKeyboardHelpSection,
+  KeyboardHelpIconFactory,
+  KeyboardHelpSection,
+  KeyboardHelpSectionRow,
+  SliderControlsKeyboardHelpSection,
+  TimeControlsKeyboardHelpSection,
   TwoColumnKeyboardHelpContent,
 } from "scenerystack/scenery-phet";
+import { StringManager } from "../../i18n/StringManager.js";
 
 export class LiningUpKeyboardHelpContent extends TwoColumnKeyboardHelpContent {
   public constructor() {
-    const leftColumn = [new BasicActionsKeyboardHelpSection()];
-
-    // Right column — uncomment when the sim adds sliders and/or TimeControlNode:
-    // const rightColumn = [
-    //   new SliderControlsKeyboardHelpSection(),
-    //   // new TimeControlsKeyboardHelpSection(),
-    // ];
-    const rightColumn: never[] = [];
-
-    super(leftColumn, rightColumn);
+    const strings = StringManager.getInstance().getLiningUpStrings();
+    const rotateSection = new KeyboardHelpSection(strings.keyboardHelpHeadingStringProperty, [
+      KeyboardHelpSectionRow.labelWithIcon(
+        strings.keyboardHelpRotateStringProperty,
+        KeyboardHelpIconFactory.arrowKeysRowIcon(),
+      ),
+    ]);
+    super(
+      [rotateSection, new BasicActionsKeyboardHelpSection()],
+      [new SliderControlsKeyboardHelpSection(), new TimeControlsKeyboardHelpSection()],
+    );
   }
 }

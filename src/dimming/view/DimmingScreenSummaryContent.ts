@@ -8,10 +8,10 @@
 
 import { DerivedProperty, PatternStringProperty } from "scenerystack/axon";
 import { ScreenSummaryContent } from "scenerystack/sim";
-import { PlanetPreset } from "../../common/model/PlanetPreset.js";
 import { skyPosition } from "../../common/model/transitPhysics.js";
 import { formatSignificant, formatTickValue, toPlainText } from "../../common/view/chartUtils.js";
 import { brightnessDecimals, formatPercent } from "../../common/view/formatters.js";
+import { createPlanetNameProperty } from "../../common/view/planetName.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import type { DimmingModel } from "../model/DimmingModel.js";
 
@@ -19,26 +19,9 @@ export class DimmingScreenSummaryContent extends ScreenSummaryContent {
   public constructor(model: DimmingModel) {
     const stringManager = StringManager.getInstance();
     const a11y = stringManager.getDimmingA11yStrings();
-    const common = stringManager.getCommonStrings();
     const strings = stringManager.getDimmingStrings();
 
-    const planetProperty = new DerivedProperty(
-      [
-        model.planetPresetProperty,
-        common.earthStringProperty,
-        common.neptuneStringProperty,
-        common.jupiterStringProperty,
-        strings.thisPlanetStringProperty,
-      ],
-      (preset, earth, neptune, jupiter, thisPlanet) =>
-        preset === PlanetPreset.EARTH
-          ? earth
-          : preset === PlanetPreset.NEPTUNE
-            ? neptune
-            : preset === PlanetPreset.JUPITER
-              ? jupiter
-              : thisPlanet,
-    );
+    const planetProperty = createPlanetNameProperty(model.planetPresetProperty, strings.thisPlanetStringProperty);
     const whereProperty = new DerivedProperty(
       [
         model.phaseProperty,

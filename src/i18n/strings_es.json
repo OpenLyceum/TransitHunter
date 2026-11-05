@@ -21,7 +21,8 @@
     "earthMasses": "M<sub>⊕</sub>",
     "jupiterMasses": "M<sub>J</sub>",
     "gramsPerCubicCentimeter": "g/cm<sup>3</sup>",
-    "metersPerSecond": "m/s"
+    "metersPerSecond": "m/s",
+    "ppm": "ppm"
   },
   "common": {
     "earth": "Tierra",
@@ -43,7 +44,14 @@
     "orbitsAxis": "Tiempo (órbitas)",
     "planetMagnifiedPattern": "planeta dibujado ×{{factor}} demasiado grande",
     "planetToScale": "planeta a escala",
-    "axisZoomPattern": "ampliado: el eje solo muestra el {{percent}} % superior"
+    "axisZoomPattern": "ampliado: el eje solo muestra el {{percent}} % superior",
+    "hoursFromMidTransitAxis": "Horas desde la mitad del tránsito",
+    "inclination": "Inclinación (90° = de canto)",
+    "distance": "Distancia estrella–planeta",
+    "periodPattern": "Período orbital: {{value}}",
+    "durationPattern": "El tránsito dura: {{value}}",
+    "noTransit": "Sin tránsito: el planeta no pasa por delante de la estrella.",
+    "daysAxis": "Tiempo (días)"
   },
   "dimming": {
     "sideViewTitle": "Visto de lado",
@@ -67,6 +75,55 @@
     "explanation4": "Las estrellas reales están tan lejos que los telescopios las ven como puntos. Nunca vemos el planeta en sí: lo encontramos porque su estrella se atenúa, una y otra vez, cada vez que el planeta da una vuelta.",
     "keyboardHelpHeading": "Planeta",
     "keyboardHelpMove": "Mover el planeta a lo largo de su órbita"
+  },
+  "liningUp": {
+    "view3DTitle": "La órbita y la dirección a la Tierra",
+    "rotateHint": "Arrastra para girar la vista.",
+    "skyViewTitle": "Visto desde la Tierra (ampliado)",
+    "passesAbovePattern": "El planeta pasa a {{value}} radios estelares por encima del centro de la estrella.",
+    "chartTitle": "La caída de la luz de la estrella",
+    "ghostLegend": "discontinua: el mismo planeta visto exactamente de canto",
+    "randomSkyTitle": "100 estrellas como esta, inclinadas al azar",
+    "randomSkyCountPattern": "{{count}} de {{total}} muestran tránsitos (esperado: {{expected}} %).",
+    "newSky": "Nuevo cielo al azar",
+    "impactPattern": "Pasa a {{value}} radios estelares del centro",
+    "tiltLimitPattern": "Hay tránsitos solo si la órbita está a menos de {{value}}° de canto.",
+    "probabilityPattern": "Probabilidad de que una órbita al azar esté alineada: {{value}} %",
+    "equation": "probabilidad ≈ R<sub>estrella</sub> ÷ distancia",
+    "explanationTitle": "¿Por qué no vemos transitar todos los planetas?",
+    "explanation1": "Un planeta solo bloquea la luz de su estrella si pasa entre la estrella y nosotros. Para eso su órbita debe verse casi exactamente de canto.",
+    "explanation2": "Inclina un poco la órbita y el planeta cruza la estrella fuera del centro: el tránsito se acorta. Inclínala más y el planeta solo roza el borde, y luego no pasa por delante de la estrella.",
+    "explanation3": "Las órbitas apuntan en todas direcciones, así que solo una fracción de los planetas transita para nosotros: aproximadamente el radio de la estrella dividido por la distancia del planeta. Los planetas cercanos a su estrella transitan con mucha más frecuencia. Para la Tierra vista desde lejos es solo 1 posibilidad entre 200.",
+    "explanation4": "Por eso misiones como Kepler y TESS observan cientos de miles de estrellas a la vez: para captar las pocas cuyos planetas están alineados.",
+    "keyboardHelpHeading": "Vista 3D",
+    "keyboardHelpRotate": "Girar la vista"
+  },
+  "lightCurve": {
+    "wideChartTitle": "Mediciones individuales durante varias órbitas",
+    "zoomChartTitle": "Un tránsito ampliado (todos los tránsitos observados superpuestos)",
+    "periodMarkPattern": "período {{value}}",
+    "depthMarkPattern": "profundidad {{value}} %",
+    "durationMarkPattern": "duración {{value}}",
+    "radiusReadoutPattern": "Profundidad {{depth}} % → radio del planeta ≈ {{radius}}",
+    "distanceReadoutPattern": "Período {{period}} → distancia a la estrella {{distance}}",
+    "limbDarkeningNote": "El borde más oscuro de la estrella hace más profundo el centro de la caída, así que este radio sale un poco grande. Los astrónomos ajustan un modelo del oscurecimiento.",
+    "snrReadoutPattern": "Señal ÷ ruido: {{snr}}. {{verdict}}",
+    "noNoise": "Mediciones perfectas.",
+    "lost": "La caída se pierde en el ruido.",
+    "hint": "Un indicio de caída: observa más tránsitos.",
+    "detected": "¡Una detección clara!",
+    "pointsReadoutPattern": "{{points}} mediciones dentro de la caída (una cada {{cadence}} min)",
+    "equation": "R<sub>planeta</sub> = R<sub>estrella</sub> √profundidad    distancia<sup>3</sup> = G M<sub>estrella</sub> P<sup>2</sup> ÷ 4π<sup>2</sup>    S/R = profundidad ÷ (σ ÷ √n)",
+    "limbDarkening": "Borde más oscuro (oscurecimiento del limbo)",
+    "noise": "Ruido de medición",
+    "stack": "Tránsitos observados",
+    "newObservations": "Nuevas observaciones",
+    "showMeasurements": "Mostrar las mediciones",
+    "explanationTitle": "Leer una curva de luz",
+    "explanation1": "<b>Profundidad</b>: la fracción de luz bloqueada es el área del planeta dividida por la de la estrella, así que el radio del planeta es el radio de la estrella por √profundidad. Conocemos el tamaño de la estrella por su espectro.",
+    "explanation2": "<b>Período</b>: el tiempo entre caídas es una órbita. Con la masa de la estrella, la tercera ley de Kepler lo convierte en la distancia del planeta a su estrella.",
+    "explanation3": "<b>Duración</b>: lo que tarda el planeta en cruzar la estrella. Los planetas lejanos se mueven despacio, así que sus tránsitos duran más, pero ocurren con mucha menos frecuencia.",
+    "explanation4": "<b>Ruido</b>: cada medición fluctúa un poco. Superponer muchos tránsitos y promediarlos reduce la dispersión en un factor √n, así que incluso la caída de un planeta como la Tierra puede destacar, con suficientes tránsitos."
   },
   "a11y": {
     "dimming": {
@@ -93,19 +150,41 @@
     },
     "liningUp": {
       "screenSummary": {
-        "playArea": "El área de juego muestra el contenido principal de la simulación.",
-        "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
-        "interactionHint": "Explora la simulación interactuando con sus controles."
+        "playArea": "El área de juego muestra la órbita de un planeta en 3D con una flecha hacia la Tierra, la estrella vista desde la Tierra con la trayectoria del planeta, un gráfico de la caída de luz comparada con una órbita de canto, y 100 sistemas inclinados al azar con los que transitan resaltados.",
+        "controlArea": "El área de control tiene botones de opción para el planeta, deslizadores para la inclinación y la distancia estrella–planeta, un botón para un nuevo cielo al azar, controles de tiempo, un botón de explicación y un botón Restablecer todo.",
+        "interactionHint": "Baja lentamente la inclinación desde 90 grados y observa cómo el tránsito se acorta y luego desaparece. Después aleja el planeta de su estrella."
       },
-      "currentDetails": "La simulación está en su estado inicial."
+      "currentDetailsPattern": "{{planet}} a {{distance}} UA de una estrella como el Sol, período {{period}} días, inclinación {{inclination}} grados. {{transit}} Solo transitaría a menos de {{limit}} grados de canto; {{count}} de 100 sistemas al azar transitan.",
+      "transitPattern": "Transita, durante {{hours}} horas.",
+      "noTransit": "No transita.",
+      "controls": {
+        "planet": "Planeta",
+        "inclination": "Inclinación",
+        "distance": "Distancia estrella–planeta",
+        "rotateView": "Vista 3D de la órbita, giratoria",
+        "newSky": "Nuevo cielo al azar",
+        "explanation": "Explicación"
+      },
+      "responses": {
+        "transitStarts": "Ahora el planeta transita.",
+        "transitStops": "Ahora el planeta no pasa por delante de la estrella."
+      }
     },
     "lightCurve": {
       "screenSummary": {
-        "playArea": "El área de juego muestra el contenido principal de la simulación.",
-        "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
-        "interactionHint": "Explora la simulación interactuando con sus controles."
+        "playArea": "El área de juego tiene dos curvas de luz: mediciones individuales durante varias órbitas con el período marcado, y un tránsito ampliado, construido superponiendo todos los tránsitos observados, con la profundidad y la duración marcadas. Debajo, unas lecturas dan el radio y la distancia del planeta e indican si la caída destaca sobre el ruido.",
+        "controlArea": "El área de control tiene deslizadores para el radio del planeta, la distancia estrella–planeta, el ruido de medición y el número de tránsitos observados, botones de opción para la estrella, casillas para el oscurecimiento del limbo y las marcas de medición, un botón Nuevas observaciones, un botón de explicación y un botón Restablecer todo.",
+        "interactionHint": "Reduce el planeta al tamaño de la Tierra, añade ruido hasta que la caída desaparezca y luego aumenta el número de tránsitos observados hasta que vuelva."
       },
-      "currentDetails": "La simulación está en su estado inicial."
+      "currentDetailsPattern": "Un planeta de {{radius}} radios terrestres a {{distance}} UA. Período {{period}} días; cada tránsito dura {{duration}} horas y atenúa la estrella un {{depth}} por ciento. Ruido {{noise}} ppm por medición, {{stack}} tránsitos superpuestos: señal a ruido {{snr}}. {{verdict}}",
+      "controls": {
+        "planetRadius": "Radio del planeta",
+        "distance": "Distancia estrella–planeta",
+        "star": "Estrella",
+        "noise": "Ruido de medición",
+        "stack": "Tránsitos observados",
+        "explanation": "Explicación"
+      }
     },
     "hunt": {
       "screenSummary": {

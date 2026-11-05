@@ -9,6 +9,21 @@
 import { Circle, type CircleOptions, type ProfileColorProperty } from "scenerystack/scenery";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import { PlanetPreset } from "../model/PlanetPreset.js";
+import { drawingMagnification } from "./formatters.js";
+
+/** Smallest drawn planet radius, px. */
+const MIN_PLANET_RADIUS = 4;
+
+/**
+ * Drawn planet radius (px) for a star drawn `starRadius` px: true size, unless that
+ * is under MIN_PLANET_RADIUS, in which case it is magnified by a 1-2-5 factor
+ * (returned so the view can label it).
+ */
+export function drawnPlanet(radiusRatio: number, starRadius: number): { radius: number; factor: number } {
+  const truePixels = radiusRatio * starRadius;
+  const factor = drawingMagnification(truePixels, MIN_PLANET_RADIUS);
+  return { radius: truePixels * factor, factor: factor };
+}
 
 /** The colour of a planet preset. */
 export function planetColor(preset: PlanetPreset): ProfileColorProperty {

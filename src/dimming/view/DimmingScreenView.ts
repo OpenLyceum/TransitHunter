@@ -32,6 +32,7 @@ import {
   createNumberControl,
 } from "../../common/view/controls.js";
 import { brightnessDecimals, formatPartsIn, formatPercent } from "../../common/view/formatters.js";
+import { createPlanetNameProperty } from "../../common/view/planetName.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import { CONTROL_PANEL_WIDTH, FONTS, PLANET_RADIUS_RANGE, SCREEN_VIEW_MARGIN } from "../../TransitHunterConstants.js";
@@ -86,22 +87,9 @@ export class DimmingScreenView extends ScreenView {
     chart.top = bounds.minY + SCREEN_VIEW_MARGIN + 22;
 
     // ── Readouts ──────────────────────────────────────────────────────────────
-    const planetNameProperty: TReadOnlyProperty<string> = new DerivedProperty(
-      [
-        model.planetPresetProperty,
-        common.earthStringProperty,
-        common.neptuneStringProperty,
-        common.jupiterStringProperty,
-        strings.thisPlanetStringProperty,
-      ],
-      (preset, earth, neptune, jupiter, thisPlanet) =>
-        preset === PlanetPreset.EARTH
-          ? earth
-          : preset === PlanetPreset.NEPTUNE
-            ? neptune
-            : preset === PlanetPreset.JUPITER
-              ? jupiter
-              : thisPlanet,
+    const planetNameProperty: TReadOnlyProperty<string> = createPlanetNameProperty(
+      model.planetPresetProperty,
+      strings.thisPlanetStringProperty,
     );
     const brightnessText = new RichText(
       new PatternStringProperty(strings.brightnessNowPatternStringProperty, {

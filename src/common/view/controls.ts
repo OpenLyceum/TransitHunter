@@ -10,6 +10,7 @@
  *    explanatory paragraphs.
  *  - {@link createEquationNode}: rich text shown only when the "Show equations"
  *    preference is on.
+ *  - {@link createPushButton}: a flat white push button with a text label.
  */
 
 import { NumberProperty, type PhetioProperty, type Property, type TReadOnlyProperty } from "scenerystack/axon";
@@ -19,11 +20,12 @@ import { StringUtils } from "scenerystack/phetcommon";
 import { type Node, RichText, Text, VBox } from "scenerystack/scenery";
 import { InfoButton, NumberControl, type NumberControlOptions, PhetFont } from "scenerystack/scenery-phet";
 import { Dialog } from "scenerystack/sim";
-import { Checkbox, type CheckboxOptions } from "scenerystack/sun";
+import { Checkbox, type CheckboxOptions, TextPushButton } from "scenerystack/sun";
 import { StringManager } from "../../i18n/StringManager.js";
 import { transitHunterPreferences } from "../../preferences/TransitHunterPreferencesModel.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import { FONTS } from "../../TransitHunterConstants.js";
+import { FLAT_PANEL_PUSH_BUTTON_OPTIONS, LIGHT_SURFACE_TEXT_FILL } from "../TransitHunterButtonOptions.js";
 import {
   TRANSIT_HUNTER_CHECKBOX_OPTIONS,
   TRANSIT_HUNTER_NUMBER_CONTROL_OPTIONS,
@@ -183,5 +185,20 @@ export function createEquationNode(equationProperty: TReadOnlyProperty<string>, 
     fill: TransitHunterColors.accentColorProperty,
     maxWidth: maxWidth,
     visibleProperty: transitHunterPreferences.showEquationsProperty,
+  });
+}
+
+/** A flat white push button with a dark text label, for dark panels. */
+export function createPushButton(
+  labelProperty: TReadOnlyProperty<string>,
+  listener: () => void,
+  maxTextWidth = 180,
+): TextPushButton {
+  return new TextPushButton(labelProperty, {
+    ...FLAT_PANEL_PUSH_BUTTON_OPTIONS,
+    font: FONTS.LABEL,
+    textFill: LIGHT_SURFACE_TEXT_FILL,
+    maxTextWidth: maxTextWidth,
+    listener: listener,
   });
 }

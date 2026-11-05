@@ -21,16 +21,12 @@ import { Shape } from "scenerystack/kite";
 import { DragListener, KeyboardListener, Node, Path, Rectangle, RichText, Text } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
 import { skyPosition } from "../../common/model/transitPhysics.js";
-import { drawingMagnification } from "../../common/view/formatters.js";
-import { PlanetNode } from "../../common/view/PlanetNode.js";
+import { drawnPlanet, PlanetNode } from "../../common/view/PlanetNode.js";
 import { StarNode } from "../../common/view/StarNode.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import { FONTS } from "../../TransitHunterConstants.js";
 import { DIMMING_ORBIT_IN_STAR_RADII, type DimmingModel } from "../model/DimmingModel.js";
-
-/** Smallest drawn planet radius, px. */
-const MIN_PLANET_RADIUS = 4;
 
 /** Vertical squash of the orbit in the side view (seen from slightly above). */
 const SIDE_VIEW_SQUASH = 0.28;
@@ -40,13 +36,6 @@ const GLOW_SCALE = 1.25;
 
 /** Phase step of one arrow-key press, orbits. */
 const KEYBOARD_PHASE_STEP = 0.005;
-
-/** Drawn planet radius (px) and the magnification used, for a star drawn `starRadius` px. */
-function drawnPlanet(radiusRatio: number, starRadius: number): { radius: number; factor: number } {
-  const truePixels = radiusRatio * starRadius;
-  const factor = drawingMagnification(truePixels, MIN_PLANET_RADIUS);
-  return { radius: truePixels * factor, factor: factor };
-}
 
 /** A framed dark panel with a title above it. */
 function framedScene(width: number, height: number, titleProperty: TReadOnlyProperty<string>) {

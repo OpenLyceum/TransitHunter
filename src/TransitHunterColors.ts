@@ -201,6 +201,12 @@ const TransitHunterColors = {
     projector: "#b07800",
   }),
 
+  /** Backing behind the measuring-mark labels on a chart. */
+  markBackingColorProperty: new ProfileColorProperty(TransitHunterNamespace, "markBacking", {
+    default: "rgba(11,16,32,0.85)",
+    projector: "rgba(255,255,255,0.85)",
+  }),
+
   /** The live point on a light curve. */
   liveDotColorProperty: new ProfileColorProperty(TransitHunterNamespace, "liveDot", {
     default: "#ffffff",

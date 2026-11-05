@@ -63,3 +63,15 @@ export function drawingMagnification(truePixels: number, minimum: number): numbe
   }
   return niceCeil(minimum / truePixels);
 }
+
+/** A duration in days ("3.52 days"), or years above two years. */
+export function formatDays(days: number): string {
+  const units = StringManager.getInstance().getUnits();
+  return valueWithUnits(formatSignificant(days, 3), units.daysStringProperty.value);
+}
+
+/** A duration in hours ("2.9 h"). */
+export function formatHours(hours: number): string {
+  const units = StringManager.getInstance().getUnits();
+  return valueWithUnits(formatSignificant(hours, 2), units.hoursStringProperty.value);
+}
