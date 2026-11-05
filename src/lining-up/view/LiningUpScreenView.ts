@@ -53,6 +53,9 @@ const CHART_WIDTH = 230;
 const CHART_HEIGHT = 150;
 const READOUT_WIDTH = CONTROL_PANEL_WIDTH;
 
+/** How far the step button moves the clock, wall-clock seconds at normal speed. */
+const STEP_SECONDS = 0.12;
+
 export class LiningUpScreenView extends ScreenView {
   private readonly orbitView: Orbit3DViewNode;
 
@@ -227,7 +230,7 @@ export class LiningUpScreenView extends ScreenView {
         ...FLAT_PLAY_PAUSE_STEP_BUTTON_OPTIONS,
         stepForwardButtonOptions: {
           ...FLAT_PLAY_PAUSE_STEP_BUTTON_OPTIONS.stepForwardButtonOptions,
-          listener: () => model.advance(0.02),
+          listener: () => model.advance(STEP_SECONDS),
         },
       },
     });

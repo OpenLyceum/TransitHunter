@@ -86,6 +86,7 @@
   "liningUp": {
     "view3DTitle": "The orbit and the direction to Earth",
     "rotateHint": "Drag to turn the view.",
+    "spedUpBetweenTransits": "Sped up between transits",
     "skyViewTitle": "Seen from Earth (zoomed in)",
     "passesAbovePattern": "The planet passes {{value}} star radii above the star's centre.",
     "chartTitle": "The dip in the star's light",

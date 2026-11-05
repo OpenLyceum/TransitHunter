@@ -86,6 +86,7 @@
   "liningUp": {
     "view3DTitle": "L'orbite et la direction de la Terre",
     "rotateHint": "Fais glisser pour tourner la vue.",
+    "spedUpBetweenTransits": "Accéléré entre les transits",
     "skyViewTitle": "Vue depuis la Terre (agrandie)",
     "passesAbovePattern": "La planète passe à {{value}} rayons stellaires au-dessus du centre de l'étoile.",
     "chartTitle": "La baisse de lumière de l'étoile",

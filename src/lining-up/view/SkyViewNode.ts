@@ -87,7 +87,7 @@ export class SkyViewNode extends Node {
 
     const multilink = Multilink.multilinkAny(
       [
-        model.windowTimeProperty,
+        model.cycleTimeProperty,
         model.geometryProperty,
         model.windowHalfWidthProperty,
         model.planetPresetProperty,

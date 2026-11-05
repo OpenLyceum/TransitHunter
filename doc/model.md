@@ -47,8 +47,9 @@ The water line is a constant-density guide (ρ = 1), labelled as a guide.
 
 - **Dimming:** edge-on orbit drawn at a/R★ = 2.2 (not to scale, labelled), uniform disk, 12 s per
   orbit. The chart is a two-orbit sweep that restarts half an orbit before a transit.
-- **Lining Up:** Sun-like star; a/R★ from the distance; the clock loops over a window 1.6 edge-on
-  durations wide around mid-transit. The 100 random systems draw cos i uniform.
+- **Lining Up:** Sun-like star; a/R★ from the distance; each orbit spends 6 s in a window 1.6 edge-on
+  durations wide around mid-transit and 3 s fast-forwarding round the rest of the orbit. The 100
+  random systems draw cos i uniform.
 - **Light Curve:** the wide chart spans 3.25 orbits with at most 3000 points (coarser bins have
   correspondingly smaller scatter); the zoomed chart spans 2.4 durations, scatter σ/√(N × points per bin).
   Random numbers are drawn once (and with "New observations") so sliders change the data smoothly.

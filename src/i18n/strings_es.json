@@ -86,6 +86,7 @@
   "liningUp": {
     "view3DTitle": "La órbita y la dirección a la Tierra",
     "rotateHint": "Arrastra para girar la vista.",
+    "spedUpBetweenTransits": "Acelerado entre tránsitos",
     "skyViewTitle": "Visto desde la Tierra (ampliado)",
     "passesAbovePattern": "El planeta pasa a {{value}} radios estelares por encima del centro de la estrella.",
     "chartTitle": "La caída de la luz de la estrella",

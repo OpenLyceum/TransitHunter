@@ -45,8 +45,12 @@ scripts/lightcurves/  offline Python data pipeline (venv and cache gitignored)
   fraction-based clip removed Kepler-22's transits, which are only a few points in 17 500.
 - **Dimming draws both views at one horizontal scale** so the planet lines up between them. The
   orbit is tiny (a/R★ = 2.2) so that a transit takes a visible part of each orbit; it says so.
-- **Lining Up loops a transit-centred window** instead of whole orbits, because at real orbit sizes a
-  transit is a few per cent of an orbit and would flash by.
+- **Lining Up slows down for the transit window**, because at real orbit sizes a transit is a few
+  per cent of an orbit and would flash by. Each orbit takes 6 s through a window around mid-transit,
+  then 3 s fast-forwarding round the rest of the orbit (a cubic Hermite curve whose end slopes match
+  the window's rate, so the speed changes smoothly). The planet therefore visibly orbits the star in
+  the 3-D view; a note says "Sped up between transits" and the chart's live dot hides meanwhile.
+  An earlier version looped only the window, so the planet never left the Earth side of the orbit.
 - **Rock or Gas? recomputes the mass** from K, P, M★ and i rather than displaying the archive mass,
   so the steps on screen are the real ones.
 - **Number readouts** have a minimum width (100 px): NumberDisplay sizes its box from the range's

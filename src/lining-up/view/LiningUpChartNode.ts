@@ -98,11 +98,13 @@ export class LiningUpChartNode extends Node {
       line.setDataSet(curve(g));
     };
     const curveLink = Multilink.multilink([model.geometryProperty, model.windowHalfWidthProperty], updateCurves);
+    // Between transits the time is off the chart, so the dot is hidden.
     const dotLink = Multilink.multilink(
-      [model.windowTimeProperty, model.brightnessProperty, model.geometryProperty],
-      (t, brightness) => {
+      [model.windowTimeProperty, model.brightnessProperty, model.geometryProperty, model.fastForwardingProperty],
+      (t, brightness, _geometry, fastForwarding) => {
         const hours = model.windowHalfWidthProperty.value * model.periodProperty.value * 24;
         liveDot.center = frame.chartTransform.modelToViewXY(2 * t * hours, 100 * brightness);
+        liveDot.visible = !fastForwarding;
       },
     );
     this.disposeEmitter.addListener(() => {

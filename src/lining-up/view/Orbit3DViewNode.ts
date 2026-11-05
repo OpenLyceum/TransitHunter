@@ -15,7 +15,8 @@
  * drawn much larger than they would be.
  *
  * Near transit the planet sits on the Earth arrow, so it gets a dark halo that
- * separates it from the arrow and a "Planet" label just below it.
+ * separates it from the arrow and a "Planet" label just below it. Between
+ * transits it goes round the orbit fast-forwarded, which a note says.
  */
 
 import { Multilink, NumberProperty } from "scenerystack/axon";
@@ -103,6 +104,18 @@ export class Orbit3DViewNode extends Node {
     linkUntilDisposed(this, rotateHint.boundsProperty, () => {
       rotateHint.left = 8;
       rotateHint.bottom = height - 6;
+    });
+    const spedUpNote = new Text(strings.spedUpBetweenTransitsStringProperty, {
+      font: FONTS.SMALL,
+      fill: TransitHunterColors.mutedTextColorProperty,
+      maxWidth: width / 2 - 16,
+    });
+    linkUntilDisposed(this, spedUpNote.boundsProperty, () => {
+      spedUpNote.right = width - 8;
+      spedUpNote.top = 6;
+    });
+    linkUntilDisposed(this, model.fastForwardingProperty, (fastForwarding) => {
+      spedUpNote.visible = fastForwarding;
     });
 
     const planeFill = new Path(null, { fill: TransitHunterColors.orbitPathColorProperty, opacity: 0.12 });
@@ -194,7 +207,7 @@ export class Orbit3DViewNode extends Node {
       [
         this.cameraElevationProperty,
         this.cameraAzimuthProperty,
-        model.windowTimeProperty,
+        model.cycleTimeProperty,
         model.windowHalfWidthProperty,
         model.inclinationProperty,
         model.planetPresetProperty,
@@ -244,7 +257,7 @@ export class Orbit3DViewNode extends Node {
       }),
     );
 
-    this.children = [background, scene, title, notToScale, rotateHint];
+    this.children = [background, scene, title, notToScale, spedUpNote, rotateHint];
     scene.clipArea = Shape.roundRect(0, 0, width, height, 6, 6);
     scene.pickable = false;
 
