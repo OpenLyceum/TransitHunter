@@ -1,17 +1,67 @@
 {
-  "title": "SceneryStack Template",
+  "title": "Transit Hunter",
   "screens": {
-    "sim": "Sim"
+    "dimming": "Dimming",
+    "liningUp": "Lining Up",
+    "lightCurve": "Light Curve",
+    "hunt": "Planet Hunt",
+    "composition": "Rock or Gas?"
   },
   "a11y": {
-    "screenSummary": {
-      "playArea": "The play area shows the main simulation content.",
-      "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-      "interactionHint": "Explore the simulation by interacting with its controls."
+    "dimming": {
+      "screenSummary": {
+        "playArea": "The play area shows the main simulation content.",
+        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
+        "interactionHint": "Explore the simulation by interacting with its controls."
+      },
+      "currentDetails": "The simulation is in its initial state.",
+      "controls": {
+        "exampleControl": "Example control"
+      }
     },
-    "currentDetails": "The simulation is in its initial state.",
-    "controls": {
-      "exampleControl": "Example control"
+    "liningUp": {
+      "screenSummary": {
+        "playArea": "The play area shows the main simulation content.",
+        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
+        "interactionHint": "Explore the simulation by interacting with its controls."
+      },
+      "currentDetails": "The simulation is in its initial state.",
+      "controls": {
+        "exampleControl": "Example control"
+      }
+    },
+    "lightCurve": {
+      "screenSummary": {
+        "playArea": "The play area shows the main simulation content.",
+        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
+        "interactionHint": "Explore the simulation by interacting with its controls."
+      },
+      "currentDetails": "The simulation is in its initial state.",
+      "controls": {
+        "exampleControl": "Example control"
+      }
+    },
+    "hunt": {
+      "screenSummary": {
+        "playArea": "The play area shows the main simulation content.",
+        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
+        "interactionHint": "Explore the simulation by interacting with its controls."
+      },
+      "currentDetails": "The simulation is in its initial state.",
+      "controls": {
+        "exampleControl": "Example control"
+      }
+    },
+    "composition": {
+      "screenSummary": {
+        "playArea": "The play area shows the main simulation content.",
+        "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
+        "interactionHint": "Explore the simulation by interacting with its controls."
+      },
+      "currentDetails": "The simulation is in its initial state.",
+      "controls": {
+        "exampleControl": "Example control"
+      }
     }
   },
   "preferences": {

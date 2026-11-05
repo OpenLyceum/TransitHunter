@@ -21,24 +21,47 @@ import "./brand.js";
 
 import { onReadyToLaunch, PreferencesModel, Sim } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
+import { RockOrGasScreen } from "./composition/RockOrGasScreen.js";
+import { DimmingScreen } from "./dimming/DimmingScreen.js";
+import { PlanetHuntScreen } from "./hunt/PlanetHuntScreen.js";
 import { StringManager } from "./i18n/StringManager.js";
-import { SimPreferencesModel } from "./preferences/SimPreferencesModel.js";
-import { SimPreferencesNode } from "./preferences/SimPreferencesNode.js";
-import SimColors from "./SimColors.js";
-import { SimScreen } from "./sim-screen/SimScreen.js";
+import { LightCurveScreen } from "./light-curve/LightCurveScreen.js";
+import { LiningUpScreen } from "./lining-up/LiningUpScreen.js";
+import { TransitHunterPreferencesModel } from "./preferences/TransitHunterPreferencesModel.js";
+import { TransitHunterPreferencesNode } from "./preferences/TransitHunterPreferencesNode.js";
+import TransitHunterColors from "./TransitHunterColors.js";
 
 onReadyToLaunch(() => {
   const stringManager = StringManager.getInstance();
 
-  // Simulation-specific preferences; initial values come from simQueryParameters.
-  const simPreferences = new SimPreferencesModel(Tandem.ROOT.createTandem("preferences"));
+  // Simulation-specific preferences; initial values come from transitHunterQueryParameters.
+  const simPreferences = new TransitHunterPreferencesModel(Tandem.ROOT.createTandem("preferences"));
 
   const screens = [
-    new SimScreen({
-      // The screen name Property updates automatically when the locale changes
-      name: stringManager.getScreenNames().simStringProperty,
-      tandem: Tandem.ROOT.createTandem("simScreen"),
-      backgroundColorProperty: SimColors.backgroundColorProperty,
+    new DimmingScreen({
+      name: stringManager.getScreenNames().dimmingStringProperty,
+      tandem: Tandem.ROOT.createTandem("dimmingScreen"),
+      backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
+    }),
+    new LiningUpScreen({
+      name: stringManager.getScreenNames().liningUpStringProperty,
+      tandem: Tandem.ROOT.createTandem("liningUpScreen"),
+      backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
+    }),
+    new LightCurveScreen({
+      name: stringManager.getScreenNames().lightCurveStringProperty,
+      tandem: Tandem.ROOT.createTandem("lightCurveScreen"),
+      backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
+    }),
+    new PlanetHuntScreen({
+      name: stringManager.getScreenNames().huntStringProperty,
+      tandem: Tandem.ROOT.createTandem("huntScreen"),
+      backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
+    }),
+    new RockOrGasScreen({
+      name: stringManager.getScreenNames().compositionStringProperty,
+      tandem: Tandem.ROOT.createTandem("compositionScreen"),
+      backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
     }),
   ];
 
@@ -53,7 +76,7 @@ onReadyToLaunch(() => {
       simulationOptions: {
         customPreferences: [
           {
-            createContent: (tandem: Tandem) => new SimPreferencesNode(simPreferences, tandem),
+            createContent: (tandem: Tandem) => new TransitHunterPreferencesNode(simPreferences, tandem),
           },
         ],
       },
