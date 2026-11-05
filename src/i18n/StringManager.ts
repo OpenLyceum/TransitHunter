@@ -68,7 +68,8 @@ export type TransitHunterA11yStrings = {
  */
 export type TransitHunterPreferenceStrings = {
   readonly titleStringProperty: ReadOnlyProperty<string>;
-  readonly exampleToggleStringProperty: ReadOnlyProperty<string>;
+  readonly showEquationsStringProperty: ReadOnlyProperty<string>;
+  readonly showEquationsHelpStringProperty: ReadOnlyProperty<string>;
 };
 
 /**

@@ -66,6 +66,7 @@
   },
   "preferences": {
     "title": "Simulation",
-    "exampleToggle": "Example Toggle"
+    "showEquations": "Show equations",
+    "showEquationsHelp": "Show the formulas behind the readouts (planet size from the dip, Kepler's third law, density)."
   }
 }

@@ -66,6 +66,7 @@
   },
   "preferences": {
     "title": "Simulación",
-    "exampleToggle": "Ejemplo de alternancia"
+    "showEquations": "Mostrar ecuaciones",
+    "showEquationsHelp": "Mostrar las fórmulas detrás de las lecturas (tamaño del planeta a partir de la caída de brillo, tercera ley de Kepler, densidad)."
   }
 }

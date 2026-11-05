@@ -5,29 +5,31 @@
  * Simulation. Each preference Property takes its initial value from the
  * corresponding query parameter in transitHunterQueryParameters.
  *
- * Remove the example preference (and its query parameter / UI control) if the
- * sim has no sim-specific preferences.
+ * A single instance is shared by every screen (see {@link transitHunterPreferences}).
  */
 
 import { BooleanProperty } from "scenerystack/axon";
-import type { Tandem } from "scenerystack/tandem";
+import { Tandem } from "scenerystack/tandem";
 import TransitHunterNamespace from "../TransitHunterNamespace.js";
 import transitHunterQueryParameters from "./transitHunterQueryParameters.js";
 
 export class TransitHunterPreferencesModel {
-  /** Example preference; initial value comes from the `exampleToggle` query parameter. */
-  public readonly exampleToggleProperty: BooleanProperty;
+  /** Show the equations beside the readouts (R = R★√δ, Kepler's third law, density). */
+  public readonly showEquationsProperty: BooleanProperty;
 
   public constructor(tandem?: Tandem) {
-    this.exampleToggleProperty = new BooleanProperty(
-      transitHunterQueryParameters.exampleToggle,
-      tandem ? { tandem: tandem.createTandem("exampleToggleProperty") } : undefined,
+    this.showEquationsProperty = new BooleanProperty(
+      transitHunterQueryParameters.showEquations,
+      tandem ? { tandem: tandem.createTandem("showEquationsProperty") } : undefined,
     );
   }
 
   public reset(): void {
-    this.exampleToggleProperty.reset();
+    this.showEquationsProperty.reset();
   }
 }
+
+/** The sim-wide preferences, shared by main.ts (the Preferences dialog) and the screen views. */
+export const transitHunterPreferences = new TransitHunterPreferencesModel(Tandem.ROOT.createTandem("preferences"));
 
 TransitHunterNamespace.register("TransitHunterPreferencesModel", TransitHunterPreferencesModel);

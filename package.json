@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "A SceneryStack simulation: Transit Hunter.",
+  "description": "Find exoplanets by the shadows they cast: see why a planet crossing its star dims it, why only lined-up orbits transit, read the size and period from a light curve, hunt for planets in real Kepler and TESS data, and combine the transit with the stellar wobble to tell rock from gas.",
   "license": "AGPL-3.0-or-later",
   "repository": {
     "type": "git",
@@ -14,6 +14,12 @@
     "SceneryStack",
     "interactive",
     "physics",
+    "astronomy",
+    "exoplanets",
+    "transit-method",
+    "light-curves",
+    "kepler",
+    "tess",
     "education",
     "pwa"
   ],

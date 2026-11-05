@@ -66,6 +66,7 @@
   },
   "preferences": {
     "title": "Simulation",
-    "exampleToggle": "Exemple de bascule"
+    "showEquations": "Afficher les équations",
+    "showEquationsHelp": "Afficher les formules derrière les valeurs (taille de la planète d'après la baisse de lumière, troisième loi de Kepler, masse volumique)."
   }
 }

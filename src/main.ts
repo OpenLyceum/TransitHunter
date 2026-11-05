@@ -27,15 +27,12 @@ import { PlanetHuntScreen } from "./hunt/PlanetHuntScreen.js";
 import { StringManager } from "./i18n/StringManager.js";
 import { LightCurveScreen } from "./light-curve/LightCurveScreen.js";
 import { LiningUpScreen } from "./lining-up/LiningUpScreen.js";
-import { TransitHunterPreferencesModel } from "./preferences/TransitHunterPreferencesModel.js";
+import { transitHunterPreferences } from "./preferences/TransitHunterPreferencesModel.js";
 import { TransitHunterPreferencesNode } from "./preferences/TransitHunterPreferencesNode.js";
 import TransitHunterColors from "./TransitHunterColors.js";
 
 onReadyToLaunch(() => {
   const stringManager = StringManager.getInstance();
-
-  // Simulation-specific preferences; initial values come from transitHunterQueryParameters.
-  const simPreferences = new TransitHunterPreferencesModel(Tandem.ROOT.createTandem("preferences"));
 
   const screens = [
     new DimmingScreen({
@@ -76,7 +73,7 @@ onReadyToLaunch(() => {
       simulationOptions: {
         customPreferences: [
           {
-            createContent: (tandem: Tandem) => new TransitHunterPreferencesNode(simPreferences, tandem),
+            createContent: (tandem: Tandem) => new TransitHunterPreferencesNode(transitHunterPreferences, tandem),
           },
         ],
       },
