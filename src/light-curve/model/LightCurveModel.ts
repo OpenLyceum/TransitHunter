@@ -193,7 +193,10 @@ export class LightCurveModel implements TModel {
     const sigma = averagedNoise(this.noiseProperty.value * 1e-6, perBin);
     return Array.from({ length: count }, (_, i) => {
       const orbits = (WIDE_ORBITS * (i + 0.5)) / count;
-      return { x: orbits * period, y: relativeFlux(orbits - 0.5, g) + sigma * (this.wideNoise[i] ?? 0) };
+      return {
+        x: orbits * period,
+        y: meanObservationFlux(orbits - 0.5, WIDE_ORBITS / count, perBin, g) + sigma * (this.wideNoise[i] ?? 0),
+      };
     });
   }
 
@@ -225,7 +228,12 @@ export class LightCurveModel implements TModel {
     const sigma = averagedNoise(this.noiseProperty.value * 1e-6, perBin * this.stackProperty.value);
     return Array.from({ length: count }, (_, i) => {
       const hours = -halfWidth + (2 * halfWidth * (i + 0.5)) / count;
-      return { x: hours, y: relativeFlux(hours / periodHours, g) + sigma * (this.zoomNoise[i] ?? 0) };
+      return {
+        x: hours,
+        y:
+          meanObservationFlux(hours / periodHours, (2 * halfWidth) / count / periodHours, perBin, g) +
+          sigma * (this.zoomNoise[i] ?? 0),
+      };
     });
   }
 
@@ -241,4 +249,19 @@ export class LightCurveModel implements TModel {
   public step(_dt: number): void {
     // Nothing moves on this screen.
   }
+}
+
+/** Average the model brightness as well as the noise when a displayed point bins exposures. */
+function meanObservationFlux(phase: number, width: number, exposures: number, geometry: TransitGeometry): number {
+  if (exposures <= 1) {
+    return relativeFlux(phase, geometry);
+  }
+  // Midpoint quadrature at least as fine as the original cadence; a few extra samples resolve
+  // ingress and egress in bins only slightly wider than one exposure.
+  const samples = Math.max(16, Math.ceil(exposures));
+  let flux = 0;
+  for (let i = 0; i < samples; i++) {
+    flux += relativeFlux(phase + width * ((i + 0.5) / samples - 0.5), geometry);
+  }
+  return flux / samples;
 }

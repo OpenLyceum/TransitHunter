@@ -25,7 +25,7 @@ export const EARTH_LIKE_CORE_MASS_FRACTION = 0.325;
  * Radius (Earth radii) of a rocky planet of this mass (Earth masses) and core
  * mass fraction: R = (1.07 − 0.21 CMF) M^{1/3.7} (Zeng, Sasselov & Jacobsen
  * 2016, ApJ 819, 127; fitted for about 1–8 M⊕ and still close up to ~20 M⊕).
- * CMF = 0 is pure rock, 0.325 Earth-like, 1 pure iron.
+ * Valid for CMF 0–0.4; 0 is pure rock and 0.325 Earth-like. Use ironRadius for pure iron.
  */
 export function rockyRadius(massEarth: number, coreMassFraction = EARTH_LIKE_CORE_MASS_FRACTION): number {
   return (1.07 - 0.21 * coreMassFraction) * massEarth ** (1 / 3.7);
@@ -66,3 +66,5 @@ export const SOLAR_SYSTEM_PLANETS: readonly SolarSystemPlanet[] = [
   { key: "uranus", massEarth: 14.5, radiusEarth: 4.01 },
   { key: "neptune", massEarth: 17.1, radiusEarth: 3.88 },
 ];
+
+export { ironRadius } from "./ironRadius.js";

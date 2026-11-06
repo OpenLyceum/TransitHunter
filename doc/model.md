@@ -63,7 +63,8 @@ averages of the bundled Kepler Q2 data at about 10σ.
 ## Composition (`composition.ts`)
 
 Density ρ = 5.514 g/cm³ × M/R³ (Earth units). Rocky radius R = (1.07 − 0.21 CMF) M^{1/3.7}
-(Zeng, Sasselov & Jacobsen 2016; CMF 0.325 Earth-like, 1 pure iron), drawn up to 30 M⊕. A planet is
+(Zeng, Sasselov & Jacobsen 2016; CMF 0.325 Earth-like, calibrated for CMF 0–0.4),
+approximately extended to 30 M⊕. Pure iron uses the numerical table described below. A planet is
 "rocky" if R ≤ 1.1 × the pure-rock (CMF 0) radius, a "giant" above 6 R⊕, otherwise "in between".
 The water line is a constant-density guide (ρ = 1), labelled as a guide.
 
@@ -124,3 +125,15 @@ different solution than the mass. The pipeline drops K (and its reference) when 
 b, c, d, f, g (K from Weiss et al. 2024 beside Lissauer et al. 2013's transit-timing masses, off by
 factors of 0.004 to 9) and Kepler-22 b (e = 0.72). None of these is a Rock or Gas? planet, but a K
 there would otherwise give a wrong mass.
+
+## Numerical composition guides and display binning (2026-11-06)
+
+The pure-iron guide uses log-log interpolation of
+[Zeng's numerical pure-iron table](https://lweb.cfa.harvard.edu/~lzeng/tables/massradiusFe.txt)
+(`src/common/model/data/pureIron.json`), without extrapolating it. The CMF-dependent rocky
+fit is calibrated only for CMF 0–0.4; setting CMF=1 is not a pure-iron model.
+
+When the Light Curve screen caps its number of displayed points, each coarse bin averages
+the model brightness across its exposure interval, as well as reducing its Gaussian noise.
+This applies to both wide and zoomed charts. A bin longer than the transit dilutes the dip;
+its midpoint alone must not be assigned the precision of many averaged exposures.

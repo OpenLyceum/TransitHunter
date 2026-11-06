@@ -5,6 +5,7 @@
 
 import { describe, expect, it } from "vitest";
 import { StarPreset } from "../src/common/model/StarPreset.js";
+import { relativeFlux } from "../src/common/model/transitPhysics.js";
 import { LightCurveModel, MAX_WIDE_POINTS, WIDE_ORBITS } from "../src/light-curve/model/LightCurveModel.js";
 
 describe("LightCurveModel", () => {
@@ -47,6 +48,24 @@ describe("LightCurveModel", () => {
     expect(points[points.length - 1]!.x).toBeLessThan(WIDE_ORBITS * model.periodProperty.value);
     model.reset();
     expect(model.planetRadiusProperty.value).toBe(11.2);
+  });
+
+  it.each([false, true])("averages coarse-bin brightness with limb darkening %s", (limbDarkening) => {
+    const model = new LightCurveModel();
+    model.distanceProperty.value = 2;
+    model.limbDarkeningProperty.value = limbDarkening;
+    const points = model.wideObservations();
+    const index = Math.floor((0.5 / WIDE_ORBITS) * points.length);
+    const point = points[index]!;
+    const phase = point.x / model.periodProperty.value - 0.5;
+    const width = WIDE_ORBITS / points.length;
+    let integral = 0;
+    const samples = 4000;
+    for (let i = 0; i < samples; i++) {
+      integral += relativeFlux(phase + width * ((i + 0.5) / samples - 0.5), model.geometryProperty.value);
+    }
+    expect(point.y).toBeCloseTo(integral / samples, 6);
+    expect(point.y).toBeGreaterThan(relativeFlux(phase, model.geometryProperty.value) + 0.003);
   });
 
   it("keeps the planet smaller than the star and the orbit outside it", () => {

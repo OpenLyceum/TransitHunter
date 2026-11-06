@@ -32,6 +32,8 @@ Physics and data: [`doc/model.md`](doc/model.md). Architecture and decisions:
 - **Sky geometry convention:** transit at phase 0; the planet's sky position is
   x = (a/R★) sin θ, y = (a/R★) cos i cos θ, in front when cos θ > 0 (`transitPhysics.skyPosition`).
   On Lining Up, Earth is in the direction (sin i, 0, cos i) of the orbit frame.
+- **Pure-iron guide** uses `src/common/model/ironRadius.ts` and the numerical Zeng table
+  `src/common/model/data/pureIron.json`; the rocky CMF fit is not valid for CMF=1.
 - **Orbits are circular** everywhere. The archive's eccentricities are ignored.
 - **Exaggerations are always labelled:** the Dimming orbit ("Not to scale"), small planets drawn
   bigger (×N, 1-2-5 factors from `drawnPlanet`), zoomed brightness axes ("the axis shows only the top

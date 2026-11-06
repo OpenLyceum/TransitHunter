@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 import {
   constantDensityRadius,
   density,
+  ironRadius,
   planetKind,
   rockyRadius,
   SOLAR_SYSTEM_PLANETS,
@@ -24,7 +25,7 @@ describe("composition", () => {
 
   it("an Earth-like rocky planet of 1 M⊕ is 1 R⊕; iron is smaller, pure rock larger", () => {
     expect(rockyRadius(1)).toBeCloseTo(1.0, 2);
-    expect(rockyRadius(5, 1)).toBeLessThan(rockyRadius(5));
+    expect(ironRadius(5)).toBeLessThan(rockyRadius(5));
     expect(rockyRadius(5, 0)).toBeGreaterThan(rockyRadius(5));
   });
 

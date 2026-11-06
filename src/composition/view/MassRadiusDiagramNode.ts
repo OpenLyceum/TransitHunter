@@ -12,7 +12,12 @@ import { Multilink, type TReadOnlyProperty } from "scenerystack/axon";
 import { Shape } from "scenerystack/kite";
 import { Circle, Node, Path, Rectangle, Text } from "scenerystack/scenery";
 import { archivePlanet } from "../../common/model/archive.js";
-import { constantDensityRadius, rockyRadius, SOLAR_SYSTEM_PLANETS } from "../../common/model/composition.js";
+import {
+  constantDensityRadius,
+  ironRadius,
+  rockyRadius,
+  SOLAR_SYSTEM_PLANETS,
+} from "../../common/model/composition.js";
 import { linkUntilDisposed } from "../../common/view/linkUntilDisposed.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
@@ -114,7 +119,7 @@ export class MassRadiusDiagramNode extends Node {
       return label;
     };
     const ironCurve = new Path(
-      curve((m) => rockyRadius(m, 1), ROCKY_MAX_MASS),
+      curve((m) => ironRadius(m), ROCKY_MAX_MASS),
       {
         stroke: TransitHunterColors.chartZeroLineColorProperty,
         lineWidth: 1.5,
@@ -140,7 +145,7 @@ export class MassRadiusDiagramNode extends Node {
         waterGuide,
         ironCurve,
         rockCurve,
-        curveLabel(strings.ironCurveStringProperty, ROCKY_MAX_MASS, rockyRadius(ROCKY_MAX_MASS, 1) * 0.92),
+        curveLabel(strings.ironCurveStringProperty, ROCKY_MAX_MASS, ironRadius(ROCKY_MAX_MASS) * 0.92),
         curveLabel(strings.rockCurveStringProperty, ROCKY_MAX_MASS, rockyRadius(ROCKY_MAX_MASS) * 1.06),
         new Text(strings.waterGuideStringProperty, {
           font: FONTS.SMALL,
