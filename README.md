@@ -28,10 +28,11 @@ level and builds up to introductory astronomy. Companion to
   depth into the planet's radius and the period into its distance (Kepler's third law). A limb
   darkening option, and a signal-to-noise verdict as you add noise and fold more transits.
 - **Planet Hunt.** Real light curves of seven stars, easiest first: HD 189733 and HD 209458 (TESS),
-  HAT-P-7, Kepler-7, Kepler-10, Kepler-22 and Kepler-11 (Kepler). Zoom and scroll, mark dips, use
-  their spacing as a trial period, fold, and drag a depth line to get the planet's size. Folding
-  reveals Kepler-10 b, invisible in the raw data. Then reveal the planets in the NASA Exoplanet
-  Archive.
+  HAT-P-7, Kepler-7, Kepler-10, Kepler-22 and Kepler-11 (Kepler). Zoom and scroll, mark dips (a dip
+  lost in a data gap is allowed for), use their spacing as a trial period or run a box-least-squares
+  period search, fold, and drag a depth line to get the planet's size. Folding reveals Kepler-10 b,
+  invisible in the raw data, and centring the fold on the far side shows HAT-P-7 b's eclipse behind
+  its star. Then reveal the planets in the NASA Exoplanet Archive.
 - **Rock or Gas?** For seven real planets, the transit gives the radius and an edge-on orbit, so the
   star's wobble gives the true mass. The resulting density is placed on a scale of familiar
   materials ("it would float!") and on a mass–radius diagram with rocky and iron curves and the

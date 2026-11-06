@@ -143,7 +143,7 @@
     "foldedHint": "Folded: every point is placed by its time since the last predicted transit. Yellow: averages.",
     "measurementsTitle": "Your measurements",
     "marksCountPattern": "Dips marked: {{count}}. Mark at least two dips.",
-    "marksSpacingPattern": "Dips marked: {{count}}; average spacing {{spacing}}.",
+    "marksSpacingPattern": "Dips marked: {{count}}; they repeat every {{spacing}} (dips missed in gaps allowed for).",
     "useSpacing": "Use as period",
     "clearMarks": "Clear marks",
     "radiusPattern": "Depth {{depth}} % → planet radius ≈ {{earth}} = {{jupiter}}",
@@ -166,11 +166,21 @@
     "reveal": "Reveal the answer",
     "explanationTitle": "Hunting with real data",
     "explanation1": "These are real measurements of real stars by NASA's Kepler and TESS space telescopes, cleaned of slow drifts and averaged into short bins. Each dot is the star's brightness at one moment.",
-    "explanation2": "<b>Find the period.</b> Mark the dips you can see; their average spacing is a first guess. Then fold the light curve: if the period is right, every dip lands on top of the others.",
+    "explanation2": "<b>Find the period.</b> Mark the dips you can see; the time between them is a first guess, even if a dip is lost in a gap in the data. Or tick Search for periods. Then fold the light curve: if the period is right, every dip lands on top of the others.",
     "explanation3": "<b>Hidden planets.</b> Some dips are smaller than the scatter of the points. Folding many transits together and averaging makes them appear, as with Kepler-10 b, Kepler's first rocky planet (2011).",
     "explanation4": "<b>Measure the size.</b> Drag the depth line to the bottom of the folded dip. With the star's radius, known from its spectrum, the depth gives the planet's radius. Then reveal what astronomers found.",
     "keyboardHelpHeading": "Depth line",
-    "keyboardHelpMove": "Move the depth line"
+    "keyboardHelpMove": "Move the depth line",
+    "search": "Search for periods",
+    "searchPeriodAxis": "Trial period (days)",
+    "searchPowerAxis": "Dip strength (signal ÷ noise)",
+    "searchingPattern": "Searching… {{percent}} %",
+    "usePeak": "Fold on the strongest dip",
+    "searchHint": "Click a peak to fold on it. Half and twice the period give echoes.",
+    "farSide": "Centre on the far side",
+    "farSideAxis": "Hours from half an orbit after the transit",
+    "explanation5": "<b>Searching by computer.</b> The period search folds the light curve on thousands of trial periods and, for each one, slides a box along the fold to find the deepest dip. The height is how many times bigger than the noise that dip is. A planet makes a tall peak, with smaller echoes at half and twice its period. Kepler found most of its planets this way (the box least-squares method).",
+    "explanation6": "<b>The far side.</b> Half an orbit after a transit, the planet passes behind its star. A hot Jupiter glows, so the light then dips a tiny bit more. Fold HAT-P-7 on its planet and tick Centre on the far side: the averages dip by about 0.007 %, which is the planet's own light."
   },
   "composition": {
     "transitTitle": "From the transit",
@@ -200,7 +210,8 @@
     "explanation1": "A transit gives a planet's <b>size</b>. The star's wobble (see the Stellar Wobble simulation) gives its <b>mass</b>, but only a minimum, because we do not know how the orbit is tilted.",
     "explanation2": "A planet that transits must have its orbit almost edge-on. So the transit removes the doubt: the minimum mass becomes the true mass.",
     "explanation3": "Mass divided by volume is the <b>density</b>. Iron is about 8 g/cm³, rock about 3, water 1. Earth, with its iron core, averages 5.5. Gas giants are around 1 or less: Saturn would float in water.",
-    "explanation4": "On the mass–radius diagram, planets on the rocky curve are made of rock and iron; planets well above it must be wrapped in water or gas. Big planets get squeezed by their own gravity, so they are denser than their size alone suggests."
+    "explanation4": "On the mass–radius diagram, planets on the rocky curve are made of rock and iron; planets well above it must be wrapped in water or gas. Big planets get squeezed by their own gravity, so they are denser than their size alone suggests.",
+    "stellarWobbleNote": "<i>You can measure this wobble yourself in Stellar Wobble's Observatory.</i>"
   },
   "a11y": {
     "dimming": {
@@ -266,10 +277,10 @@
     "hunt": {
       "screenSummary": {
         "playArea": "The play area shows a real light curve of the chosen star from the Kepler or TESS space telescope, which can be folded on a trial period, your measurements, and, once revealed, the planets astronomers found.",
-        "controlArea": "The control area has a star selector, buttons to zoom, scroll and mark dips, sliders for the trial period, the fold's slide and the depth line, checkboxes to fold and to reveal the answer, an explanation button, and a Reset All button.",
+        "controlArea": "The control area has a star selector, a checkbox to search for periods, buttons to zoom, scroll and mark dips, a button to fold on the strongest dip the search found, sliders for the trial period, the fold's slide and the depth line, checkboxes to fold, to centre the fold on the far side of the orbit and to reveal the answer, an explanation button, and a Reset All button.",
         "interactionHint": "Zoom in until you see a dip, mark it with Mark the middle, mark another, then use their spacing as the period and fold."
       },
-      "currentDetailsPattern": "{{star}}: {{days}} days of {{mission}} data. {{marks}} Trial period {{period}} days; the light curve is {{folded}}. Depth line {{depth}} percent, which means a planet of {{radius}} Earth radii.",
+      "currentDetailsPattern": "{{star}}: {{days}} days of {{mission}} data. {{marks}} {{search}} Trial period {{period}} days; the light curve is {{folded}}. Depth line {{depth}} percent, which means a planet of {{radius}} Earth radii.",
       "folded": "folded",
       "notFolded": "not folded",
       "loading": "The light curve is loading.",
@@ -286,8 +297,11 @@
         "showAll": "Show the whole light curve",
         "markMiddle": "Mark a dip at the middle of the view",
         "foldOnPattern": "Fold on {{name}}",
-        "explanation": "Explanation"
-      }
+        "explanation": "Explanation",
+        "usePeak": "Fold on the strongest dip the period search found"
+      },
+      "searchRunningPattern": "The period search is {{percent}} percent done.",
+      "searchDonePattern": "The period search's strongest dip repeats every {{period}} days."
     },
     "composition": {
       "screenSummary": {

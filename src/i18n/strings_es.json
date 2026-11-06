@@ -143,7 +143,7 @@
     "foldedHint": "Plegado: cada punto se coloca según el tiempo desde el último tránsito previsto. En amarillo: los promedios.",
     "measurementsTitle": "Tus mediciones",
     "marksCountPattern": "Caídas marcadas: {{count}}. Marca al menos dos caídas.",
-    "marksSpacingPattern": "Caídas marcadas: {{count}}; separación media {{spacing}}.",
+    "marksSpacingPattern": "Caídas marcadas: {{count}}; se repiten cada {{spacing}} (contando las caídas perdidas en huecos).",
     "useSpacing": "Usar como período",
     "clearMarks": "Borrar marcas",
     "radiusPattern": "Profundidad {{depth}} % → radio del planeta ≈ {{earth}} = {{jupiter}}",
@@ -166,11 +166,21 @@
     "reveal": "Revelar la respuesta",
     "explanationTitle": "Cazar con datos reales",
     "explanation1": "Son mediciones reales de estrellas reales hechas por los telescopios espaciales Kepler y TESS de la NASA, limpiadas de derivas lentas y promediadas en intervalos cortos. Cada punto es el brillo de la estrella en un momento.",
-    "explanation2": "<b>Encuentra el período.</b> Marca las caídas que veas; su separación media es una primera estimación. Luego pliega la curva: si el período es correcto, todas las caídas quedan superpuestas.",
+    "explanation2": "<b>Encuentra el período.</b> Marca las caídas que veas; el tiempo entre ellas es una primera estimación, aunque una caída se pierda en un hueco de los datos. O marca Buscar períodos. Luego pliega la curva: si el período es correcto, todas las caídas quedan superpuestas.",
     "explanation3": "<b>Planetas ocultos.</b> Algunas caídas son más pequeñas que la dispersión de los puntos. Plegar muchos tránsitos y promediarlos las hace aparecer, como con Kepler-10 b, el primer planeta rocoso de Kepler (2011).",
     "explanation4": "<b>Mide el tamaño.</b> Arrastra la línea de profundidad hasta el fondo de la caída plegada. Con el radio de la estrella, conocido por su espectro, la profundidad da el radio del planeta. Luego revela lo que encontraron los astrónomos.",
     "keyboardHelpHeading": "Línea de profundidad",
-    "keyboardHelpMove": "Mover la línea de profundidad"
+    "keyboardHelpMove": "Mover la línea de profundidad",
+    "search": "Buscar períodos",
+    "searchPeriodAxis": "Período de prueba (días)",
+    "searchPowerAxis": "Fuerza de la caída (señal ÷ ruido)",
+    "searchingPattern": "Buscando… {{percent}} %",
+    "usePeak": "Plegar en la caída más fuerte",
+    "searchHint": "Haz clic en un pico para plegar en él. La mitad y el doble del período dan ecos.",
+    "farSide": "Centrar en el otro lado",
+    "farSideAxis": "Horas desde media órbita después del tránsito",
+    "explanation5": "<b>Buscar con la computadora.</b> La búsqueda pliega la curva de luz con miles de períodos de prueba y, para cada uno, desliza una caja a lo largo del plegado para encontrar la caída más profunda. La altura indica cuántas veces mayor que el ruido es esa caída. Un planeta da un pico alto, con ecos más pequeños en la mitad y el doble de su período. Kepler encontró así la mayoría de sus planetas (el método de mínimos cuadrados con caja).",
+    "explanation6": "<b>El otro lado.</b> Media órbita después de un tránsito, el planeta pasa detrás de su estrella. Un Júpiter caliente brilla, así que la luz baja entonces un poquito más. Pliega HAT-P-7 en su planeta y marca Centrar en el otro lado: los promedios bajan alrededor de 0,007 %, que es la luz propia del planeta."
   },
   "composition": {
     "transitTitle": "Según el tránsito",
@@ -200,7 +210,8 @@
     "explanation1": "Un tránsito da el <b>tamaño</b> de un planeta. El bamboleo de la estrella (ver la simulación Bamboleo estelar) da su <b>masa</b>, pero solo un mínimo, porque no sabemos cuánto está inclinada la órbita.",
     "explanation2": "Un planeta que transita debe tener la órbita casi de canto. Así, el tránsito elimina la duda: la masa mínima se convierte en la masa real.",
     "explanation3": "La masa dividida por el volumen es la <b>densidad</b>. El hierro tiene unos 8 g/cm³, la roca unos 3, el agua 1. La Tierra, con su núcleo de hierro, promedia 5,5. Los gigantes gaseosos rondan 1 o menos: Saturno flotaría en el agua.",
-    "explanation4": "En el diagrama masa–radio, los planetas sobre la curva rocosa son de roca y hierro; los que están bastante por encima deben estar envueltos en agua o gas. Los planetas grandes se comprimen por su propia gravedad, así que son más densos de lo que su tamaño sugiere."
+    "explanation4": "En el diagrama masa–radio, los planetas sobre la curva rocosa son de roca y hierro; los que están bastante por encima deben estar envueltos en agua o gas. Los planetas grandes se comprimen por su propia gravedad, así que son más densos de lo que su tamaño sugiere.",
+    "stellarWobbleNote": "<i>Puedes medir este bamboleo tú mismo en el Observatorio de Bamboleo estelar.</i>"
   },
   "a11y": {
     "dimming": {
@@ -266,10 +277,10 @@
     "hunt": {
       "screenSummary": {
         "playArea": "El área de juego muestra una curva de luz real de la estrella elegida, del telescopio espacial Kepler o TESS, que puede plegarse con un período de prueba, tus mediciones y, una vez reveladas, los planetas que encontraron los astrónomos.",
-        "controlArea": "El área de control tiene un selector de estrella, botones para ampliar, desplazarse y marcar caídas, deslizadores para el período de prueba, el desplazamiento del plegado y la línea de profundidad, casillas para plegar y revelar la respuesta, un botón de explicación y un botón Restablecer todo.",
+        "controlArea": "El área de control tiene un selector de estrella, una casilla para buscar períodos, botones para ampliar, desplazarse y marcar caídas, un botón para plegar en la caída más fuerte encontrada, deslizadores para el período de prueba, el desplazamiento del plegado y la línea de profundidad, casillas para plegar, centrar el plegado en el otro lado de la órbita y revelar la respuesta, un botón de explicación y un botón Restablecer todo.",
         "interactionHint": "Amplía hasta ver una caída, márcala con Marcar el centro, marca otra, luego usa su separación como período y pliega."
       },
-      "currentDetailsPattern": "{{star}}: {{days}} días de datos de {{mission}}. {{marks}} Período de prueba {{period}} días; la curva está {{folded}}. Línea de profundidad {{depth}} por ciento, es decir, un planeta de {{radius}} radios terrestres.",
+      "currentDetailsPattern": "{{star}}: {{days}} días de datos de {{mission}}. {{marks}} {{search}} Período de prueba {{period}} días; la curva está {{folded}}. Línea de profundidad {{depth}} por ciento, es decir, un planeta de {{radius}} radios terrestres.",
       "folded": "plegada",
       "notFolded": "sin plegar",
       "loading": "La curva de luz se está cargando.",
@@ -286,8 +297,11 @@
         "showAll": "Mostrar toda la curva",
         "markMiddle": "Marcar una caída en el centro de la vista",
         "foldOnPattern": "Plegar con {{name}}",
-        "explanation": "Explicación"
-      }
+        "explanation": "Explicación",
+        "usePeak": "Plegar en la caída más fuerte que encontró la búsqueda"
+      },
+      "searchRunningPattern": "La búsqueda de períodos va por el {{percent}} por ciento.",
+      "searchDonePattern": "La caída más fuerte que encontró la búsqueda se repite cada {{period}} días."
     },
     "composition": {
       "screenSummary": {

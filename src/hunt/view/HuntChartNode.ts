@@ -13,6 +13,12 @@
  * Folded, a draggable horizontal line sets the depth of the dip. With the
  * answer revealed, the unfolded chart shows where the archive predicts each
  * known planet's transits.
+ *
+ * Folded on the far side of the orbit (half a period after the transit), the
+ * chart opens on the middle 70 % of the orbit, away from the transit, and its
+ * brightness axis fits the points shown, so a hot Jupiter's eclipse behind its
+ * star (HAT-P-7 b: about 0.007 %) can be seen in the averages. The depth line
+ * is hidden there: it measures transits, not eclipses.
  */
 
 import { DerivedProperty, Multilink, Property } from "scenerystack/axon";
@@ -50,6 +56,9 @@ const MIN_SPAN_HOURS = 3;
 
 /** Folded charts open on ±this many hours (or the whole period if shorter). */
 const FOLDED_HALF_WINDOW_HOURS = 30;
+
+/** Centred on the far side, the chart opens on ±this fraction of the period, which leaves out the transit. */
+const FAR_SIDE_HALF_WINDOW_FRACTION = 0.35;
 
 const BUTTON_ZOOM_FACTOR = 0.5;
 const BUTTON_SCROLL_FRACTION = 0.25;
@@ -97,8 +106,14 @@ export class HuntChartNode extends Node {
     const a11y = stringManager.getHuntA11yStrings();
 
     const xAxisLabelProperty = new DerivedProperty(
-      [model.foldProperty, common.daysAxisStringProperty, strings.foldedAxisStringProperty],
-      (fold, days, folded) => (fold ? folded : days),
+      [
+        model.foldProperty,
+        model.farSideProperty,
+        common.daysAxisStringProperty,
+        strings.foldedAxisStringProperty,
+        strings.farSideAxisStringProperty,
+      ],
+      (fold, farSide, days, folded, farSideAxis) => (fold ? (farSide ? farSideAxis : folded) : days),
     );
     const frame = new ChartFrameNode({
       viewWidth: width,
@@ -197,13 +212,36 @@ export class HuntChartNode extends Node {
       yRange = new Range(low - margin, high + margin);
     };
 
+    /** Brightness range of the folded points inside the shown window (far-side view). */
+    const windowYRange = (xRange: Range): Range => {
+      const shown: number[] = [];
+      foldedTimes.forEach((x, i) => {
+        if (x >= xRange.min && x <= xRange.max) {
+          shown.push(percent[i] ?? 100);
+        }
+      });
+      if (shown.length < 2 * Y_CLIP_POINTS + 2) {
+        return yRange;
+      }
+      shown.sort((a, b) => a - b);
+      const low = shown[Y_CLIP_POINTS] ?? 99;
+      const high = shown[shown.length - 1 - Y_CLIP_POINTS] ?? 100;
+      const margin = 0.08 * (high - low);
+      return new Range(low - margin, high + margin);
+    };
+
     const update = (): void => {
       const curve = model.lightCurveProperty.value;
       loading.visible = !curve;
       points.visible = !!curve;
       const fold = model.foldProperty.value;
+      const farSide = fold && model.farSideProperty.value;
       const xRange = shownRange();
-      frame.setRanges(xRange, yRange);
+      if (curve && fold) {
+        const periodHours = model.periodProperty.value * 24;
+        foldedTimes = curve.times.map((t) => model.phaseOf(t) * periodHours);
+      }
+      frame.setRanges(xRange, farSide && curve ? windowYRange(xRange) : yRange);
       if (!curve) {
         averages.setDataSet([]);
         marksPath.shape = null;
@@ -213,8 +251,6 @@ export class HuntChartNode extends Node {
 
       // Points and folded averages.
       if (fold) {
-        const periodHours = model.periodProperty.value * 24;
-        foldedTimes = curve.times.map((t) => model.phaseOf(t) * periodHours);
         points.setPoints(foldedTimes, percent);
         const bins = binPoints(Array.from(foldedTimes), Array.from(percent), xRange.min, xRange.max, FOLDED_BINS);
         averages.setDataSet(bins.map((bin) => new Vector2(bin.x, bin.mean)));
@@ -240,7 +276,7 @@ export class HuntChartNode extends Node {
       marksPath.shape = marks;
 
       // Depth line.
-      depthLine.visible = fold;
+      depthLine.visible = fold && !farSide;
       // Kept on the chart: a depth below the axis pins the line to the bottom edge.
       depthLine.y = Math.min(height, Math.max(0, transform.modelToViewY(100 - model.depthProperty.value)));
 
@@ -269,6 +305,7 @@ export class HuntChartNode extends Node {
       [
         model.lightCurveProperty,
         model.foldProperty,
+        model.farSideProperty,
         model.periodProperty,
         model.shiftProperty,
         model.depthProperty,
@@ -283,18 +320,19 @@ export class HuntChartNode extends Node {
       update();
     };
     model.lightCurveProperty.link(onCurve);
-    const onFold = (fold: boolean): void => {
-      if (fold) {
+    const onFold = (): void => {
+      if (model.foldProperty.value) {
         const halfPeriodHours = model.periodProperty.value * 12;
-        this.windowProperty.value =
-          halfPeriodHours > FOLDED_HALF_WINDOW_HOURS
-            ? new Range(-FOLDED_HALF_WINDOW_HOURS, FOLDED_HALF_WINDOW_HOURS)
-            : null;
+        const half = model.farSideProperty.value
+          ? Math.min(FOLDED_HALF_WINDOW_HOURS, 2 * FAR_SIDE_HALF_WINDOW_FRACTION * halfPeriodHours)
+          : FOLDED_HALF_WINDOW_HOURS;
+        this.windowProperty.value = halfPeriodHours > half ? new Range(-half, half) : null;
       } else {
         this.windowProperty.value = null;
       }
     };
     model.foldProperty.lazyLink(onFold);
+    model.farSideProperty.lazyLink(onFold);
     // A new period changes the folded range; keep the window inside it.
     const onPeriod = (): void => {
       const window = this.windowProperty.value;
@@ -477,6 +515,7 @@ export class HuntChartNode extends Node {
       enabledLink.dispose();
       model.lightCurveProperty.unlink(onCurve);
       model.foldProperty.unlink(onFold);
+      model.farSideProperty.unlink(onFold);
       model.periodProperty.unlink(onPeriod);
       model.marks.removeItemAddedListener(update);
       model.marks.removeItemRemovedListener(update);

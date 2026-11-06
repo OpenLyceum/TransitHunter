@@ -35,11 +35,36 @@ export class PlanetHuntScreenSummaryContent extends ScreenSummaryContent {
     model.marks.addItemRemovedListener(updateMarks);
     strings.marksCountPatternStringProperty.link(updateMarks);
 
+    // The period search: nothing before it starts, its progress while it runs, then its strongest dip.
+    const searchProperty = new StringProperty("");
+    const updateSearch = (): void => {
+      const search = model.search;
+      if (!search) {
+        searchProperty.value = "";
+      } else if (!search.done) {
+        searchProperty.value = StringUtils.fillIn(a11y.searchRunningPatternStringProperty.value, {
+          percent: Math.floor(100 * search.progress),
+        });
+      } else {
+        const index = search.peakIndex();
+        searchProperty.value =
+          index < 0
+            ? ""
+            : StringUtils.fillIn(a11y.searchDonePatternStringProperty.value, {
+                period: plain(search.fitAt(index).period, 4),
+              });
+      }
+    };
+    model.searchChangedEmitter.addListener(updateSearch);
+    a11y.searchRunningPatternStringProperty.lazyLink(updateSearch);
+    a11y.searchDonePatternStringProperty.lazyLink(updateSearch);
+
     const details = new PatternStringProperty(a11y.currentDetailsPatternStringProperty, {
       star: new DerivedProperty([model.targetProperty], (target) => target.starName),
       days: new DerivedProperty([model.lightCurveProperty], (curve) => (curve ? plain(curve.spanDays, 3) : "—")),
       mission: new DerivedProperty([model.lightCurveProperty], (curve) => (curve ? curve.file.mission : "—")),
       marks: marksProperty,
+      search: searchProperty,
       period: new DerivedProperty([model.periodProperty], (p) => plain(p, 4)),
       folded: new DerivedProperty(
         [model.foldProperty, a11y.foldedStringProperty, a11y.notFoldedStringProperty],

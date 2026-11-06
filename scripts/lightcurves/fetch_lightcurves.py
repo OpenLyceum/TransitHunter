@@ -28,6 +28,7 @@ import argparse
 import datetime as dt
 import html
 import json
+import math
 import re
 import sys
 import warnings
@@ -325,6 +326,43 @@ def render_preview(data: dict, planets: list[dict], preview_dir: Path) -> None:
     plt.close(fig)
 
 
+# Largest disagreement allowed between the archive mass and the mass its K implies (circular orbit).
+RV_MASS_TOLERANCE = 0.05
+G_SI = 6.674e-11
+SUN_MASS_KG = 1.989e30
+EARTH_MASS_KG = 5.972e24
+
+
+def wobble_mass_earth(entry: dict) -> float | None:
+    """Planet mass (Earth masses) from K, P, the star's mass and i, as the sim computes it (circular orbit)."""
+    k, period, star = entry["rvAmplitude"], entry["periodDays"], entry["starMassSun"]
+    if k is None or period is None or star is None:
+        return None
+    sin_i = math.sin(math.radians(entry["inclinationDeg"] if entry["inclinationDeg"] is not None else 90.0))
+    factor = k * (period * 86400 / (2 * math.pi * G_SI)) ** (1 / 3) / sin_i
+    mass = factor * (star * SUN_MASS_KG) ** (2 / 3)
+    for _ in range(50):
+        mass = factor * (star * SUN_MASS_KG + mass) ** (2 / 3)
+    return mass / EARTH_MASS_KG
+
+
+def drop_inconsistent_rv_amplitude(entry: dict) -> None:
+    """
+    The composite table takes each column from its own paper, so a K can belong to a different
+    solution than the mass (Kepler-11's K from Weiss et al. 2024 beside Lissauer et al. 2013's
+    transit-timing masses, which disagree by up to a factor of 100). The sim turns K into a mass, so a K
+    that does not give the archive mass within RV_MASS_TOLERANCE is dropped, with its reference.
+    """
+    mass = wobble_mass_earth(entry)
+    if mass is None or entry["massEarth"] is None:
+        return
+    if abs(mass / entry["massEarth"] - 1) > RV_MASS_TOLERANCE:
+        print(f"  {entry['name']}: K = {entry['rvAmplitude']} m/s gives {mass:.3g} M_earth, archive mass "
+              f"{entry['massEarth']:.3g}; dropping K")
+        entry["rvAmplitude"] = None
+        entry["rvAmplitudeReference"] = None
+
+
 def archive_entry(row: dict) -> dict:
     keys = {
         "name": "pl_name", "host": "hostname", "periodDays": "pl_orbper", "transitMidBjd": "pl_tranmid",
@@ -340,6 +378,7 @@ def archive_entry(row: dict) -> dict:
     entry["radiusReference"] = reference_text(row["pl_rade_reflink"])
     entry["massReference"] = reference_text(row["pl_bmasse_reflink"])
     entry["rvAmplitudeReference"] = reference_text(row["pl_rvamp_reflink"])
+    drop_inconsistent_rv_amplitude(entry)
     return entry
 
 

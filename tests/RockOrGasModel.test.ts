@@ -40,4 +40,32 @@ describe("RockOrGasModel", () => {
     model.reset();
     expect(model.planetProperty.value).toBe(CompositionPlanet.HD_209458_B);
   });
+
+  it("every archive wobble amplitude gives that planet's archive mass within 5 %", () => {
+    // archive.json drops a K that belongs to a different solution than the mass (Kepler-11, Kepler-22 b).
+    for (const name of [
+      "HD 189733 b",
+      "HD 209458 b",
+      "HAT-P-7 b",
+      "Kepler-7 b",
+      "Kepler-10 b",
+      "Kepler-10 c",
+      "Kepler-22 b",
+      "Kepler-11 b",
+      "Kepler-11 c",
+      "Kepler-11 d",
+      "Kepler-11 e",
+      "Kepler-11 f",
+      "Kepler-11 g",
+      "GJ 1214 b",
+      "55 Cnc e",
+      "TRAPPIST-1 e",
+    ]) {
+      const planet = archivePlanet(name);
+      if (planet.rvAmplitude !== null) {
+        expect(Math.abs(wobbleMass(planet).trueMass / planet.massEarth - 1)).toBeLessThan(0.05);
+      }
+    }
+    expect(archivePlanet("Kepler-11 d").rvAmplitude).toBeNull();
+  });
 });

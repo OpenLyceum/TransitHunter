@@ -3,19 +3,24 @@
  *
  * The Planet Hunt screen: find planets in real Kepler and TESS light curves.
  *
- * The user marks dips (their spacing suggests a period), folds the data on a
- * trial period and reference time, sets a depth line on the folded dip (which
- * gives the planet's size from the star's known radius), and can then reveal
- * the archive's answer.
+ * The user marks dips (their spacing suggests a period), or runs a
+ * box-least-squares period search, folds the data on a trial period and
+ * reference time, sets a depth line on the folded dip (which gives the planet's
+ * size from the star's known radius), and can then reveal the archive's answer.
+ * Folded data can also be centred on the far side of the orbit, half a period
+ * after the transit, where a hot Jupiter's eclipse behind its star shows.
  *
  * Light curves load on demand. While one loads `lightCurveProperty` is null;
  * a slow load that finishes after the user has picked another star is ignored.
+ * The period search runs in chunks in step(), so a long Kepler light curve does
+ * not freeze the sim; its result is kept until the star changes.
  */
 
 import {
   BooleanProperty,
   createObservableArray,
   DerivedProperty,
+  Emitter,
   EnumerationProperty,
   NumberProperty,
   type ObservableArray,
@@ -25,9 +30,10 @@ import {
 import { Range } from "scenerystack/dot";
 import type { TModel } from "scenerystack/joist";
 import { type ArchivePlanet, archivePlanet } from "../../common/model/archive.js";
-import { foldedPhase } from "../../common/model/lightCurveTools.js";
+import { type Ephemeris, ephemerisFromMarks, foldedPhase } from "../../common/model/lightCurveTools.js";
 import { radiusFromDepth } from "../../common/model/transitPhysics.js";
 import { EARTH_RADIUS_M, SUN_RADIUS_M } from "../../TransitHunterConstants.js";
+import { BoxSearch } from "./boxSearch.js";
 import { HuntTarget } from "./HuntTarget.js";
 import { type LightCurve, loadLightCurve } from "./LightCurveData.js";
 
@@ -39,6 +45,15 @@ export const HUNT_DEPTH_RANGE = new Range(0.001, 5);
 
 /** Most dip marks kept. */
 export const MAX_MARKS = 8;
+
+/** Marks closer than this, days, are the same dip marked twice (half the shortest trial period). */
+export const MIN_MARK_SEPARATION = HUNT_PERIOD_RANGE.min / 2;
+
+/**
+ * Wall-clock time the period search may use per animation frame, ms. The longest
+ * light curve (four years of Kepler-22) takes a few seconds in all.
+ */
+export const SEARCH_MILLISECONDS_PER_STEP = 12;
 
 const DEFAULT_PERIOD = 2;
 const DEFAULT_DEPTH = 0.5;
@@ -57,6 +72,18 @@ export class PlanetHuntModel implements TModel {
 
   public readonly foldProperty = new BooleanProperty(false);
 
+  /** Centre the folded chart on the far side of the orbit (half a period after the transit). */
+  public readonly farSideProperty = new BooleanProperty(false);
+
+  /** Show the period search in place of the light curve. */
+  public readonly showSearchProperty = new BooleanProperty(false);
+
+  /** Progress of the period search, 0–1 (0 before it starts). */
+  public readonly searchProgressProperty = new NumberProperty(0, { range: new Range(0, 1) });
+
+  /** Fires as the period search advances (and when it is cleared). */
+  public readonly searchChangedEmitter = new Emitter();
+
   /** The depth line on the folded chart, percent of the light. */
   public readonly depthProperty = new NumberProperty(DEFAULT_DEPTH, { range: HUNT_DEPTH_RANGE });
 
@@ -72,6 +99,9 @@ export class PlanetHuntModel implements TModel {
   /** Planet radius implied by the depth line and the star's archive radius, Earth radii. */
   public readonly inferredRadiusProperty: TReadOnlyProperty<number>;
 
+  /** The period search of the current light curve (null before it starts). */
+  private boxSearch: BoxSearch | null = null;
+
   private loadToken = 0;
 
   public constructor() {
@@ -83,6 +113,15 @@ export class PlanetHuntModel implements TModel {
       return star ? radiusFromDepth(depth / 100, (star.starRadiusSun * SUN_RADIUS_M) / EARTH_RADIUS_M) : 0;
     });
     this.targetProperty.link((target) => this.load(target));
+
+    // Showing the search starts it (once per light curve).
+    const startIfShown = (): void => {
+      if (this.showSearchProperty.value && this.lightCurveProperty.value && !this.boxSearch) {
+        this.startSearch();
+      }
+    };
+    this.showSearchProperty.lazyLink(startIfShown);
+    this.lightCurveProperty.lazyLink(startIfShown);
   }
 
   /** Reference transit time, days since the start of the data. */
@@ -90,9 +129,10 @@ export class PlanetHuntModel implements TModel {
     return this.shiftProperty.value * this.periodProperty.value;
   }
 
-  /** Folded phase (−0.5 … 0.5) of a time, days. */
+  /** Folded phase (−0.5 … 0.5) of a time, days: 0 at the transit, or at the far side when farSide is on. */
   public phaseOf(time: number): number {
-    return foldedPhase(time, this.periodProperty.value, this.referenceTime());
+    const offset = this.farSideProperty.value ? 0.5 * this.periodProperty.value : 0;
+    return foldedPhase(time, this.periodProperty.value, this.referenceTime() + offset);
   }
 
   /** Adds a dip mark (the oldest goes once there are MAX_MARKS). */
@@ -103,29 +143,26 @@ export class PlanetHuntModel implements TModel {
     this.marks.push(time);
   }
 
-  /**
-   * Average spacing between neighbouring marks, days (null with fewer than two).
-   * Marks a whole number of orbits apart with missed dips between them still
-   * give the right period if the user marks every dip they see.
-   */
-  public markSpacing(): number | null {
-    if (this.marks.length < 2) {
-      return null;
-    }
-    const sorted = [...this.marks].sort((a, b) => a - b);
-    return ((sorted[sorted.length - 1] ?? 0) - (sorted[0] ?? 0)) / (sorted.length - 1);
+  /** The period and reference time the marks imply, allowing for missed dips (null with fewer than two). */
+  public markEphemeris(): Ephemeris | null {
+    return ephemerisFromMarks([...this.marks], MIN_MARK_SEPARATION);
   }
 
-  /** Uses the mark spacing as the trial period, with the first mark as the reference time. */
+  /**
+   * Period the marks imply, days (null with fewer than two distinct marks). Dips
+   * missed between the marks (in a data gap) are allowed for: see {@link ephemerisFromMarks}.
+   */
+  public markSpacing(): number | null {
+    return this.markEphemeris()?.period ?? null;
+  }
+
+  /** Uses the marks' period as the trial period, with their fitted transit as the reference time. */
   public useMarkSpacing(): void {
-    const spacing = this.markSpacing();
-    if (spacing === null) {
+    const ephemeris = this.markEphemeris();
+    if (ephemeris === null) {
       return;
     }
-    const period = HUNT_PERIOD_RANGE.constrainValue(spacing);
-    const first = Math.min(...this.marks);
-    this.periodProperty.value = period;
-    this.shiftProperty.value = (((first / period) % 1) + 1) % 1;
+    this.setEphemeris(ephemeris.period, ephemeris.referenceTime);
   }
 
   /** The archive's period and reference time for a planet of the selected star, in the sim's terms. */
@@ -134,14 +171,60 @@ export class PlanetHuntModel implements TModel {
     if (!curve) {
       return;
     }
-    this.periodProperty.value = HUNT_PERIOD_RANGE.constrainValue(planet.periodDays);
-    const reference = planet.transitMidBjd - curve.zeroBjd;
-    this.shiftProperty.value = (((reference / planet.periodDays) % 1) + 1) % 1;
+    this.setEphemeris(planet.periodDays, planet.transitMidBjd - curve.zeroBjd);
+  }
+
+  /** The period search, or null before it has started. */
+  public get search(): BoxSearch | null {
+    return this.boxSearch;
+  }
+
+  /** Starts (or restarts) the period search of the current light curve. */
+  public startSearch(): void {
+    const curve = this.lightCurveProperty.value;
+    if (!curve) {
+      return;
+    }
+    this.boxSearch = new BoxSearch(curve.times, curve.brightness, {
+      step: curve.file.step,
+      minPeriod: HUNT_PERIOD_RANGE.min,
+      maxPeriod: Math.min(HUNT_PERIOD_RANGE.max, curve.spanDays / 2),
+    });
+    this.searchProgressProperty.value = 0;
+    this.searchChangedEmitter.emit();
+  }
+
+  /**
+   * Folds on the strongest dip the search found among periods in [minPeriod,
+   * maxPeriod] (all by default), refined, and shows the folded chart.
+   */
+  public useSearchPeak(minPeriod?: number, maxPeriod?: number): void {
+    const search = this.boxSearch;
+    if (!search) {
+      return;
+    }
+    const index = search.peakIndex(minPeriod, maxPeriod);
+    if (index < 0) {
+      return;
+    }
+    const fit = search.refinePeak(index);
+    this.setEphemeris(fit.period, fit.epoch);
+    this.farSideProperty.value = false;
+    this.foldProperty.value = true;
+    this.showSearchProperty.value = false;
+  }
+
+  /** Sets the trial period and the reference transit time (days since the start of the data). */
+  private setEphemeris(period: number, referenceTime: number): void {
+    const constrained = HUNT_PERIOD_RANGE.constrainValue(period);
+    this.periodProperty.value = constrained;
+    this.shiftProperty.value = (((referenceTime / constrained) % 1) + 1) % 1;
   }
 
   private load(target: HuntTarget): void {
     const token = ++this.loadToken;
     this.lightCurveProperty.value = null;
+    this.clearSearch();
     this.resetSearch();
     loadLightCurve(target.id)
       .then((curve) => {
@@ -157,12 +240,20 @@ export class PlanetHuntModel implements TModel {
       });
   }
 
-  /** Clears the user's search (marks, fold, depth line, reveal) but keeps the star. */
+  private clearSearch(): void {
+    this.boxSearch = null;
+    this.searchProgressProperty.value = 0;
+    this.searchChangedEmitter.emit();
+  }
+
+  /** Clears the user's search (marks, fold, depth line, reveal) but keeps the star and its period search. */
   public resetSearch(): void {
     this.marks.clear();
     this.periodProperty.reset();
     this.shiftProperty.reset();
     this.foldProperty.reset();
+    this.farSideProperty.reset();
+    this.showSearchProperty.reset();
     this.depthProperty.reset();
     this.revealProperty.reset();
   }
@@ -176,6 +267,11 @@ export class PlanetHuntModel implements TModel {
   }
 
   public step(_dt: number): void {
-    // Nothing moves on this screen.
+    const search = this.boxSearch;
+    if (search && !search.done) {
+      search.advanceFor(SEARCH_MILLISECONDS_PER_STEP);
+      this.searchProgressProperty.value = search.progress;
+      this.searchChangedEmitter.emit();
+    }
   }
 }

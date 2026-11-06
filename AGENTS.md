@@ -15,7 +15,7 @@ screens:
 | Dimming | `src/dimming/` | Side view + view from Earth at one horizontal scale; live light curve; planet/star presets; readouts in words; draggable planet; telescope view |
 | Lining Up | `src/lining-up/` | Rotatable 3-D orbit with a To Earth arrow; path across the star; dip vs edge-on ghost; tilt limit, probability; 100 random systems |
 | Light Curve | `src/light-curve/` | Noisy single measurements (period mark) + folded zoom (depth, duration marks); radius and distance readouts; limb darkening; noise and stacking with an S/N verdict |
-| Planet Hunt | `src/hunt/` | Real light curves of seven stars; zoom/scroll, mark dips, fold with binned averages, depth line → radius, reveal archive planets |
+| Planet Hunt | `src/hunt/` | Real light curves of seven stars; zoom/scroll, mark dips (gap-tolerant period), BLS period search, fold with binned averages (or on the far side), depth line → radius, reveal archive planets |
 | Rock or Gas? | `src/composition/` | Transit radius + wobble mass (true mass via the transit's inclination) → density scale and mass–radius diagram |
 
 Physics and data: [`doc/model.md`](doc/model.md). Architecture and decisions:
@@ -47,11 +47,13 @@ Physics and data: [`doc/model.md`](doc/model.md). Architecture and decisions:
 |---|---|
 | `src/common/model/transitPhysics.ts` | Disk overlap, limb-darkened flux (ring integration), sky position, impact parameter, durations, probability |
 | `src/common/model/orbitPhysics.ts` | Kepler's third law both ways; planet mass from the wobble (any inclination) |
-| `src/common/model/lightCurveTools.ts` | Noise, folding, binning, σ/√n |
+| `src/common/model/lightCurveTools.ts` | Noise, folding, binning, σ/√n, period from marks with missed dips |
 | `src/common/model/composition.ts` | Density, Zeng 2016 rocky radius, planet kind, Solar System table |
 | `src/common/model/archive.ts` | Typed access to `data/archive.json` |
 | `src/hunt/model/LightCurveData.ts` | Light-curve file format, unpacking, lazy loaders |
-| `src/hunt/view/HuntChartNode.ts` | Planet Hunt chart: zoom/scroll, marks, fold + averages, depth line, reveal ticks |
+| `src/hunt/model/boxSearch.ts` | Box-least-squares period search, run in slices from `PlanetHuntModel.step` |
+| `src/hunt/view/HuntChartNode.ts` | Planet Hunt chart: zoom/scroll, marks, fold + averages (far side too), depth line, reveal ticks |
+| `src/hunt/view/PeriodSearchNode.ts` | Period-search chart drawn in place of the light curve; click a peak or fold on the strongest dip |
 | `src/hunt/view/PointCloudNode.ts` | Canvas painting of up to ~18 000 points |
 | `src/common/view/PlanetNode.ts` | Planet disc in its preset colour, silhouette against the star, `drawnPlanet` magnification |
 | `src/common/view/controls.ts` | Number controls (log scale), checkboxes, push buttons, explanation dialog, equation node |

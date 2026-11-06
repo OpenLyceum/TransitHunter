@@ -10,6 +10,9 @@
  * a uniformly bright star (limb darkening comes on the Light Curve screen), so
  * the fraction blocked equals the fraction of the disk covered.
  *
+ * The custom planet can be at most MAX_RADIUS_RATIO of the star's size; a
+ * smaller star pulls its slider back inside that limit.
+ *
  * The clock runs in orbits. Phase 0 is mid-transit; the integer part of the
  * phase counts orbits. The light-curve chart is a sweep over TRACE_ORBITS
  * orbits that restarts from the left, so its ranges never scroll.
@@ -22,6 +25,7 @@ import {
   NumberProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
+import type { Range } from "scenerystack/dot";
 import type { TModel } from "scenerystack/joist";
 import { TimeSpeed } from "scenerystack/scenery-phet";
 import { PlanetPreset } from "../../common/model/PlanetPreset.js";
@@ -66,6 +70,9 @@ export class DimmingModel implements TModel {
 
   public readonly starPresetProperty = new EnumerationProperty(StarPreset.SUN_LIKE);
 
+  /** Custom planet radii allowed around the selected star, Earth radii. */
+  public readonly customRadiusRangeProperty: TReadOnlyProperty<Range>;
+
   /** Planet radius, Earth radii. */
   public readonly planetRadiusProperty: TReadOnlyProperty<number>;
 
@@ -91,6 +98,12 @@ export class DimmingModel implements TModel {
   public readonly timeSpeedProperty = new EnumerationProperty(TimeSpeed.NORMAL);
 
   public constructor() {
+    this.customRadiusRangeProperty = new DerivedProperty([this.starPresetProperty], (star) =>
+      star.planetRadiusRange(PLANET_RADIUS_RANGE),
+    );
+    this.customRadiusRangeProperty.link((range) => {
+      this.customRadiusProperty.value = range.constrainValue(this.customRadiusProperty.value);
+    });
     this.planetRadiusProperty = new DerivedProperty(
       [this.planetPresetProperty, this.customRadiusProperty],
       (preset, custom) => (preset === PlanetPreset.CUSTOM ? custom : preset.radiusEarth),

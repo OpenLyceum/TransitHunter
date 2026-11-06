@@ -200,7 +200,7 @@
    "impactParameter": 0.768,
    "depthPercent": 0.05019,
    "durationHours": 7.415,
-   "rvAmplitude": 1.6,
+   "rvAmplitude": null,
    "eccentricity": 0.72,
    "starRadiusSun": 0.869,
    "starMassSun": 0.857,
@@ -211,7 +211,7 @@
    "discoveryFacility": "Kepler",
    "radiusReference": "Bonomo et al. 2023",
    "massReference": "Bonomo et al. 2023",
-   "rvAmplitudeReference": "Bonomo et al. 2023"
+   "rvAmplitudeReference": null
   },
   {
    "name": "Kepler-11 b",
@@ -230,7 +230,7 @@
    "impactParameter": 0.116,
    "depthPercent": 0.03013,
    "durationHours": 4.116,
-   "rvAmplitude": 2.21135,
+   "rvAmplitude": null,
    "eccentricity": 0.045,
    "starRadiusSun": 1.065,
    "starMassSun": 0.961,
@@ -241,7 +241,7 @@
    "discoveryFacility": "Kepler",
    "radiusReference": "Lissauer et al. 2013",
    "massReference": "Lissauer et al. 2013",
-   "rvAmplitudeReference": "Weiss et al. 2024"
+   "rvAmplitudeReference": null
   },
   {
    "name": "Kepler-11 c",
@@ -260,7 +260,7 @@
    "impactParameter": 0.156,
    "depthPercent": 0.07508,
    "durationHours": 4.544,
-   "rvAmplitude": 3.05805,
+   "rvAmplitude": null,
    "eccentricity": 0.026,
    "starRadiusSun": 1.065,
    "starMassSun": 0.961,
@@ -271,7 +271,7 @@
    "discoveryFacility": "Kepler",
    "radiusReference": "Lissauer et al. 2013",
    "massReference": "Lissauer et al. 2013",
-   "rvAmplitudeReference": "Weiss et al. 2024"
+   "rvAmplitudeReference": null
   },
   {
    "name": "Kepler-11 d",
@@ -290,7 +290,7 @@
    "impactParameter": 0.181,
    "depthPercent": 0.0885,
    "durationHours": 5.586,
-   "rvAmplitude": 0.01712,
+   "rvAmplitude": null,
    "eccentricity": 0.004,
    "starRadiusSun": 1.065,
    "starMassSun": 0.961,
@@ -301,7 +301,7 @@
    "discoveryFacility": "Kepler",
    "radiusReference": "Lissauer et al. 2013",
    "massReference": "Lissauer et al. 2013",
-   "rvAmplitudeReference": "Weiss et al. 2024"
+   "rvAmplitudeReference": null
   },
   {
    "name": "Kepler-11 e",
@@ -350,7 +350,7 @@
    "impactParameter": 0.463,
    "depthPercent": 0.0548,
    "durationHours": 6.431,
-   "rvAmplitude": 3.30998,
+   "rvAmplitude": null,
    "eccentricity": 0.013,
    "starRadiusSun": 1.065,
    "starMassSun": 0.961,
@@ -361,7 +361,7 @@
    "discoveryFacility": "Kepler",
    "radiusReference": "Lissauer et al. 2013",
    "massReference": "Lissauer et al. 2013",
-   "rvAmplitudeReference": "Weiss et al. 2024"
+   "rvAmplitudeReference": null
   },
   {
    "name": "Kepler-11 g",
@@ -380,7 +380,7 @@
    "impactParameter": 0.217,
    "depthPercent": 0.1006,
    "durationHours": 9.469,
-   "rvAmplitude": 0.0136,
+   "rvAmplitude": null,
    "eccentricity": 0.15,
    "starRadiusSun": 1.065,
    "starMassSun": 0.961,
@@ -391,7 +391,7 @@
    "discoveryFacility": "Kepler",
    "radiusReference": "Lissauer et al. 2013",
    "massReference": "Lissauer et al. 2013",
-   "rvAmplitudeReference": "Weiss et al. 2024"
+   "rvAmplitudeReference": null
   },
   {
    "name": "GJ 1214 b",

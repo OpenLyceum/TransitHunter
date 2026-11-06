@@ -74,6 +74,20 @@ export const PLANET_RADIUS_RANGE = new Range(0.5, 25);
 /** Star–planet distance, AU. */
 export const DISTANCE_RANGE = new Range(0.01, 2);
 
+/**
+ * Closest orbit allowed, in star radii. Nearer than about two star radii a planet
+ * would skim the star's surface (and be torn apart by its tides); the hottest
+ * known hot Jupiters orbit at three to four.
+ */
+export const MIN_ORBIT_IN_STAR_RADII = 2;
+
+/**
+ * Largest planet allowed, as a fraction of the star's radius. Jupiter-sized
+ * planets around the smallest red dwarfs reach about half; a planet bigger
+ * than its star would hide it completely.
+ */
+export const MAX_RADIUS_RATIO = 0.6;
+
 /** Inclination, degrees (90 = edge-on, where the planet crosses the middle of the star). */
 export const INCLINATION_RANGE = new Range(0, 90);
 

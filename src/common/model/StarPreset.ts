@@ -6,8 +6,16 @@
  * the size and temperature of HAT-P-7, a Planet Hunt target).
  */
 
+import { Range } from "scenerystack/dot";
 import { Enumeration, EnumerationValue } from "scenerystack/phet-core";
-import { SUN_TEMPERATURE_K } from "../../TransitHunterConstants.js";
+import {
+  AU_M,
+  EARTH_RADIUS_M,
+  MAX_RADIUS_RATIO,
+  MIN_ORBIT_IN_STAR_RADII,
+  SUN_RADIUS_M,
+  SUN_TEMPERATURE_K,
+} from "../../TransitHunterConstants.js";
 
 export class StarPreset extends EnumerationValue {
   public static readonly SUN_LIKE = new StarPreset(1, 1, SUN_TEMPERATURE_K);
@@ -25,10 +33,28 @@ export class StarPreset extends EnumerationValue {
   /** Effective temperature, K (sets the colour). */
   public readonly temperatureK: number;
 
+  /** Largest planet allowed around this star, Earth radii (MAX_RADIUS_RATIO of its radius). */
+  public readonly maxPlanetRadiusEarth: number;
+
+  /** Closest orbit allowed around this star, AU (MIN_ORBIT_IN_STAR_RADII of its radius). */
+  public readonly minDistanceAu: number;
+
   public constructor(radiusSun: number, massSun: number, temperatureK: number) {
     super();
     this.radiusSun = radiusSun;
     this.massSun = massSun;
     this.temperatureK = temperatureK;
+    this.maxPlanetRadiusEarth = (MAX_RADIUS_RATIO * radiusSun * SUN_RADIUS_M) / EARTH_RADIUS_M;
+    this.minDistanceAu = (MIN_ORBIT_IN_STAR_RADII * radiusSun * SUN_RADIUS_M) / AU_M;
+  }
+
+  /** The part of a planet-radius range (Earth radii) allowed around this star. */
+  public planetRadiusRange(range: Range): Range {
+    return new Range(range.min, Math.max(range.min, Math.min(range.max, this.maxPlanetRadiusEarth)));
+  }
+
+  /** The part of a distance range (AU) allowed around this star. */
+  public distanceRange(range: Range): Range {
+    return new Range(Math.min(range.max, Math.max(range.min, this.minDistanceAu)), range.max);
   }
 }

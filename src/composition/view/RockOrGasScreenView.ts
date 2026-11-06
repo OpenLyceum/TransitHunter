@@ -188,8 +188,10 @@ export class RockOrGasScreenView extends ScreenView {
       [
         model.archiveProperty,
         model.massProperty,
+        model.planetProperty,
         strings.wobblePatternStringProperty,
         strings.timingPatternStringProperty,
+        strings.stellarWobbleNoteStringProperty,
         ...unitDependencies,
       ],
       () => {
@@ -200,13 +202,16 @@ export class RockOrGasScreenView extends ScreenView {
             mass: formatPlanetMass(mass.trueMass),
           });
         }
-        return StringUtils.fillIn(strings.wobblePatternStringProperty.value, {
+        const text = StringUtils.fillIn(strings.wobblePatternStringProperty.value, {
           k: formatSignificant(planet.rvAmplitude ?? 0, 3),
           period: formatDays(planet.periodDays),
           starMass: valueWithUnits(formatSignificant(planet.starMassSun, 3), units.solarMassesStringProperty.value),
           minimum: formatPlanetMass(mass.minimum ?? 0),
           mass: formatPlanetMass(mass.trueMass),
         });
+        return model.planetProperty.value.inStellarWobble
+          ? `${text}<br>${strings.stellarWobbleNoteStringProperty.value}`
+          : text;
       },
     );
     const wobbleLabel = new RichText(wobbleText, {

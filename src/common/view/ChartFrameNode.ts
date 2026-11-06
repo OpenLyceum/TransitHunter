@@ -107,14 +107,18 @@ export class ChartFrameNode extends Node {
       rotation: -Math.PI / 2,
       maxWidth: options.viewHeight,
     });
+    // The y-axis title sits left of the widest tick label (long labels such as 100.015 % on a zoomed
+    // brightness axis would otherwise run into it), and never closer than 32 px to the axis.
     const placeAxisLabels = (): void => {
       xAxisLabel.centerX = options.viewWidth / 2;
       xAxisLabel.top = options.viewHeight + 20;
       yAxisLabel.centerY = options.viewHeight / 2;
-      yAxisLabel.right = -32;
+      const labelsLeft = this.labelsY.bounds.isFinite() ? this.labelsY.left : 0;
+      yAxisLabel.right = Math.min(-32, labelsLeft - 6);
     };
     xAxisLabel.boundsProperty.lazyLink(placeAxisLabels);
     yAxisLabel.boundsProperty.lazyLink(placeAxisLabels);
+    this.labelsY.boundsProperty.lazyLink(placeAxisLabels);
     placeAxisLabels();
 
     this.children = [

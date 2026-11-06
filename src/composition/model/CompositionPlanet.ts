@@ -12,10 +12,10 @@ import { Enumeration, EnumerationValue } from "scenerystack/phet-core";
 
 export class CompositionPlanet extends EnumerationValue {
   /** A puffy hot Jupiter: the first planet seen to transit (2000). Also a StellarWobble target. */
-  public static readonly HD_209458_B = new CompositionPlanet("HD 209458 b");
+  public static readonly HD_209458_B = new CompositionPlanet("HD 209458 b", true);
 
   /** A hot Jupiter about as dense as water. Also a StellarWobble target. */
-  public static readonly HD_189733_B = new CompositionPlanet("HD 189733 b");
+  public static readonly HD_189733_B = new CompositionPlanet("HD 189733 b", true);
 
   /** One of the least dense planets known: like polystyrene foam. */
   public static readonly KEPLER_7_B = new CompositionPlanet("Kepler-7 b");
@@ -37,8 +37,12 @@ export class CompositionPlanet extends EnumerationValue {
   /** NASA Exoplanet Archive name. */
   public readonly archiveName: string;
 
-  public constructor(archiveName: string) {
+  /** Whether the star's wobble is also an Observatory target in the Stellar Wobble sim. */
+  public readonly inStellarWobble: boolean;
+
+  public constructor(archiveName: string, inStellarWobble = false) {
     super();
     this.archiveName = archiveName;
+    this.inStellarWobble = inStellarWobble;
   }
 }

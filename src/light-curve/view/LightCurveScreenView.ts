@@ -325,6 +325,7 @@ export class LightCurveScreenView extends ScreenView {
         unitsProperty: units.earthRadiiStringProperty,
         logarithmic: true,
         significantFigures: 2,
+        enabledRangeProperty: model.planetRadiusRangeProperty,
         accessibleName: a11y.controls.planetRadiusStringProperty,
       },
     );
@@ -332,6 +333,7 @@ export class LightCurveScreenView extends ScreenView {
       unitsProperty: units.auStringProperty,
       logarithmic: true,
       significantFigures: 2,
+      enabledRangeProperty: model.distanceRangeProperty,
       accessibleName: a11y.controls.distanceStringProperty,
     });
     const label = (stringProperty: TReadOnlyProperty<string>): Text =>

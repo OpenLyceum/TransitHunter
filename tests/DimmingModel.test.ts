@@ -49,4 +49,16 @@ describe("DimmingModel", () => {
     expect(model.phaseProperty.value).toBe(-0.25);
     expect(model.planetPresetProperty.value).toBe(PlanetPreset.JUPITER);
   });
+
+  it("keeps a custom planet smaller than a red dwarf", () => {
+    const model = new DimmingModel();
+    model.planetPresetProperty.value = PlanetPreset.CUSTOM;
+    model.customRadiusProperty.value = 25;
+    model.starPresetProperty.value = StarPreset.RED_DWARF;
+    expect(model.radiusRatioProperty.value).toBeLessThanOrEqual(0.6 + 1e-9);
+    expect(model.maxBlockedFractionProperty.value).toBeLessThan(0.4);
+    // Jupiter-sized still fits around the red dwarf.
+    model.planetPresetProperty.value = PlanetPreset.JUPITER;
+    expect(model.radiusRatioProperty.value).toBeCloseTo(0.51, 2);
+  });
 });

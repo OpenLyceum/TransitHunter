@@ -13,7 +13,13 @@
  *  - {@link createPushButton}: a flat white push button with a text label.
  */
 
-import { NumberProperty, type PhetioProperty, type Property, type TReadOnlyProperty } from "scenerystack/axon";
+import {
+  DerivedProperty,
+  NumberProperty,
+  type PhetioProperty,
+  type Property,
+  type TReadOnlyProperty,
+} from "scenerystack/axon";
 import { Range } from "scenerystack/dot";
 import { combineOptions } from "scenerystack/phet-core";
 import { StringUtils } from "scenerystack/phetcommon";
@@ -45,6 +51,11 @@ export type CreateNumberControlOptions = {
   accessibleName?: TReadOnlyProperty<string>;
   /** Write the units straight after the value, with no pattern (for "°"). */
   compactUnits?: boolean;
+  /**
+   * The part of the range the slider may reach now (in the property's units, also for a
+   * logarithmic control), e.g. planet sizes allowed around the selected star.
+   */
+  enabledRangeProperty?: TReadOnlyProperty<Range>;
   /** Extra NumberControl options merged last. */
   numberControlOptions?: NumberControlOptions;
 };
@@ -96,6 +107,15 @@ export function createNumberControl(
   const delta = options.delta ?? (logarithmic ? 0.02 : (range.max - range.min) / 100);
   const toValue = (controlled: number): number => (logarithmic ? range.constrainValue(10 ** controlled) : controlled);
 
+  const enabledRangeProperty = options.enabledRangeProperty;
+  const controlledEnabledRangeProperty =
+    enabledRangeProperty && logarithmic
+      ? new DerivedProperty(
+          [enabledRangeProperty],
+          (enabled) => new Range(Math.log10(enabled.min), Math.log10(enabled.max)),
+        )
+      : enabledRangeProperty;
+
   const unitsProperty = options.unitsProperty;
   const format = (controlled: number): string => {
     const text = formatSignificant(roundToFigures(toValue(controlled), figures), figures);
@@ -116,6 +136,7 @@ export function createNumberControl(
       TRANSIT_HUNTER_NUMBER_CONTROL_OPTIONS,
       {
         delta,
+        ...(controlledEnabledRangeProperty ? { enabledRangeProperty: controlledEnabledRangeProperty } : {}),
         accessibleName: options.accessibleName ?? titleProperty,
         titleNodeOptions: { fill: TransitHunterColors.textColorProperty, font: FONTS.LABEL, maxWidth: 130 },
         numberDisplayOptions: {

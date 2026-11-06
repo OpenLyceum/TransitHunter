@@ -25,7 +25,7 @@ describe("PlanetHuntModel", () => {
     expect(model.planetsProperty.value.map((p) => p.name)).toEqual(["Kepler-10 b", "Kepler-10 c"]);
   });
 
-  it("turns mark spacing into a period, keeping the first mark as the reference transit", () => {
+  it("turns mark spacing into a period, with the marks' fitted transit as the reference", () => {
     const model = new PlanetHuntModel();
     model.addMark(5.2);
     expect(model.markSpacing()).toBeNull();
@@ -39,6 +39,53 @@ describe("PlanetHuntModel", () => {
       model.addMark(i);
     }
     expect(model.marks.length).toBe(MAX_MARKS);
+  });
+
+  it("allows for HD 189733 b's transit lost in the TESS mid-sector gap", () => {
+    // The visible dips (days since the start of the data); the one at 12.95 d falls in the gap.
+    const model = new PlanetHuntModel();
+    for (const time of [4.07, 6.29, 8.51, 10.73, 15.16, 17.38, 19.6, 21.82]) {
+      model.addMark(time);
+    }
+    // Plain averaging gave 2.54 days here.
+    expect(model.markSpacing()).toBeCloseTo(2.2186, 2);
+  });
+
+  it("the period search finds HD 189733 b and folds on it", async () => {
+    const model = new PlanetHuntModel();
+    await loaded(model);
+    expect(model.search).toBeNull();
+    model.showSearchProperty.value = true;
+    expect(model.search).not.toBeNull();
+    for (let i = 0; i < 1000 && !model.search?.done; i++) {
+      model.step(1 / 60);
+    }
+    expect(model.searchProgressProperty.value).toBe(1);
+    model.useSearchPeak();
+    const planet = model.planetsProperty.value[0]!;
+    expect(model.periodProperty.value).toBeCloseTo(planet.periodDays, 2);
+    expect(model.foldProperty.value).toBe(true);
+    expect(model.showSearchProperty.value).toBe(false);
+    // The fold is centred on the transits: a transit the archive predicts inside the data lands near
+    // phase 0. (The archive's reference transit is from 2006; carried over ~2250 orbits with the search's
+    // period it would drift, so take the first predicted transit of the data.)
+    const curve = model.lightCurveProperty.value!;
+    const firstTransit =
+      (((planet.transitMidBjd - curve.zeroBjd) % planet.periodDays) + planet.periodDays) % planet.periodDays;
+    const predicted = firstTransit + 5 * planet.periodDays;
+    expect(Math.abs(model.phaseOf(predicted))).toBeLessThan(0.01);
+    // The far side is half an orbit away.
+    model.farSideProperty.value = true;
+    expect(Math.abs(Math.abs(model.phaseOf(predicted)) - 0.5)).toBeLessThan(0.01);
+  });
+
+  it("drops the period search when the star changes", async () => {
+    const model = new PlanetHuntModel();
+    await loaded(model);
+    model.startSearch();
+    expect(model.search).not.toBeNull();
+    model.targetProperty.value = HuntTarget.KEPLER_7;
+    expect(model.search).toBeNull();
   });
 
   it("the archive ephemeris puts HD 189733 b's transits at phase 0", async () => {

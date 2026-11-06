@@ -48,4 +48,36 @@ describe("LightCurveModel", () => {
     model.reset();
     expect(model.planetRadiusProperty.value).toBe(11.2);
   });
+
+  it("keeps the planet smaller than the star and the orbit outside it", () => {
+    const model = new LightCurveModel();
+    model.planetRadiusProperty.value = 25;
+    model.distanceProperty.value = 0.01;
+    model.starPresetProperty.value = StarPreset.RED_DWARF;
+    expect(model.planetRadiusProperty.value).toBeCloseTo(StarPreset.RED_DWARF.maxPlanetRadiusEarth, 9);
+    expect(model.geometryProperty.value.radiusRatio).toBeLessThanOrEqual(0.6 + 1e-9);
+    model.starPresetProperty.value = StarPreset.BIG_STAR;
+    expect(model.distanceProperty.value).toBeCloseTo(StarPreset.BIG_STAR.minDistanceAu, 9);
+    expect(model.geometryProperty.value.orbitInStarRadii).toBeGreaterThanOrEqual(2 - 1e-9);
+    // Without that limit the "transit" lasted half the orbit; now it is a sensible fraction.
+    expect(model.durationProperty.value / (model.periodProperty.value * 24)).toBeLessThan(0.25);
+  });
+
+  it("never gives a zoomed point more scatter than one measurement per transit", () => {
+    const model = new LightCurveModel();
+    model.starPresetProperty.value = StarPreset.RED_DWARF;
+    model.planetRadiusProperty.value = 1;
+    model.distanceProperty.value = 0.01;
+    model.noiseProperty.value = 1000;
+    // A transit under an hour: fewer real measurements than the 10 points drawn.
+    expect(model.durationProperty.value).toBeLessThan(1);
+    const points = model.zoomObservations();
+    const model0 = model.zoomModelCurve(points.length - 1);
+    const residuals = points.map(
+      (point) => point.y - (model0.find((m) => Math.abs(m.x - point.x) < 1e-9)?.y ?? point.y),
+    );
+    expect(points.length).toBeGreaterThanOrEqual(10);
+    const rms = Math.sqrt(residuals.reduce((sum, r) => sum + r * r, 0) / residuals.length);
+    expect(rms).toBeLessThan(1000e-6 * 1.8);
+  });
 });

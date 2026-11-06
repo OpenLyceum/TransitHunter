@@ -5,7 +5,9 @@
  * duration) and what each tells about the planet (its size, its distance), and
  * how stacking many transits pulls a small planet out of the noise.
  *
- * The orbit is circular and edge-on. Measurements come every CADENCE_MINUTES
+ * The orbit is circular and edge-on. The planet can be at most MAX_RADIUS_RATIO
+ * of the star's size and orbit no closer than MIN_ORBIT_IN_STAR_RADII; switching
+ * to a smaller star pulls the sliders back inside those limits. Measurements come every CADENCE_MINUTES
  * with Gaussian scatter σ. The wide chart shows single observations; the zoomed
  * chart shows N transits folded together, so its scatter is σ/√N. The random
  * numbers are drawn once (and again with "New observations"), so moving a
@@ -20,7 +22,7 @@ import {
   NumberProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
-import { dotRandom } from "scenerystack/dot";
+import { dotRandom, type Range } from "scenerystack/dot";
 import type { TModel } from "scenerystack/joist";
 import { averagedNoise } from "../../common/model/lightCurveTools.js";
 import { orbitalPeriod } from "../../common/model/orbitPhysics.js";
@@ -79,6 +81,10 @@ export class LightCurveModel implements TModel {
   /** Transits folded together on the zoomed chart. */
   public readonly stackProperty = new NumberProperty(1, { range: STACK_RANGE, numberType: "Integer" });
 
+  /** The planet radii (Earth radii) and distances (AU) allowed around the selected star. */
+  public readonly planetRadiusRangeProperty: TReadOnlyProperty<Range>;
+  public readonly distanceRangeProperty: TReadOnlyProperty<Range>;
+
   public readonly geometryProperty: TReadOnlyProperty<TransitGeometry>;
 
   /** Orbital period, days. */
@@ -106,6 +112,20 @@ export class LightCurveModel implements TModel {
   private zoomNoise: number[] = [];
 
   public constructor() {
+    this.planetRadiusRangeProperty = new DerivedProperty([this.starPresetProperty], (star) =>
+      star.planetRadiusRange(PLANET_RADIUS_RANGE),
+    );
+    this.distanceRangeProperty = new DerivedProperty([this.starPresetProperty], (star) =>
+      star.distanceRange(DISTANCE_RANGE),
+    );
+    // A new star can make the current planet too big or its orbit too close: pull them inside.
+    this.planetRadiusRangeProperty.link((range) => {
+      this.planetRadiusProperty.value = range.constrainValue(this.planetRadiusProperty.value);
+    });
+    this.distanceRangeProperty.link((range) => {
+      this.distanceProperty.value = range.constrainValue(this.distanceProperty.value);
+    });
+
     this.geometryProperty = new DerivedProperty(
       [this.planetRadiusProperty, this.distanceProperty, this.starPresetProperty, this.limbDarkeningProperty],
       (radius, distance, star, limbDarkening) => ({
@@ -199,7 +219,9 @@ export class LightCurveModel implements TModel {
     const periodHours = this.periodProperty.value * 24;
     const g = this.geometryProperty.value;
     const count = Math.min(MAX_ZOOM_POINTS, Math.max(10, Math.floor((2 * halfWidth * 60) / CADENCE_MINUTES)));
-    const perBin = (2 * halfWidth * 60) / CADENCE_MINUTES / count;
+    // A short transit is drawn with more points than were measured (at least 10); each still has
+    // the scatter of one measurement per transit, never more.
+    const perBin = Math.max(1, (2 * halfWidth * 60) / CADENCE_MINUTES / count);
     const sigma = averagedNoise(this.noiseProperty.value * 1e-6, perBin * this.stackProperty.value);
     return Array.from({ length: count }, (_, i) => {
       const hours = -halfWidth + (2 * halfWidth * (i + 0.5)) / count;

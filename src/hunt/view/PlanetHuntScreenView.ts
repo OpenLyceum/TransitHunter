@@ -4,7 +4,8 @@
  * The Planet Hunt screen: real Kepler and TESS light curves.
  *
  *  - Top left: the light curve (zoom, scroll, mark dips; or folded with the
- *    averages and the depth line).
+ *    averages and the depth line, centred on the transit or on the far side),
+ *    or the period search in its place.
  *  - Bottom left: the user's measurements (mark spacing, depth → radius) and,
  *    once revealed, the archive's planets.
  *  - Right: the star, the fold controls, and the reveal.
@@ -45,6 +46,7 @@ import {
 import { type Difficulty, HuntTarget } from "../model/HuntTarget.js";
 import { HUNT_DEPTH_RANGE, HUNT_PERIOD_RANGE, type PlanetHuntModel } from "../model/PlanetHuntModel.js";
 import { HuntChartNode } from "./HuntChartNode.js";
+import { PeriodSearchNode } from "./PeriodSearchNode.js";
 import { PlanetHuntScreenSummaryContent } from "./PlanetHuntScreenSummaryContent.js";
 
 export type PlanetHuntScreenViewOptions = ScreenViewOptions;
@@ -52,6 +54,16 @@ export type PlanetHuntScreenViewOptions = ScreenViewOptions;
 const CHART_WIDTH = 610;
 const CHART_HEIGHT = 245;
 const PANEL_WIDTH = 318;
+
+/**
+ * Arrow steps of the trial period (decades) and of the fold's slide (fraction of
+ * the period). NumberControl rounds every value to its step, so these set the
+ * finest fold reachable: 0.0023 % of the period, so one click moves Kepler-22 b's
+ * four transits by under an hour over the four years of data, and 0.0002 of a
+ * period (1.4 h at Kepler-22 b's 290 days).
+ */
+const PERIOD_STEP_DECADES = 0.00001;
+const SHIFT_STEP = 0.0002;
 
 export class PlanetHuntScreenView extends ScreenView {
   private readonly chart: HuntChartNode;
@@ -76,6 +88,12 @@ export class PlanetHuntScreenView extends ScreenView {
     this.chart = new HuntChartNode(model, CHART_WIDTH, CHART_HEIGHT);
     this.chart.left = bounds.minX + SCREEN_VIEW_MARGIN + 60;
     this.chart.top = bounds.minY + SCREEN_VIEW_MARGIN + 8;
+    const searchNode = new PeriodSearchNode(model, CHART_WIDTH, CHART_HEIGHT);
+    searchNode.translation = this.chart.translation;
+    model.showSearchProperty.link((show) => {
+      searchNode.visible = show;
+      this.chart.visible = !show;
+    });
 
     // ── Measurements ──────────────────────────────────────────────────────────
     const text = (stringProperty: TReadOnlyProperty<string>, font = FONTS.READOUT): RichText =>
@@ -140,6 +158,8 @@ export class PlanetHuntScreenView extends ScreenView {
         strings.explanation2StringProperty,
         strings.explanation3StringProperty,
         strings.explanation4StringProperty,
+        strings.explanation5StringProperty,
+        strings.explanation6StringProperty,
       ],
       a11y.controls.explanationStringProperty,
     );
@@ -260,8 +280,8 @@ export class PlanetHuntScreenView extends ScreenView {
     const periodControl = createNumberControl(strings.periodStringProperty, model.periodProperty, HUNT_PERIOD_RANGE, {
       unitsProperty: units.daysStringProperty,
       logarithmic: true,
-      significantFigures: 4,
-      delta: 0.0005,
+      significantFigures: 6,
+      delta: PERIOD_STEP_DECADES,
       accessibleName: a11y.controls.periodStringProperty,
     });
     const shiftControl = createNumberControl(
@@ -269,12 +289,17 @@ export class PlanetHuntScreenView extends ScreenView {
       model.shiftProperty,
       model.shiftProperty.range,
       {
-        significantFigures: 3,
-        delta: 0.002,
+        significantFigures: 4,
+        delta: SHIFT_STEP,
         accessibleName: a11y.controls.shiftStringProperty,
       },
     );
+    const searchCheckbox = createCheckbox(model.showSearchProperty, strings.searchStringProperty);
     const foldCheckbox = createCheckbox(model.foldProperty, strings.foldStringProperty);
+    const farSideCheckbox = createCheckbox(model.farSideProperty, strings.farSideStringProperty);
+    model.foldProperty.link((fold) => {
+      farSideCheckbox.enabled = fold;
+    });
     const depthControl = createNumberControl(strings.depthStringProperty, model.depthProperty, HUNT_DEPTH_RANGE, {
       unitsProperty: units.percentStringProperty,
       logarithmic: true,
@@ -284,7 +309,7 @@ export class PlanetHuntScreenView extends ScreenView {
     const revealCheckbox = createCheckbox(model.revealProperty, strings.revealStringProperty);
     const controlPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 10,
+        spacing: 8,
         align: "left",
         children: [
           new Text(strings.starTitleStringProperty, {
@@ -293,9 +318,11 @@ export class PlanetHuntScreenView extends ScreenView {
             maxWidth: CONTROL_PANEL_WIDTH,
           }),
           targetComboBox,
+          searchCheckbox,
           periodControl,
           shiftControl,
           foldCheckbox,
+          farSideCheckbox,
           depthControl,
           revealCheckbox,
         ],
@@ -315,18 +342,29 @@ export class PlanetHuntScreenView extends ScreenView {
       bottom: bounds.maxY - SCREEN_VIEW_MARGIN,
     });
 
-    this.children = [this.chart, measurementPanel, answerPanel, controlPanel, resetAllButton, comboListParent];
+    this.children = [
+      this.chart,
+      searchNode,
+      measurementPanel,
+      answerPanel,
+      controlPanel,
+      resetAllButton,
+      comboListParent,
+    ];
 
     this.addChild(
       new Node({
         pdomOrder: [
           targetComboBox,
+          searchCheckbox,
           ...this.chart.buttons,
+          searchNode.usePeakButton,
           useSpacingButton,
           clearMarksButton,
           periodControl,
           shiftControl,
           foldCheckbox,
+          farSideCheckbox,
           depthControl,
           this.chart.depthLine,
           revealCheckbox,

@@ -185,6 +185,7 @@ export class DimmingScreenView extends ScreenView {
         unitsProperty: units.earthRadiiStringProperty,
         logarithmic: true,
         significantFigures: 2,
+        enabledRangeProperty: model.customRadiusRangeProperty,
         accessibleName: a11y.controls.customRadiusStringProperty,
         numberControlOptions: {
           visibleProperty: new DerivedProperty(

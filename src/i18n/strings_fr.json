@@ -143,7 +143,7 @@
     "foldedHint": "Replié : chaque point est placé selon le temps écoulé depuis le dernier transit prévu. En jaune : les moyennes.",
     "measurementsTitle": "Tes mesures",
     "marksCountPattern": "Baisses marquées : {{count}}. Marque au moins deux baisses.",
-    "marksSpacingPattern": "Baisses marquées : {{count}} ; écart moyen {{spacing}}.",
+    "marksSpacingPattern": "Baisses marquées : {{count}} ; elles reviennent tous les {{spacing}} (en comptant les baisses perdues dans les trous).",
     "useSpacing": "Utiliser comme période",
     "clearMarks": "Effacer les marques",
     "radiusPattern": "Profondeur {{depth}} % → rayon de la planète ≈ {{earth}} = {{jupiter}}",
@@ -166,11 +166,21 @@
     "reveal": "Révéler la réponse",
     "explanationTitle": "Chasser avec de vraies données",
     "explanation1": "Ce sont de vraies mesures de vraies étoiles par les télescopes spatiaux Kepler et TESS de la NASA, débarrassées des dérives lentes et moyennées par petits intervalles. Chaque point est la luminosité de l'étoile à un instant.",
-    "explanation2": "<b>Trouve la période.</b> Marque les baisses que tu vois ; leur écart moyen donne une première estimation. Replie ensuite la courbe : si la période est juste, toutes les baisses se superposent.",
+    "explanation2": "<b>Trouve la période.</b> Marque les baisses que tu vois ; le temps qui les sépare donne une première estimation, même si une baisse est perdue dans un trou des données. Ou coche Chercher les périodes. Replie ensuite la courbe : si la période est juste, toutes les baisses se superposent.",
     "explanation3": "<b>Planètes cachées.</b> Certaines baisses sont plus petites que la dispersion des points. Replier de nombreux transits et en faire la moyenne les fait apparaître, comme pour Kepler-10 b, la première planète rocheuse de Kepler (2011).",
     "explanation4": "<b>Mesure la taille.</b> Fais glisser la ligne de profondeur jusqu'au fond de la baisse repliée. Avec le rayon de l'étoile, connu grâce à son spectre, la profondeur donne le rayon de la planète. Révèle ensuite ce que les astronomes ont trouvé.",
     "keyboardHelpHeading": "Ligne de profondeur",
-    "keyboardHelpMove": "Déplacer la ligne de profondeur"
+    "keyboardHelpMove": "Déplacer la ligne de profondeur",
+    "search": "Chercher les périodes",
+    "searchPeriodAxis": "Période d'essai (jours)",
+    "searchPowerAxis": "Force de la baisse (signal ÷ bruit)",
+    "searchingPattern": "Recherche… {{percent}} %",
+    "usePeak": "Replier sur la baisse la plus forte",
+    "searchHint": "Clique sur un pic pour replier dessus. La moitié et le double de la période font des échos.",
+    "farSide": "Centrer sur l'autre côté",
+    "farSideAxis": "Heures depuis une demi-orbite après le transit",
+    "explanation5": "<b>Chercher par ordinateur.</b> La recherche replie la courbe de lumière sur des milliers de périodes d'essai et, pour chacune, fait glisser une boîte le long du repli pour trouver la baisse la plus profonde. La hauteur dit combien de fois cette baisse dépasse le bruit. Une planète donne un grand pic, avec des échos plus petits à la moitié et au double de sa période. Kepler a trouvé ainsi la plupart de ses planètes (la méthode des moindres carrés en boîte).",
+    "explanation6": "<b>L'autre côté.</b> Une demi-orbite après un transit, la planète passe derrière son étoile. Un Jupiter chaud brille, donc la lumière baisse alors un tout petit peu. Replie HAT-P-7 sur sa planète et coche Centrer sur l'autre côté : les moyennes baissent d'environ 0,007 %, c'est la lumière propre de la planète."
   },
   "composition": {
     "transitTitle": "D'après le transit",
@@ -200,7 +210,8 @@
     "explanation1": "Un transit donne la <b>taille</b> d'une planète. L'oscillation de l'étoile (voir la simulation Valse stellaire) donne sa <b>masse</b>, mais seulement un minimum, car on ne connaît pas l'inclinaison de l'orbite.",
     "explanation2": "Une planète qui transite a forcément une orbite presque par la tranche. Le transit lève donc le doute : la masse minimale devient la vraie masse.",
     "explanation3": "La masse divisée par le volume est la <b>masse volumique</b>. Le fer fait environ 8 g/cm³, la roche environ 3, l'eau 1. La Terre, avec son noyau de fer, fait 5,5 en moyenne. Les géantes gazeuses sont autour de 1 ou moins : Saturne flotterait sur l'eau.",
-    "explanation4": "Sur le diagramme masse–rayon, les planètes sur la courbe rocheuse sont faites de roche et de fer ; celles bien au-dessus doivent être enveloppées d'eau ou de gaz. Les grosses planètes sont comprimées par leur propre gravité : elles sont plus denses que leur taille seule ne le laisse croire."
+    "explanation4": "Sur le diagramme masse–rayon, les planètes sur la courbe rocheuse sont faites de roche et de fer ; celles bien au-dessus doivent être enveloppées d'eau ou de gaz. Les grosses planètes sont comprimées par leur propre gravité : elles sont plus denses que leur taille seule ne le laisse croire.",
+    "stellarWobbleNote": "<i>Tu peux mesurer cette oscillation toi-même dans l'Observatoire de Valse stellaire.</i>"
   },
   "a11y": {
     "dimming": {
@@ -266,10 +277,10 @@
     "hunt": {
       "screenSummary": {
         "playArea": "La zone de jeu montre une vraie courbe de lumière de l'étoile choisie, prise par le télescope spatial Kepler ou TESS, qui peut être repliée sur une période d'essai, tes mesures et, une fois révélées, les planètes trouvées par les astronomes.",
-        "controlArea": "La zone de contrôle contient un sélecteur d'étoile, des boutons pour zoomer, se déplacer et marquer les baisses, des curseurs pour la période d'essai, le décalage du repli et la ligne de profondeur, des cases pour replier et révéler la réponse, un bouton d'explication et un bouton Tout réinitialiser.",
+        "controlArea": "La zone de contrôle contient un sélecteur d'étoile, une case pour chercher les périodes, des boutons pour zoomer, se déplacer et marquer les baisses, un bouton pour replier sur la baisse la plus forte trouvée, des curseurs pour la période d'essai, le décalage du repli et la ligne de profondeur, des cases pour replier, centrer le repli sur l'autre côté de l'orbite et révéler la réponse, un bouton d'explication et un bouton Tout réinitialiser.",
         "interactionHint": "Zoome jusqu'à voir une baisse, marque-la avec Marquer le milieu, marques-en une autre, puis utilise leur écart comme période et replie."
       },
-      "currentDetailsPattern": "{{star}} : {{days}} jours de données {{mission}}. {{marks}} Période d'essai {{period}} jours ; la courbe est {{folded}}. Ligne de profondeur {{depth}} pour cent, soit une planète de {{radius}} rayons terrestres.",
+      "currentDetailsPattern": "{{star}} : {{days}} jours de données {{mission}}. {{marks}} {{search}} Période d'essai {{period}} jours ; la courbe est {{folded}}. Ligne de profondeur {{depth}} pour cent, soit une planète de {{radius}} rayons terrestres.",
       "folded": "repliée",
       "notFolded": "non repliée",
       "loading": "La courbe de lumière se charge.",
@@ -286,8 +297,11 @@
         "showAll": "Afficher toute la courbe",
         "markMiddle": "Marquer une baisse au milieu de la vue",
         "foldOnPattern": "Replier sur {{name}}",
-        "explanation": "Explication"
-      }
+        "explanation": "Explication",
+        "usePeak": "Replier sur la baisse la plus forte trouvée par la recherche"
+      },
+      "searchRunningPattern": "La recherche des périodes est faite à {{percent}} pour cent.",
+      "searchDonePattern": "La baisse la plus forte trouvée par la recherche revient tous les {{period}} jours."
     },
     "composition": {
       "screenSummary": {
