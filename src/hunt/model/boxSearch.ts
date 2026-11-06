@@ -259,9 +259,8 @@ export class BoxSearch {
     return best;
   }
 
-  /** The best dimming box at one period. */
-  private searchPeriod(period: number): BoxFit {
-    const binCount = Math.max(3, Math.min(MAX_PHASE_BINS, Math.ceil(period / this.binWidth)));
+  /** Folds the light curve on a period into binCount phase bins (summed residuals and counts). */
+  private fold(period: number, binCount: number): void {
     if (this.binSums.length !== binCount) {
       this.binSums = new Float64Array(binCount);
       this.binCounts = new Int32Array(binCount);
@@ -285,8 +284,15 @@ export class BoxSearch {
       sums[bin] = (sums[bin] as number) + (residuals[i] as number);
       counts[bin] = (counts[bin] as number) + 1;
     }
+  }
 
-    const total = times.length;
+  /** The best dimming box at one period. */
+  private searchPeriod(period: number): BoxFit {
+    const binCount = Math.max(3, Math.min(MAX_PHASE_BINS, Math.ceil(period / this.binWidth)));
+    this.fold(period, binCount);
+    const sums = this.binSums;
+    const counts = this.binCounts;
+    const total = this.times.length;
     const binTime = period / binCount;
     // Maximise depth²/σ_depth² ∝ s²(N − n)/n (s = summed residuals in the box), with no square root per box.
     let bestScore = 0;
