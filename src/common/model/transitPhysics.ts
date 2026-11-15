@@ -44,6 +44,7 @@ export type TransitGeometry = {
 /**
  * Area of the overlap of two disks, radii r1 and r2, centres d apart (any units).
  * The standard lens formula.
+ * @internal Exported for unit tests; not part of the application API.
  */
 export function circleOverlapArea(r1: number, r2: number, d: number): number {
   if (d >= r1 + r2) {
@@ -66,7 +67,10 @@ function limbIntensity(r: number, limbDarkening: LimbDarkening): number {
   return 1 - limbDarkening.u1 * oneMinusMu - limbDarkening.u2 * oneMinusMu * oneMinusMu;
 }
 
-/** Total light of the disk in the same units: π (1 − u₁/3 − u₂/6). */
+/**
+ * Total light of the disk in the same units: π (1 − u₁/3 − u₂/6).
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export function totalDiskFlux(limbDarkening: LimbDarkening): number {
   return Math.PI * (1 - limbDarkening.u1 / 3 - limbDarkening.u2 / 6);
 }
@@ -74,6 +78,7 @@ export function totalDiskFlux(limbDarkening: LimbDarkening): number {
 /**
  * Fraction of the star's light blocked by a planet of radius ratio k whose centre
  * is z star radii from the star's centre (assumed in front of the star).
+ * @internal Exported for unit tests; not part of the application API.
  */
 export function blockedFraction(k: number, z: number, limbDarkening: LimbDarkening): number {
   if (k <= 0 || z >= 1 + k) {
@@ -157,7 +162,10 @@ export function totalDurationFraction(
   return durationFraction(geometry, 1 + geometry.radiusRatio);
 }
 
-/** Time the planet is wholly inside the disk, as a fraction of the period; 0 for a grazing transit. */
+/**
+ * Time the planet is wholly inside the disk, as a fraction of the period; 0 for a grazing transit.
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export function fullDurationFraction(
   geometry: Pick<TransitGeometry, "radiusRatio" | "orbitInStarRadii" | "inclinationRad">,
 ): number {

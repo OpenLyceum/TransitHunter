@@ -86,5 +86,8 @@ const LOADERS: Record<string, () => Promise<unknown>> = {
   kepler11: () => import("./data/kepler11.json"),
 };
 
-/** Ids of the light curves bundled with the sim. */
+/**
+ * Ids of the light curves bundled with the sim.
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export const LIGHT_CURVE_IDS: readonly string[] = Object.keys(LOADERS);

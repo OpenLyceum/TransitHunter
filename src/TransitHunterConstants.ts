@@ -18,7 +18,10 @@ export const G_SI = 6.674e-11;
 /** Solar mass, kg. */
 export const SUN_MASS_KG = 1.989e30;
 
-/** Jupiter mass, kg. */
+/**
+ * Jupiter mass, kg.
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export const JUPITER_MASS_KG = 1.898e27;
 
 /** Earth mass, kg. */

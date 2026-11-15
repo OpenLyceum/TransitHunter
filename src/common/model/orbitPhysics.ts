@@ -14,7 +14,10 @@ export function orbitalPeriod(starMassKg: number, planetMassKg: number, distance
   return 2 * Math.PI * Math.sqrt(distanceM ** 3 / (G_SI * (starMassKg + planetMassKg)));
 }
 
-/** Semi-major axis from the period (Kepler's third law), m: a = (G(M★ + Mp) P² / 4π²)^{1/3}. */
+/**
+ * Semi-major axis from the period (Kepler's third law), m: a = (G(M★ + Mp) P² / 4π²)^{1/3}.
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export function semiMajorAxis(starMassKg: number, planetMassKg: number, periodS: number): number {
   return ((G_SI * (starMassKg + planetMassKg) * periodS ** 2) / (4 * Math.PI ** 2)) ** (1 / 3);
 }
@@ -22,6 +25,7 @@ export function semiMajorAxis(starMassKg: number, planetMassKg: number, periodS:
 /**
  * Radial-velocity semi-amplitude K, m/s, from the period:
  * K = (2πG/P)^{1/3} · Mp sin i / (M★ + Mp)^{2/3}.
+ * @internal Exported for unit tests; not part of the application API.
  */
 export function semiAmplitudeFromPeriod(
   starMassKg: number,

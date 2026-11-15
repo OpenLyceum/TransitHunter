@@ -51,10 +51,16 @@ import {
   SUN_RADIUS_M,
 } from "../../TransitHunterConstants.js";
 
-/** Wall-clock seconds for one pass through the transit window at normal speed. */
+/**
+ * Wall-clock seconds for one pass through the transit window at normal speed.
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export const LINING_UP_SECONDS_PER_WINDOW = 6;
 
-/** Wall-clock seconds for the fast-forward round the rest of the orbit at normal speed. */
+/**
+ * Wall-clock seconds for the fast-forward round the rest of the orbit at normal speed.
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export const LINING_UP_SECONDS_PER_REST = 3;
 
 /** Wall-clock seconds per orbit at normal speed. */

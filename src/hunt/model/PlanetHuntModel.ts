@@ -43,7 +43,10 @@ export const HUNT_PERIOD_RANGE = new Range(0.3, 500);
 /** Depth-line range, percent of the light. */
 export const HUNT_DEPTH_RANGE = new Range(0.001, 5);
 
-/** Most dip marks kept. */
+/**
+ * Most dip marks kept.
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export const MAX_MARKS = 8;
 
 /** Marks closer than this, days, are the same dip marked twice (half the shortest trial period). */

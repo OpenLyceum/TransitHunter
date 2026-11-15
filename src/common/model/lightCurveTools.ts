@@ -8,9 +8,12 @@
  */
 
 /** Source of standard-normal random numbers. */
-export type GaussianSource = () => number;
+type GaussianSource = () => number;
 
-/** Adds Gaussian noise of standard deviation σ to each value. */
+/**
+ * Adds Gaussian noise of standard deviation σ to each value.
+ * @internal Exported for unit tests; not part of the application API.
+ */
 export function addNoise(values: readonly number[], sigma: number, gaussian: GaussianSource): number[] {
   return values.map((value) => value + sigma * gaussian());
 }
