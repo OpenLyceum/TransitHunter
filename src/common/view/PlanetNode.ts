@@ -26,7 +26,7 @@ export function drawnPlanet(radiusRatio: number, starRadius: number): { radius: 
 }
 
 /** The colour of a planet preset. */
-export function planetColor(preset: PlanetPreset): ProfileColorProperty {
+function planetColor(preset: PlanetPreset): ProfileColorProperty {
   if (preset === PlanetPreset.EARTH) {
     return TransitHunterColors.earthPlanetColorProperty;
   }

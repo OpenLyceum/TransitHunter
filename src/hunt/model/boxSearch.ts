@@ -24,13 +24,13 @@
  */
 
 /** Longest box tried, hours (Kepler-11 g's transit lasts 9.5 h). */
-export const MAX_DURATION_HOURS = 16;
+const MAX_DURATION_HOURS = 16;
 
 /** Longest box tried, as a fraction of the period. */
-export const MAX_DURATION_FRACTION = 0.12;
+const MAX_DURATION_FRACTION = 0.12;
 
 /** Shortest box tried, hours, whatever the cadence. */
-export const MIN_DURATION_HOURS = 1;
+const MIN_DURATION_HOURS = 1;
 
 /** A transit across the Sun seen from 1 AU (central, P = 1 yr) lasts about this long, hours. */
 const SUN_TRANSIT_HOURS_AT_ONE_YEAR = 13;

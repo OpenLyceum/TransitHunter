@@ -11,7 +11,7 @@
  */
 
 /** The JSON shape written by the pipeline. */
-export type LightCurveFile = {
+type LightCurveFile = {
   readonly id: string;
   readonly star: string;
   /** Archive names of the star's known planets. */
@@ -49,7 +49,7 @@ export type LightCurve = {
 };
 
 /** Unpacks the uniform grid into (time, brightness) pairs, dropping empty bins. */
-export function unpackLightCurve(file: LightCurveFile): LightCurve {
+function unpackLightCurve(file: LightCurveFile): LightCurve {
   const times: number[] = [];
   const brightness: number[] = [];
   file.flux.forEach((ppm, i) => {

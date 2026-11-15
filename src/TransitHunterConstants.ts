@@ -61,9 +61,6 @@ export const LIMB_DARKENING_RINGS = 200;
 
 // ── Shared model ranges (display units) ───────────────────────────────────────
 
-/** Wall-clock seconds for one orbit at normal speed (the clock is scaled per orbit). */
-export const SECONDS_PER_ORBIT = 8;
-
 /** Speed multipliers of the time control. */
 export const SLOW_SPEED_FACTOR = 0.25;
 export const FAST_SPEED_FACTOR = 3;

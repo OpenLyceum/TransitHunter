@@ -43,9 +43,6 @@ export type ArchivePlanet = {
 
 const PLANETS: readonly ArchivePlanet[] = archiveJson.planets as readonly ArchivePlanet[];
 
-/** The archive's retrieval date (ISO). */
-export const ARCHIVE_RETRIEVED: string = archiveJson.retrieved;
-
 /** The archive entry of a planet, by its archive name (e.g. "HD 209458 b"). */
 export function archivePlanet(name: string): ArchivePlanet {
   const planet = PLANETS.find((p) => p.name === name);

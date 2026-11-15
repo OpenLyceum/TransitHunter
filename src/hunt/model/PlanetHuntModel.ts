@@ -47,13 +47,13 @@ export const HUNT_DEPTH_RANGE = new Range(0.001, 5);
 export const MAX_MARKS = 8;
 
 /** Marks closer than this, days, are the same dip marked twice (half the shortest trial period). */
-export const MIN_MARK_SEPARATION = HUNT_PERIOD_RANGE.min / 2;
+const MIN_MARK_SEPARATION = HUNT_PERIOD_RANGE.min / 2;
 
 /**
  * Wall-clock time the period search may use per animation frame, ms. The longest
  * light curve (four years of Kepler-22) takes a few seconds in all.
  */
-export const SEARCH_MILLISECONDS_PER_STEP = 12;
+const SEARCH_MILLISECONDS_PER_STEP = 12;
 
 const DEFAULT_PERIOD = 2;
 const DEFAULT_DEPTH = 0.5;

@@ -23,7 +23,7 @@ import { type DimmingModel, TRACE_ORBITS } from "../model/DimmingModel.js";
 const HEADROOM = 0.15;
 
 /** The brightness span (percent below 100) the axis shows for a dip of `depth` (fraction). */
-export function brightnessSpan(depth: number): number {
+function brightnessSpan(depth: number): number {
   return Math.min(100, niceCeil(depth * 100 * 1.25));
 }
 

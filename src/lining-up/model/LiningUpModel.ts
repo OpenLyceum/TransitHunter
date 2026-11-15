@@ -67,7 +67,7 @@ const WINDOW_SHARE = LINING_UP_SECONDS_PER_WINDOW / SECONDS_PER_CYCLE;
 const MAX_HERMITE_SLOPE = 3;
 
 /** The window is this many edge-on transit durations wide. */
-export const WINDOW_IN_DURATIONS = 1.6;
+const WINDOW_IN_DURATIONS = 1.6;
 
 /** Systems in the random sample. */
 export const SAMPLE_SIZE = 100;

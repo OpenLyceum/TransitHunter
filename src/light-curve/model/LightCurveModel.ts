@@ -55,10 +55,10 @@ export const WIDE_ORBITS = 3.25;
 export const MAX_WIDE_POINTS = 3000;
 
 /** The zoomed chart spans this many transit durations, centred on mid-transit. */
-export const ZOOM_IN_DURATIONS = 2.4;
+const ZOOM_IN_DURATIONS = 2.4;
 
 /** Most points drawn on the zoomed chart. */
-export const MAX_ZOOM_POINTS = 400;
+const MAX_ZOOM_POINTS = 400;
 
 /** A point of a light curve: x in days (wide) or hours (zoomed), brightness relative to normal. */
 export type LightCurvePoint = { readonly x: number; readonly y: number };

@@ -44,7 +44,7 @@ import {
 export const DIMMING_ORBIT_IN_STAR_RADII = 2.2;
 
 /** Wall-clock seconds per orbit at normal speed. */
-export const DIMMING_SECONDS_PER_ORBIT = 12;
+const DIMMING_SECONDS_PER_ORBIT = 12;
 
 /** Orbits shown across the light-curve chart before the sweep restarts. */
 export const TRACE_ORBITS = 2;

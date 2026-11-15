@@ -61,7 +61,7 @@ export function circleOverlapArea(r1: number, r2: number, d: number): number {
 }
 
 /** Brightness of the stellar disk at radius r (0–1), relative to the centre. */
-export function limbIntensity(r: number, limbDarkening: LimbDarkening): number {
+function limbIntensity(r: number, limbDarkening: LimbDarkening): number {
   const oneMinusMu = 1 - Math.sqrt(Math.max(0, 1 - r * r));
   return 1 - limbDarkening.u1 * oneMinusMu - limbDarkening.u2 * oneMinusMu * oneMinusMu;
 }
