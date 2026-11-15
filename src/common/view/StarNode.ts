@@ -9,7 +9,7 @@
 import type { TReadOnlyProperty } from "scenerystack/axon";
 import { optionize } from "scenerystack/phet-core";
 import { Circle, Color, Node, type NodeOptions, RadialGradient } from "scenerystack/scenery";
-import { blackbodyColor } from "../model/starAppearance.js";
+import { blackbodyColor } from "./starAppearance.js";
 
 type SelfOptions = {
   /** Draw the soft glow around the disc (off for a copy that only hides what is behind the star). */
