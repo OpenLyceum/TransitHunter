@@ -33,7 +33,7 @@ import type { TModel } from "scenerystack/joist";
 import { type ArchivePlanet, archivePlanet } from "../../common/model/archive.js";
 import { type Ephemeris, ephemerisFromMarks, foldedPhase } from "../../common/model/lightCurveTools.js";
 import { radiusFromDepth } from "../../common/model/transitPhysics.js";
-import { EARTH_RADIUS_M, SUN_RADIUS_M } from "../../TransitHunterConstants.js";
+import { EARTH_RADII_PER_JUPITER, EARTH_RADIUS_M, SUN_RADIUS_M } from "../../TransitHunterConstants.js";
 import { BoxSearch } from "./boxSearch.js";
 import { HuntTarget } from "./HuntTarget.js";
 import { type LightCurve, loadLightCurve } from "./LightCurveData.js";
@@ -109,6 +109,9 @@ export class PlanetHuntModel implements TModel {
   /** Planet radius implied by the depth line and the star's archive radius, Earth radii. */
   public readonly inferredRadiusProperty: TReadOnlyProperty<number>;
 
+  /** Same inferred radius in Jupiter radii. */
+  public readonly inferredRadiusJupiterProperty: TReadOnlyProperty<number>;
+
   /** The period search of the current light curve (null before it starts). */
   private boxSearch: BoxSearch | null = null;
 
@@ -122,6 +125,10 @@ export class PlanetHuntModel implements TModel {
       const star = planets[0];
       return star ? radiusFromDepth(depth / 100, (star.starRadiusSun * SUN_RADIUS_M) / EARTH_RADIUS_M) : 0;
     });
+    this.inferredRadiusJupiterProperty = new DerivedProperty(
+      [this.inferredRadiusProperty],
+      (radiusEarth) => radiusEarth / EARTH_RADII_PER_JUPITER,
+    );
     this.targetProperty.link((target) => this.load(target));
 
     // Showing the search starts it (once per light curve).

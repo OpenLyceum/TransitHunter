@@ -29,9 +29,8 @@ import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import {
   CONTROL_PANEL_WIDTH,
-  EARTH_RADIUS_M,
+  EARTH_RADII_PER_JUPITER,
   FONTS,
-  JUPITER_RADIUS_M,
   SCREEN_VIEW_MARGIN,
   WATER_DENSITY_G_CM3,
 } from "../../TransitHunterConstants.js";
@@ -53,8 +52,6 @@ const PX_PER_EARTH_RADIUS: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.PX_PER_EART
 
 /** Height of the size comparison: the largest planet (Kepler-7 b, 18 R⊕) plus its label. */
 const SIZE_ROW_HEIGHT: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.SIZE_ROW_HEIGHT;
-
-const JUPITER_IN_EARTH_RADII = JUPITER_RADIUS_M / EARTH_RADIUS_M;
 
 export class RockOrGasScreenView extends ScreenView {
   public constructor(model: RockOrGasModel, providedOptions?: RockOrGasScreenViewOptions) {
@@ -99,7 +96,7 @@ export class RockOrGasScreenView extends ScreenView {
       const planet = model.archiveProperty.value;
       return `${valueWithUnits(formatSignificant(planet.radiusEarth, ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.RADIUS_EARTH_FORMAT_SIGNIFICANT_DIGITS), units.earthRadiiStringProperty.value)} = ${valueWithUnits(
         formatSignificant(
-          planet.radiusEarth / JUPITER_IN_EARTH_RADII,
+          planet.radiusEarth / EARTH_RADII_PER_JUPITER,
           ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.RADIUS_VALUE_DIGITS,
         ),
         units.jupiterRadiiStringProperty.value,
@@ -169,7 +166,7 @@ export class RockOrGasScreenView extends ScreenView {
       children: [
         planetDiscHolder,
         sizeDisc(common.earthStringProperty, 1, TransitHunterColors.earthPlanetColorProperty),
-        sizeDisc(common.jupiterStringProperty, JUPITER_IN_EARTH_RADII, TransitHunterColors.jupiterPlanetColorProperty),
+        sizeDisc(common.jupiterStringProperty, EARTH_RADII_PER_JUPITER, TransitHunterColors.jupiterPlanetColorProperty),
       ],
     });
     model.archiveProperty.link((planet) => {

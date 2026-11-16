@@ -37,13 +37,7 @@ import {
 import { formatDays, valueWithUnits } from "../../common/view/formatters.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
-import {
-  CONTROL_PANEL_WIDTH,
-  EARTH_RADIUS_M,
-  FONTS,
-  JUPITER_RADIUS_M,
-  SCREEN_VIEW_MARGIN,
-} from "../../TransitHunterConstants.js";
+import { CONTROL_PANEL_WIDTH, FONTS, SCREEN_VIEW_MARGIN } from "../../TransitHunterConstants.js";
 import { type Difficulty, HuntTarget } from "../model/HuntTarget.js";
 import { HUNT_DEPTH_RANGE, HUNT_PERIOD_RANGE, type PlanetHuntModel } from "../model/PlanetHuntModel.js";
 import { HuntChartNode } from "./HuntChartNode.js";
@@ -143,13 +137,14 @@ export class PlanetHuntScreenView extends ScreenView {
             valueWithUnits(formatSignificant(radius, PLANET_HUNT_SCREEN_VIEW_SETTINGS.RADIUS_TEXT_DIGITS), earthRadii),
         ),
         jupiter: new DerivedProperty(
-          [model.inferredRadiusProperty, units.jupiterRadiiStringProperty, units.valueUnitsPatternStringProperty],
+          [
+            model.inferredRadiusJupiterProperty,
+            units.jupiterRadiiStringProperty,
+            units.valueUnitsPatternStringProperty,
+          ],
           (radius, jupiterRadii) =>
             valueWithUnits(
-              formatSignificant(
-                (radius * EARTH_RADIUS_M) / JUPITER_RADIUS_M,
-                PLANET_HUNT_SCREEN_VIEW_SETTINGS.RADIUS_TEXT_DIGITS,
-              ),
+              formatSignificant(radius, PLANET_HUNT_SCREEN_VIEW_SETTINGS.RADIUS_TEXT_DIGITS),
               jupiterRadii,
             ),
         ),

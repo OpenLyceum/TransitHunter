@@ -51,6 +51,9 @@ export const EARTH_DENSITY_G_CM3 = 5.514;
 /** Earth masses per Jupiter mass (IAU nominal). */
 export const EARTH_MASSES_PER_JUPITER = 317.83;
 
+/** Earth radii per Jupiter radius (from IAU nominal radii). */
+export const EARTH_RADII_PER_JUPITER = JUPITER_RADIUS_M / EARTH_RADIUS_M;
+
 /** Density of liquid water, g/cm³ (the "would it float?" line). */
 export const WATER_DENSITY_G_CM3 = 1;
 
