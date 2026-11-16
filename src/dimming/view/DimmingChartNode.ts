@@ -73,7 +73,7 @@ export class DimmingChartNode extends Node {
     );
     linkUntilDisposed(this, zoomNote.boundsProperty, () => {
       zoomNote.left = DIMMING_CHART_NODE_SETTINGS.LEFT_LEFT;
-      zoomNote.top = height + DIMMING_CHART_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+      zoomNote.top = height + DIMMING_CHART_NODE_SETTINGS.TOP_OFFSET;
     });
 
     this.children = [title, frame, zoomNote];

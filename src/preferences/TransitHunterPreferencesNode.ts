@@ -51,7 +51,7 @@ export class TransitHunterPreferencesNode extends VBox {
 
     super({
       align: "left",
-      spacing: TRANSIT_HUNTER_PREFERENCES_NODE_SETTINGS.CONSTRUCTOR_SPACING,
+      spacing: TRANSIT_HUNTER_PREFERENCES_NODE_SETTINGS.SPACING,
       children: [header, showEquationsCheckbox, description],
     });
   }

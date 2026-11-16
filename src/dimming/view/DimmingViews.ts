@@ -99,10 +99,7 @@ export class SideViewNode extends Node {
     const orbitStyle = {
       stroke: TransitHunterColors.orbitPathColorProperty,
       lineWidth: DIMMING_VIEWS_SETTINGS.ORBIT_STYLE_LINE_WIDTH,
-      lineDash: [
-        DIMMING_VIEWS_SETTINGS.ORBIT_STYLE_LINE_DASH_DASH,
-        DIMMING_VIEWS_SETTINGS.CONSTRUCTOR_ORBIT_STYLE_LINE_DASH_DASH,
-      ],
+      lineDash: [DIMMING_VIEWS_SETTINGS.ORBIT_STYLE_LINE_DASH_DASH, DIMMING_VIEWS_SETTINGS.ORBIT_STYLE_LINE_DASH_GAP],
     };
     const farOrbit = new Path(halfEllipse(false), orbitStyle);
     const nearOrbit = new Path(halfEllipse(true), orbitStyle);
@@ -125,8 +122,8 @@ export class SideViewNode extends Node {
       maxWidth: DIMMING_VIEWS_SETTINGS.TO_EARTH_LABEL_MAX_WIDTH,
     });
     linkUntilDisposed(this, toEarthLabel.boundsProperty, () => {
-      toEarthLabel.left = toEarth.right + DIMMING_VIEWS_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
-      toEarthLabel.bottom = height - DIMMING_VIEWS_SETTINGS.CONSTRUCTOR_BOTTOM_OFFSET;
+      toEarthLabel.left = toEarth.right + DIMMING_VIEWS_SETTINGS.LEFT_OFFSET;
+      toEarthLabel.bottom = height - DIMMING_VIEWS_SETTINGS.BOTTOM_OFFSET;
     });
     const notToScale = new RichText(strings.orbitNotToScaleStringProperty, {
       font: FONTS.SMALL,

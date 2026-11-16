@@ -102,8 +102,8 @@ export class LightCurveScreenView extends ScreenView {
       CHART_WIDTH,
       WIDE_HEIGHT,
     );
-    wideChart.left = bounds.minX + SCREEN_VIEW_MARGIN + LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
-    wideChart.top = bounds.minY + SCREEN_VIEW_MARGIN + LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+    wideChart.left = bounds.minX + SCREEN_VIEW_MARGIN + LIGHT_CURVE_SCREEN_VIEW_SETTINGS.LEFT_OFFSET;
+    wideChart.top = bounds.minY + SCREEN_VIEW_MARGIN + LIGHT_CURVE_SCREEN_VIEW_SETTINGS.TOP_OFFSET;
     const zoomChart = new LightCurveChartNode(
       strings.zoomChartTitleStringProperty,
       common.hoursFromMidTransitAxisStringProperty,
@@ -202,7 +202,7 @@ export class LightCurveScreenView extends ScreenView {
         value: formatHours(duration),
       });
       durationBacking.centerX = x0;
-      durationBacking.bottom = durationY - LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_UPDATE_BOTTOM_OFFSET;
+      durationBacking.bottom = durationY - LIGHT_CURVE_SCREEN_VIEW_SETTINGS.DURATION_LABEL_BOTTOM_GAP;
     };
     const multilink = Multilink.multilinkAny(
       [
@@ -311,7 +311,7 @@ export class LightCurveScreenView extends ScreenView {
         align: "left",
         children: [
           new HBox({
-            spacing: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_READOUT_PANEL_SPACING,
+            spacing: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.READOUT_COLUMN_SPACING,
             align: "top",
             children: [
               new VBox({

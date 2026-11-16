@@ -43,10 +43,7 @@ export class LiningUpChartNode extends Node {
     const ghost = new LinePlot(frame.chartTransform, [], {
       stroke: TransitHunterColors.mutedTextColorProperty,
       lineWidth: LINING_UP_CHART_NODE_SETTINGS.GHOST_LINE_WIDTH,
-      lineDash: [
-        LINING_UP_CHART_NODE_SETTINGS.GHOST_LINE_DASH_DASH,
-        LINING_UP_CHART_NODE_SETTINGS.CONSTRUCTOR_GHOST_LINE_DASH_DASH,
-      ],
+      lineDash: [LINING_UP_CHART_NODE_SETTINGS.GHOST_LINE_DASH_DASH, LINING_UP_CHART_NODE_SETTINGS.GHOST_LINE_DASH_GAP],
     });
     const line = new LinePlot(frame.chartTransform, [], {
       stroke: TransitHunterColors.lightCurveColorProperty,
@@ -81,7 +78,7 @@ export class LiningUpChartNode extends Node {
     );
     linkUntilDisposed(this, legend.boundsProperty, () => {
       legend.left = LINING_UP_CHART_NODE_SETTINGS.LEFT_LEFT;
-      legend.top = height + LINING_UP_CHART_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+      legend.top = height + LINING_UP_CHART_NODE_SETTINGS.TOP_OFFSET;
     });
     linkUntilDisposed(this, zoomNote.boundsProperty, () => {
       zoomNote.left = LINING_UP_CHART_NODE_SETTINGS.LEFT_LEFT;

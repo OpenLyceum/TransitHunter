@@ -77,14 +77,14 @@ export class DimmingScreenView extends ScreenView {
     // ── Side view and view from Earth ─────────────────────────────────────────
     const sideView = new SideViewNode(model, this.telescopeViewProperty, VIEW_WIDTH, SIDE_VIEW_HEIGHT, STAR_RADIUS);
     sideView.left = bounds.minX + SCREEN_VIEW_MARGIN;
-    sideView.top = bounds.minY + SCREEN_VIEW_MARGIN + DIMMING_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+    sideView.top = bounds.minY + SCREEN_VIEW_MARGIN + DIMMING_SCREEN_VIEW_SETTINGS.TOP_OFFSET;
     const earthView = new EarthViewNode(model, this.telescopeViewProperty, VIEW_WIDTH, EARTH_VIEW_HEIGHT, STAR_RADIUS);
     earthView.left = sideView.left;
     earthView.top = sideView.bottom + 32;
 
     // ── Light curve ───────────────────────────────────────────────────────────
     const chart = new DimmingChartNode(model, CHART_WIDTH, CHART_HEIGHT);
-    chart.left = sideView.right + DIMMING_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+    chart.left = sideView.right + DIMMING_SCREEN_VIEW_SETTINGS.LEFT_OFFSET;
     chart.top = bounds.minY + SCREEN_VIEW_MARGIN + 22;
 
     // ── Readouts ──────────────────────────────────────────────────────────────
@@ -255,7 +255,7 @@ export class DimmingScreenView extends ScreenView {
       right: bounds.maxX - SCREEN_VIEW_MARGIN,
       bottom: bounds.maxY - SCREEN_VIEW_MARGIN,
     });
-    timeControlNode.right = resetAllButton.left - DIMMING_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
+    timeControlNode.right = resetAllButton.left - DIMMING_SCREEN_VIEW_SETTINGS.RIGHT_OFFSET;
     timeControlNode.bottom = resetAllButton.bottom;
 
     this.children = [sideView, earthView, chart, readoutPanel, controlPanel, timeControlNode, resetAllButton];

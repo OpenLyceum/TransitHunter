@@ -54,7 +54,7 @@ export class SkyViewNode extends Node {
     const occluder = new StarNode(SUN_TEMPERATURE_K, starRadius, { x: cx, y: cy, glow: false });
     const chord = new Line(0, 0, width, 0, {
       stroke: TransitHunterColors.chordColorProperty,
-      lineDash: [SKY_VIEW_NODE_SETTINGS.CHORD_LINE_DASH_DASH, SKY_VIEW_NODE_SETTINGS.CONSTRUCTOR_CHORD_LINE_DASH_DASH],
+      lineDash: [SKY_VIEW_NODE_SETTINGS.CHORD_LINE_DASH_DASH, SKY_VIEW_NODE_SETTINGS.CHORD_LINE_DASH_GAP],
       lineWidth: SKY_VIEW_NODE_SETTINGS.CHORD_LINE_WIDTH,
     });
     const planet = new PlanetNode();
@@ -83,7 +83,7 @@ export class SkyViewNode extends Node {
       },
     );
     linkUntilDisposed(this, farAboveText.boundsProperty, () => {
-      farAboveText.left = cx + SKY_VIEW_NODE_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+      farAboveText.left = cx + SKY_VIEW_NODE_SETTINGS.LEFT_OFFSET;
       farAboveText.centerY = SKY_VIEW_NODE_SETTINGS.CENTER_Y_CENTER_Y;
     });
     farAbove.addChild(farAboveText);

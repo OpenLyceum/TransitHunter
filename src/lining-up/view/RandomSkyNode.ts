@@ -61,7 +61,7 @@ export class RandomSkyNode extends VBox {
     const stars = new Node();
     for (let i = 0; i < SAMPLE_SIZE; i++) {
       stars.addChild(
-        new Circle(RANDOM_SKY_NODE_SETTINGS.CONSTRUCTOR_RADIUS, {
+        new Circle(RANDOM_SKY_NODE_SETTINGS.RADIUS, {
           fill: TransitHunterColors.backgroundStarColorProperty,
           center: cellCenter(i),
         }),
@@ -84,7 +84,7 @@ export class RandomSkyNode extends VBox {
     newSkyButton.accessibleName = a11y.controls.newSkyStringProperty;
 
     super({
-      spacing: RANDOM_SKY_NODE_SETTINGS.CONSTRUCTOR_SPACING,
+      spacing: RANDOM_SKY_NODE_SETTINGS.SPACING,
       align: "left",
       children: [title, grid, countText, newSkyButton],
     });

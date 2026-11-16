@@ -60,7 +60,7 @@ export class MassRadiusDiagramNode extends Node {
           font: FONTS.TICK_LABEL,
           fill: TransitHunterColors.textColorProperty,
           centerX: x(mass),
-          top: height + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET,
+          top: height + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.TOP_OFFSET,
         }),
       );
     }
@@ -70,7 +70,7 @@ export class MassRadiusDiagramNode extends Node {
         new Text(tickLabel(radius), {
           font: FONTS.TICK_LABEL,
           fill: TransitHunterColors.textColorProperty,
-          right: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_RIGHT,
+          right: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.RIGHT,
           centerY: y(radius),
         }),
       );
@@ -116,7 +116,7 @@ export class MassRadiusDiagramNode extends Node {
       linkUntilDisposed(this, label.boundsProperty, () => {
         label.left = Math.min(
           x(mass) + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CURVE_LABEL_LEFT_OFFSET,
-          width - MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_CURVE_LABEL_LEFT_OFFSET - label.width,
+          width - MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CURVE_LABEL_RIGHT_INSET - label.width,
         );
         label.centerY = y(radius);
       });
@@ -143,7 +143,7 @@ export class MassRadiusDiagramNode extends Node {
         lineWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.WATER_GUIDE_LINE_WIDTH,
         lineDash: [
           MASS_RADIUS_DIAGRAM_NODE_SETTINGS.WATER_GUIDE_LINE_DASH_DASH,
-          MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_WATER_GUIDE_LINE_DASH_DASH,
+          MASS_RADIUS_DIAGRAM_NODE_SETTINGS.WATER_GUIDE_LINE_DASH_GAP,
         ],
       },
     );
@@ -177,7 +177,7 @@ export class MassRadiusDiagramNode extends Node {
     for (const planet of SOLAR_SYSTEM_PLANETS) {
       const center = { x: x(planet.massEarth), y: y(planet.radiusEarth) };
       solarSystem.addChild(
-        new Circle(MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_RADIUS, {
+        new Circle(MASS_RADIUS_DIAGRAM_NODE_SETTINGS.RADIUS, {
           fill: TransitHunterColors.mutedTextColorProperty,
           x: center.x,
           y: center.y,
@@ -188,15 +188,15 @@ export class MassRadiusDiagramNode extends Node {
         const label = new Text(name, {
           font: FONTS.SMALL,
           fill: TransitHunterColors.mutedTextColorProperty,
-          maxWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_LABEL_MAX_WIDTH,
+          maxWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.BODY_LABEL_MAX_WIDTH,
           top: center.y + 1,
         });
         // Labels near the right edge go on the left of their point.
         if (center.x + 5 + label.width > width) {
-          label.right = center.x - MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
+          label.right = center.x - MASS_RADIUS_DIAGRAM_NODE_SETTINGS.RIGHT_OFFSET;
           label.bottom = center.y - 2;
         } else {
-          label.left = center.x + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+          label.left = center.x + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.LEFT_OFFSET;
         }
         solarSystem.addChild(label);
       }

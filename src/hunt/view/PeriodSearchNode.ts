@@ -91,7 +91,7 @@ export class PeriodSearchNode extends Node {
     });
     xAxisLabel.boundsProperty.link(() => {
       xAxisLabel.centerX = width / 2;
-      xAxisLabel.top = height + PERIOD_SEARCH_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+      xAxisLabel.top = height + PERIOD_SEARCH_NODE_SETTINGS.TOP_OFFSET;
     });
     const yAxisLabel = new Text(strings.searchPowerAxisStringProperty, {
       font: FONTS.AXIS_LABEL,
@@ -120,7 +120,7 @@ export class PeriodSearchNode extends Node {
       },
     );
     progressText.boundsProperty.link(() => {
-      progressText.right = width - PERIOD_SEARCH_NODE_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
+      progressText.right = width - PERIOD_SEARCH_NODE_SETTINGS.RIGHT_OFFSET;
       progressText.top = PERIOD_SEARCH_NODE_SETTINGS.TOP_TOP;
     });
 
@@ -263,7 +263,7 @@ export class PeriodSearchNode extends Node {
               lineWidth: PERIOD_SEARCH_NODE_SETTINGS.CHILDREN_LINE_WIDTH,
               lineDash: [
                 PERIOD_SEARCH_NODE_SETTINGS.PLACE_MARKERS_LINE_DASH_DASH,
-                PERIOD_SEARCH_NODE_SETTINGS.CONSTRUCTOR_PLACE_MARKERS_LINE_DASH_DASH,
+                PERIOD_SEARCH_NODE_SETTINGS.PLACE_MARKERS_LINE_DASH_GAP,
               ],
             });
           })

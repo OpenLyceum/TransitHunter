@@ -115,7 +115,7 @@ export class Orbit3DViewNode extends Node {
     });
     linkUntilDisposed(this, rotateHint.boundsProperty, () => {
       rotateHint.left = ORBIT3_D_VIEW_NODE_SETTINGS.LEFT_LEFT;
-      rotateHint.bottom = height - ORBIT3_D_VIEW_NODE_SETTINGS.CONSTRUCTOR_BOTTOM_OFFSET;
+      rotateHint.bottom = height - ORBIT3_D_VIEW_NODE_SETTINGS.BOTTOM_OFFSET;
     });
     const spedUpNote = new Text(strings.spedUpBetweenTransitsStringProperty, {
       font: FONTS.SMALL,
@@ -123,7 +123,7 @@ export class Orbit3DViewNode extends Node {
       maxWidth: width / 2 - ORBIT3_D_VIEW_NODE_SETTINGS.SPED_UP_NOTE_MAX_WIDTH_OFFSET,
     });
     linkUntilDisposed(this, spedUpNote.boundsProperty, () => {
-      spedUpNote.right = width - ORBIT3_D_VIEW_NODE_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
+      spedUpNote.right = width - ORBIT3_D_VIEW_NODE_SETTINGS.RIGHT_OFFSET;
       spedUpNote.top = ORBIT3_D_VIEW_NODE_SETTINGS.TOP_TOP;
     });
     linkUntilDisposed(this, model.fastForwardingProperty, (fastForwarding) => {

@@ -255,7 +255,7 @@ export class RockOrGasScreenView extends ScreenView {
       },
     );
     wobbleCard.left = transitCard.left;
-    wobbleCard.top = transitCard.bottom + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+    wobbleCard.top = transitCard.bottom + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.TOP_OFFSET;
 
     // ── Density ───────────────────────────────────────────────────────────────
     const densityText = new RichText(
@@ -298,11 +298,11 @@ export class RockOrGasScreenView extends ScreenView {
         maxWidth: MIDDLE_WIDTH + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.DENSITY_PANEL_MAX_WIDTH_OFFSET,
       },
     );
-    densityPanel.left = transitCard.right + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+    densityPanel.left = transitCard.right + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.LEFT_OFFSET;
     densityPanel.top = bounds.minY + SCREEN_VIEW_MARGIN;
 
     const diagram = new MassRadiusDiagramNode(model, DIAGRAM_WIDTH, DIAGRAM_HEIGHT);
-    diagram.right = densityPanel.right - ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
+    diagram.right = densityPanel.right - ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.RIGHT_OFFSET;
     diagram.top = densityPanel.bottom + 18;
 
     // ── Planet choice ─────────────────────────────────────────────────────────
@@ -341,7 +341,7 @@ export class RockOrGasScreenView extends ScreenView {
           title(strings.choosePlanetStringProperty),
           planetRadios,
           new HBox({
-            spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_CONTROL_PANEL_SPACING,
+            spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONTROL_COLUMN_SPACING,
             children: [
               explanationButton,
               new Text(common.explanationButtonStringProperty, {

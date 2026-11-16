@@ -79,14 +79,14 @@ export class LiningUpScreenView extends ScreenView {
     // ── Views ─────────────────────────────────────────────────────────────────
     this.orbitView = new Orbit3DViewNode(model, VIEW_WIDTH, VIEW_3D_HEIGHT);
     this.orbitView.left = bounds.minX + SCREEN_VIEW_MARGIN;
-    this.orbitView.top = bounds.minY + SCREEN_VIEW_MARGIN + LINING_UP_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+    this.orbitView.top = bounds.minY + SCREEN_VIEW_MARGIN + LINING_UP_SCREEN_VIEW_SETTINGS.TOP_OFFSET;
     const skyView = new SkyViewNode(model, VIEW_WIDTH, SKY_VIEW_HEIGHT, SKY_STAR_RADIUS);
     skyView.left = this.orbitView.left;
     skyView.top = this.orbitView.bottom + 32;
 
     // ── Chart and random sky ──────────────────────────────────────────────────
     const chart = new LiningUpChartNode(model, CHART_WIDTH, CHART_HEIGHT);
-    chart.left = this.orbitView.right + LINING_UP_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+    chart.left = this.orbitView.right + LINING_UP_SCREEN_VIEW_SETTINGS.LEFT_OFFSET;
     chart.top = bounds.minY + SCREEN_VIEW_MARGIN + 22;
     const randomSky = new RandomSkyNode(model, CHART_WIDTH + 50);
     randomSky.left = this.orbitView.right + 22;
@@ -257,7 +257,7 @@ export class LiningUpScreenView extends ScreenView {
       right: bounds.maxX - SCREEN_VIEW_MARGIN,
       bottom: bounds.maxY - SCREEN_VIEW_MARGIN,
     });
-    timeControlNode.right = resetAllButton.left - LINING_UP_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
+    timeControlNode.right = resetAllButton.left - LINING_UP_SCREEN_VIEW_SETTINGS.RIGHT_OFFSET;
     timeControlNode.bottom = resetAllButton.bottom;
 
     this.children = [

@@ -152,7 +152,7 @@ export class HuntChartNode extends Node {
       stroke: TransitHunterColors.chordColorProperty,
       lineDash: [
         HUNT_CHART_NODE_SETTINGS.CENTRE_LINE_LINE_DASH_DASH,
-        HUNT_CHART_NODE_SETTINGS.CONSTRUCTOR_CENTRE_LINE_LINE_DASH_DASH,
+        HUNT_CHART_NODE_SETTINGS.CENTRE_LINE_LINE_DASH_GAP,
       ],
     });
     const revealLayer = new Node();
@@ -164,7 +164,7 @@ export class HuntChartNode extends Node {
       lineWidth: HUNT_CHART_NODE_SETTINGS.DEPTH_LINE_VISUAL_LINE_WIDTH,
       lineDash: [
         HUNT_CHART_NODE_SETTINGS.DEPTH_LINE_VISUAL_LINE_DASH_DASH,
-        HUNT_CHART_NODE_SETTINGS.CONSTRUCTOR_DEPTH_LINE_VISUAL_LINE_DASH_DASH,
+        HUNT_CHART_NODE_SETTINGS.DEPTH_LINE_VISUAL_LINE_DASH_GAP,
       ],
     });
     const depthHandle = new Rectangle(
@@ -481,7 +481,7 @@ export class HuntChartNode extends Node {
       spacing: HUNT_CHART_NODE_SETTINGS.CONTROLS_SPACING,
       children: [
         new HBox({
-          spacing: HUNT_CHART_NODE_SETTINGS.CONSTRUCTOR_CONTROLS_SPACING,
+          spacing: HUNT_CHART_NODE_SETTINGS.CONTROL_ROW_SPACING,
           children: [
             scrollEarlierButton,
             zoomOutButton,
@@ -496,7 +496,7 @@ export class HuntChartNode extends Node {
     });
     linkUntilDisposed(this, controls.boundsProperty, () => {
       controls.centerX = width / 2;
-      controls.top = height + HUNT_CHART_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+      controls.top = height + HUNT_CHART_NODE_SETTINGS.TOP_OFFSET;
     });
     this.buttons = [
       scrollEarlierButton,

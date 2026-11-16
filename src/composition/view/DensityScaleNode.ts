@@ -68,7 +68,7 @@ export class DensityScaleNode extends Node {
           font: FONTS.TICK_LABEL,
           fill: TransitHunterColors.textColorProperty,
           centerX: x(rho),
-          top: BAR_HEIGHT + DENSITY_SCALE_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET,
+          top: BAR_HEIGHT + DENSITY_SCALE_NODE_SETTINGS.TOP_OFFSET,
         }),
       );
     }

@@ -81,8 +81,8 @@ export class PlanetHuntScreenView extends ScreenView {
 
     // ── Chart ─────────────────────────────────────────────────────────────────
     this.chart = new HuntChartNode(model, CHART_WIDTH, CHART_HEIGHT);
-    this.chart.left = bounds.minX + SCREEN_VIEW_MARGIN + PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
-    this.chart.top = bounds.minY + SCREEN_VIEW_MARGIN + PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
+    this.chart.left = bounds.minX + SCREEN_VIEW_MARGIN + PLANET_HUNT_SCREEN_VIEW_SETTINGS.LEFT_OFFSET;
+    this.chart.top = bounds.minY + SCREEN_VIEW_MARGIN + PLANET_HUNT_SCREEN_VIEW_SETTINGS.TOP_OFFSET;
     const searchNode = new PeriodSearchNode(model, CHART_WIDTH, CHART_HEIGHT);
     searchNode.translation = this.chart.translation;
     model.showSearchProperty.link((show) => {
@@ -196,14 +196,14 @@ export class PlanetHuntScreenView extends ScreenView {
           }),
           text(marksTextProperty),
           new HBox({
-            spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_MEASUREMENT_PANEL_SPACING,
+            spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.MEASUREMENT_SECTION_SPACING,
             children: [useSpacingButton, clearMarksButton],
           }),
           radiusText,
           starText,
           equation,
           new HBox({
-            spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_MEASUREMENT_PANEL_SPACING,
+            spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.MEASUREMENT_SECTION_SPACING,
             children: [
               explanationButton,
               new Text(common.explanationButtonStringProperty, {
@@ -217,7 +217,7 @@ export class PlanetHuntScreenView extends ScreenView {
       }),
       {
         minWidth: PANEL_WIDTH + PLANET_HUNT_SCREEN_VIEW_SETTINGS.MEASUREMENT_PANEL_MIN_WIDTH_OFFSET,
-        maxWidth: PANEL_WIDTH + PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_MEASUREMENT_PANEL_MAX_WIDTH_OFFSET,
+        maxWidth: PANEL_WIDTH + PLANET_HUNT_SCREEN_VIEW_SETTINGS.MEASUREMENT_PANEL_WIDTH_PAD,
       },
     );
     measurementPanel.left = bounds.minX + SCREEN_VIEW_MARGIN;
