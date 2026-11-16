@@ -20,7 +20,9 @@ import {
   UNIFORM_DISK,
   uniformDepth,
 } from "../src/common/model/transitPhysics.js";
-import { AU_M, EARTH_RADIUS_M, JUPITER_RADIUS_M, SUN_RADIUS_M } from "../src/TransitHunterConstants.js";
+import { AU_M, EARTH_RADII_PER_JUPITER, EARTH_RADIUS_M, SUN_RADIUS_M } from "../src/TransitHunterConstants.js";
+
+const JUPITER_RADIUS_M = EARTH_RADII_PER_JUPITER * EARTH_RADIUS_M;
 
 const EDGE_ON = Math.PI / 2;
 const DEG = Math.PI / 180;

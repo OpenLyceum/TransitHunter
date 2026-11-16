@@ -31,7 +31,7 @@ export const EARTH_MASS_KG = 5.972e24;
 export const SUN_RADIUS_M = 6.957e8;
 
 /** Jupiter equatorial radius, m. */
-export const JUPITER_RADIUS_M = 7.1492e7;
+const JUPITER_RADIUS_M = 7.1492e7;
 
 /** Earth mean radius, m. */
 export const EARTH_RADIUS_M = 6.371e6;
