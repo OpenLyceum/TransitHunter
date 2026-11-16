@@ -48,6 +48,9 @@ export const SUN_TEMPERATURE_K = 5772;
 /** Earth's mean density, g/cm³. */
 export const EARTH_DENSITY_G_CM3 = 5.514;
 
+/** Earth masses per Jupiter mass (IAU nominal). */
+export const EARTH_MASSES_PER_JUPITER = 317.83;
+
 /** Density of liquid water, g/cm³ (the "would it float?" line). */
 export const WATER_DENSITY_G_CM3 = 1;
 
@@ -253,8 +256,6 @@ export const FORMATTERS_SETTINGS = {
 
   /** Earth masses above which a planet mass reads in Jupiter masses. */
   JUPITER_MASS_THRESHOLD_EARTH: 30,
-  /** Earth masses per Jupiter mass. */
-  EARTH_MASSES_PER_JUPITER: 317.83,
 } as const;
 
 /** Settings for composition/view/DensityScaleNode.ts. Layout lengths are in px; counts and ratios are dimensionless. */
@@ -269,7 +270,7 @@ export const DENSITY_SCALE_NODE_SETTINGS = {
   MAX_DENSITY: 9,
   /** Density of iron, g/cm³ (uncompressed). */
   IRON_DENSITY: 7.87,
-  /** Density of iron, g/cm³ (uncompressed). */
+  /** Height of the density bar, px. */
   BAR_HEIGHT: 12,
   BAR_CORNER_X: 3,
   BAR_CORNER_Y: 3,

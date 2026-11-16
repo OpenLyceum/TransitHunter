@@ -1,4 +1,4 @@
-import { FORMATTERS_SETTINGS } from "../../TransitHunterConstants.js";
+import { EARTH_MASSES_PER_JUPITER, FORMATTERS_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * formatters.ts
  *
@@ -85,9 +85,6 @@ export function formatHours(hours: number): string {
 
 /** Earth masses above which a planet mass reads in Jupiter masses. */
 const JUPITER_MASS_THRESHOLD_EARTH: number = FORMATTERS_SETTINGS.JUPITER_MASS_THRESHOLD_EARTH;
-
-/** Earth masses per Jupiter mass. */
-const EARTH_MASSES_PER_JUPITER: number = FORMATTERS_SETTINGS.EARTH_MASSES_PER_JUPITER;
 
 /** A planet mass given in Earth masses: in Earth masses when small, Jupiter masses when large. */
 export function formatPlanetMass(massEarth: number): string {
