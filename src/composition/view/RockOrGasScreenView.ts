@@ -1,3 +1,4 @@
+import { ROCK_OR_GAS_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * RockOrGasScreenView.ts
  *
@@ -42,16 +43,16 @@ import { RockOrGasScreenSummaryContent } from "./RockOrGasScreenSummaryContent.j
 
 export type RockOrGasScreenViewOptions = ScreenViewOptions;
 
-const CARD_WIDTH = 300;
-const MIDDLE_WIDTH = 320;
-const DIAGRAM_WIDTH = 265;
-const DIAGRAM_HEIGHT = 215;
+const CARD_WIDTH: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CARD_WIDTH;
+const MIDDLE_WIDTH: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.MIDDLE_WIDTH;
+const DIAGRAM_WIDTH: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.DIAGRAM_WIDTH;
+const DIAGRAM_HEIGHT: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.DIAGRAM_HEIGHT;
 
 /** Size-comparison scale, px per Earth radius. */
-const PX_PER_EARTH_RADIUS = 2;
+const PX_PER_EARTH_RADIUS: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.PX_PER_EARTH_RADIUS;
 
 /** Height of the size comparison: the largest planet (Kepler-7 b, 18 R⊕) plus its label. */
-const SIZE_ROW_HEIGHT = 92;
+const SIZE_ROW_HEIGHT: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.SIZE_ROW_HEIGHT;
 
 const JUPITER_IN_EARTH_RADII = JUPITER_RADIUS_M / EARTH_RADIUS_M;
 
@@ -96,22 +97,33 @@ export class RockOrGasScreenView extends ScreenView {
     // ── From the transit ──────────────────────────────────────────────────────
     const radiusValue = (): string => {
       const planet = model.archiveProperty.value;
-      return `${valueWithUnits(formatSignificant(planet.radiusEarth, 3), units.earthRadiiStringProperty.value)} = ${valueWithUnits(
-        formatSignificant(planet.radiusEarth / JUPITER_IN_EARTH_RADII, 2),
+      return `${valueWithUnits(formatSignificant(planet.radiusEarth, ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.RADIUS_EARTH_FORMAT_SIGNIFICANT_DIGITS), units.earthRadiiStringProperty.value)} = ${valueWithUnits(
+        formatSignificant(
+          planet.radiusEarth / JUPITER_IN_EARTH_RADII,
+          ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.RADIUS_VALUE_DIGITS,
+        ),
         units.jupiterRadiiStringProperty.value,
       )}`;
     };
     const transitLines = new VBox({
-      spacing: 5,
+      spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.TRANSIT_LINES_SPACING,
       align: "left",
       children: [
         title(strings.transitTitleStringProperty),
         line(
           new PatternStringProperty(strings.depthPatternStringProperty, {
-            depth: derived(() => formatSignificant(model.archiveProperty.value.depthPercent ?? 0, 2)),
+            depth: derived(() =>
+              formatSignificant(
+                model.archiveProperty.value.depthPercent ?? 0,
+                ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.TRANSIT_LINES_DIGITS,
+              ),
+            ),
             starRadius: derived(() =>
               valueWithUnits(
-                formatSignificant(model.archiveProperty.value.starRadiusSun, 3),
+                formatSignificant(
+                  model.archiveProperty.value.starRadiusSun,
+                  ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.STAR_RADIUS_SUN_FORMAT_SIGNIFICANT_DIGITS,
+                ),
                 units.solarRadiiStringProperty.value,
               ),
             ),
@@ -120,7 +132,12 @@ export class RockOrGasScreenView extends ScreenView {
         line(new PatternStringProperty(strings.radiusPatternStringProperty, { radius: derived(radiusValue) })),
         line(
           new PatternStringProperty(strings.tiltPatternStringProperty, {
-            tilt: derived(() => formatSignificant(model.archiveProperty.value.inclinationDeg ?? 90, 3)),
+            tilt: derived(() =>
+              formatSignificant(
+                model.archiveProperty.value.inclinationDeg ?? 90,
+                ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.TRANSIT_LINES_DIGITS_SEGMENT_2,
+              ),
+            ),
           }),
           FONTS.SMALL,
         ),
@@ -134,20 +151,20 @@ export class RockOrGasScreenView extends ScreenView {
       fill: typeof TransitHunterColors.planetColorProperty,
     ): VBox =>
       new VBox({
-        spacing: 3,
+        spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.SIZE_DISC_SPACING,
         children: [
           new Circle(Math.max(1.5, radiusEarth * PX_PER_EARTH_RADIUS), { fill: fill }),
           new Text(labelProperty, {
             font: FONTS.SMALL,
             fill: TransitHunterColors.mutedTextColorProperty,
-            maxWidth: 90,
+            maxWidth: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.SIZE_DISC_MAX_WIDTH,
           }),
         ],
       });
     const planetDiscHolder = new Node();
     const planetNameProperty = new DerivedProperty([model.archiveProperty], (planet) => planet.name);
     const sizeRow = new HBox({
-      spacing: 16,
+      spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.SIZE_ROW_SPACING,
       align: "bottom",
       children: [
         planetDiscHolder,
@@ -165,7 +182,7 @@ export class RockOrGasScreenView extends ScreenView {
     });
     const transitCard = new TransitHunterPanel(
       new VBox({
-        spacing: 8,
+        spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.TRANSIT_CARD_SPACING,
         align: "left",
         children: [
           transitLines,
@@ -178,7 +195,10 @@ export class RockOrGasScreenView extends ScreenView {
           }),
         ],
       }),
-      { minWidth: CARD_WIDTH + 24, maxWidth: CARD_WIDTH + 24 },
+      {
+        minWidth: CARD_WIDTH + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.TRANSIT_CARD_MIN_WIDTH_OFFSET,
+        maxWidth: CARD_WIDTH + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.TRANSIT_CARD_MAX_WIDTH_OFFSET,
+      },
     );
     transitCard.left = bounds.minX + SCREEN_VIEW_MARGIN;
     transitCard.top = bounds.minY + SCREEN_VIEW_MARGIN;
@@ -203,9 +223,15 @@ export class RockOrGasScreenView extends ScreenView {
           });
         }
         const text = StringUtils.fillIn(strings.wobblePatternStringProperty.value, {
-          k: formatSignificant(planet.rvAmplitude ?? 0, 3),
+          k: formatSignificant(planet.rvAmplitude ?? 0, ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.TEXT_DIGITS),
           period: formatDays(planet.periodDays),
-          starMass: valueWithUnits(formatSignificant(planet.starMassSun, 3), units.solarMassesStringProperty.value),
+          starMass: valueWithUnits(
+            formatSignificant(
+              planet.starMassSun,
+              ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.STAR_MASS_SUN_FORMAT_SIGNIFICANT_DIGITS,
+            ),
+            units.solarMassesStringProperty.value,
+          ),
           minimum: formatPlanetMass(mass.minimum ?? 0),
           mass: formatPlanetMass(mass.trueMass),
         });
@@ -221,16 +247,25 @@ export class RockOrGasScreenView extends ScreenView {
       leading: 4,
     });
     const wobbleCard = new TransitHunterPanel(
-      new VBox({ spacing: 6, align: "left", children: [title(strings.wobbleTitleStringProperty), wobbleLabel] }),
-      { minWidth: CARD_WIDTH + 24, maxWidth: CARD_WIDTH + 24 },
+      new VBox({
+        spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.WOBBLE_CARD_SPACING,
+        align: "left",
+        children: [title(strings.wobbleTitleStringProperty), wobbleLabel],
+      }),
+      {
+        minWidth: CARD_WIDTH + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.WOBBLE_CARD_MIN_WIDTH_OFFSET,
+        maxWidth: CARD_WIDTH + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.WOBBLE_CARD_MAX_WIDTH_OFFSET,
+      },
     );
     wobbleCard.left = transitCard.left;
-    wobbleCard.top = transitCard.bottom + 12;
+    wobbleCard.top = transitCard.bottom + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
 
     // ── Density ───────────────────────────────────────────────────────────────
     const densityText = new RichText(
       new PatternStringProperty(strings.densityPatternStringProperty, {
-        value: new DerivedProperty([model.densityProperty], (rho) => formatSignificant(rho, 2)),
+        value: new DerivedProperty([model.densityProperty], (rho) =>
+          formatSignificant(rho, ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.DENSITY_TEXT_DIGITS),
+        ),
       }),
       { font: FONTS.BIG_READOUT, fill: TransitHunterColors.textColorProperty, maxWidth: MIDDLE_WIDTH },
     );
@@ -251,17 +286,26 @@ export class RockOrGasScreenView extends ScreenView {
     const equation = createEquationNode(strings.equationStringProperty, MIDDLE_WIDTH);
     const densityPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 7,
+        spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.DENSITY_PANEL_SPACING,
         align: "left",
-        children: [densityText, kindText, floatText, new Node({ children: [scale], x: 10 }), equation],
+        children: [
+          densityText,
+          kindText,
+          floatText,
+          new Node({ children: [scale], x: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.DENSITY_PANEL_X }),
+          equation,
+        ],
       }),
-      { minWidth: MIDDLE_WIDTH + 24, maxWidth: MIDDLE_WIDTH + 24 },
+      {
+        minWidth: MIDDLE_WIDTH + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.DENSITY_PANEL_MIN_WIDTH_OFFSET,
+        maxWidth: MIDDLE_WIDTH + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.DENSITY_PANEL_MAX_WIDTH_OFFSET,
+      },
     );
-    densityPanel.left = transitCard.right + 12;
+    densityPanel.left = transitCard.right + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
     densityPanel.top = bounds.minY + SCREEN_VIEW_MARGIN;
 
     const diagram = new MassRadiusDiagramNode(model, DIAGRAM_WIDTH, DIAGRAM_HEIGHT);
-    diagram.right = densityPanel.right - 4;
+    diagram.right = densityPanel.right - ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
     diagram.top = densityPanel.bottom + 18;
 
     // ── Planet choice ─────────────────────────────────────────────────────────
@@ -273,10 +317,14 @@ export class RockOrGasScreenView extends ScreenView {
           new Text(planet.archiveName, {
             font: FONTS.LABEL,
             fill: TransitHunterColors.textColorProperty,
-            maxWidth: CONTROL_PANEL_WIDTH - 40,
+            maxWidth: CONTROL_PANEL_WIDTH - ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.PLANET_RADIOS_MAX_WIDTH_OFFSET,
           }),
       })),
-      { spacing: 7, radioButtonOptions: { radius: 7 }, accessibleName: a11y.controls.planetStringProperty },
+      {
+        spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.PLANET_RADIOS_SPACING,
+        radioButtonOptions: { radius: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.PLANET_RADIOS_RADIUS },
+        accessibleName: a11y.controls.planetStringProperty,
+      },
     );
     const explanationButton = createExplanationButton(
       strings.explanationTitleStringProperty,
@@ -290,25 +338,25 @@ export class RockOrGasScreenView extends ScreenView {
     );
     const controlPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 10,
+        spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_SPACING,
         align: "left",
         children: [
           title(strings.choosePlanetStringProperty),
           planetRadios,
           new HBox({
-            spacing: 8,
+            spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_CONTROL_PANEL_SPACING,
             children: [
               explanationButton,
               new Text(common.explanationButtonStringProperty, {
                 font: FONTS.LABEL,
                 fill: TransitHunterColors.textColorProperty,
-                maxWidth: CONTROL_PANEL_WIDTH - 40,
+                maxWidth: CONTROL_PANEL_WIDTH - ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_MAX_WIDTH_OFFSET,
               }),
             ],
           }),
         ],
       }),
-      { minWidth: CONTROL_PANEL_WIDTH + 24 },
+      { minWidth: CONTROL_PANEL_WIDTH + ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_MIN_WIDTH_OFFSET },
     );
     controlPanel.right = bounds.maxX - SCREEN_VIEW_MARGIN;
     controlPanel.top = bounds.minY + SCREEN_VIEW_MARGIN;

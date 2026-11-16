@@ -1,3 +1,4 @@
+import { CHART_FRAME_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * ChartFrameNode.ts
  *
@@ -111,10 +112,10 @@ export class ChartFrameNode extends Node {
     // brightness axis would otherwise run into it), and never closer than 32 px to the axis.
     const placeAxisLabels = (): void => {
       xAxisLabel.centerX = options.viewWidth / 2;
-      xAxisLabel.top = options.viewHeight + 20;
+      xAxisLabel.top = options.viewHeight + CHART_FRAME_NODE_SETTINGS.PLACE_AXIS_LABELS_TOP_OFFSET;
       yAxisLabel.centerY = options.viewHeight / 2;
       const labelsLeft = this.labelsY.bounds.isFinite() ? this.labelsY.left : 0;
-      yAxisLabel.right = Math.min(-32, labelsLeft - 6);
+      yAxisLabel.right = Math.min(-32, labelsLeft - CHART_FRAME_NODE_SETTINGS.PLACE_AXIS_LABELS_RIGHT_OFFSET);
     };
     xAxisLabel.boundsProperty.lazyLink(placeAxisLabels);
     yAxisLabel.boundsProperty.lazyLink(placeAxisLabels);

@@ -1,3 +1,5 @@
+import { BOX_SEARCH_SETTINGS } from "../../TransitHunterConstants.js";
+
 /**
  * boxSearch.ts
  *
@@ -24,16 +26,16 @@
  */
 
 /** Longest box tried, hours (Kepler-11 g's transit lasts 9.5 h). */
-const MAX_DURATION_HOURS = 16;
+const MAX_DURATION_HOURS: number = BOX_SEARCH_SETTINGS.MAX_DURATION_HOURS;
 
 /** Longest box tried, as a fraction of the period. */
-const MAX_DURATION_FRACTION = 0.12;
+const MAX_DURATION_FRACTION: number = BOX_SEARCH_SETTINGS.MAX_DURATION_FRACTION;
 
 /** Shortest box tried, hours, whatever the cadence. */
 const MIN_DURATION_HOURS = 1;
 
 /** A transit across the Sun seen from 1 AU (central, P = 1 yr) lasts about this long, hours. */
-const SUN_TRANSIT_HOURS_AT_ONE_YEAR = 13;
+const SUN_TRANSIT_HOURS_AT_ONE_YEAR: number = BOX_SEARCH_SETTINGS.SUN_TRANSIT_HOURS_AT_ONE_YEAR;
 
 /** Duration of a central transit across a Sun-like star at this period, days (D ∝ P^⅓). */
 function sunTransitDays(period: number): number {
@@ -41,19 +43,19 @@ function sunTransitDays(period: number): number {
 }
 
 /** Most phase bins of one fold (long periods get wider bins). */
-const MAX_PHASE_BINS = 30_000;
+const MAX_PHASE_BINS: number = BOX_SEARCH_SETTINGS.MAX_PHASE_BINS;
 
 /**
  * Largest drift between neighbouring trial periods over the run, in grid durations. A transit
  * smeared by this much still shows (with somewhat less signal); the peak is then refined.
  */
-const GRID_DRIFT = 1.5;
+const GRID_DRIFT: number = BOX_SEARCH_SETTINGS.GRID_DRIFT;
 
 /** Elementary steps between clock checks in {@link BoxSearch.advanceFor}. */
-const OPERATIONS_PER_CHUNK = 200_000;
+const OPERATIONS_PER_CHUNK: number = BOX_SEARCH_SETTINGS.OPERATIONS_PER_CHUNK;
 
 /** Steps of the fine search either side of a peak in {@link BoxSearch.refinePeak}. */
-const REFINE_STEPS = 40;
+const REFINE_STEPS: number = BOX_SEARCH_SETTINGS.REFINE_STEPS;
 
 export type BoxSearchOptions = {
   /** Data cadence (bin width), days. */
@@ -140,9 +142,13 @@ export class BoxSearch {
     }
     this.span = Math.max(last - first, options.step);
 
-    const minDuration = Math.max(MIN_DURATION_HOURS / 24, 1.5 * options.step);
+    const minDuration = Math.max(MIN_DURATION_HOURS / 24, BOX_SEARCH_SETTINGS.MIN_DURATION_BINS * options.step);
     this.durations = [];
-    for (let d = minDuration; d <= MAX_DURATION_HOURS / 24 + 1e-9; d *= 1.5) {
+    for (
+      let d = minDuration;
+      d <= MAX_DURATION_HOURS / 24 + BOX_SEARCH_SETTINGS.DURATION_EPSILON_DAYS;
+      d *= BOX_SEARCH_SETTINGS.DURATION_STEP_FACTOR
+    ) {
       this.durations.push(d);
     }
     this.binWidth = minDuration / 3;
@@ -157,7 +163,7 @@ export class BoxSearch {
     const periods: number[] = [];
     for (let period = minPeriod; period <= maxPeriod; ) {
       periods.push(period);
-      const gridDuration = Math.max(minDuration, 0.5 * sunTransitDays(period));
+      const gridDuration = Math.max(minDuration, BOX_SEARCH_SETTINGS.GRID_TRANSIT_FRACTION * sunTransitDays(period));
       period *= 1 + (GRID_DRIFT * gridDuration) / this.span;
     }
     this.periods = Float64Array.from(periods.length > 0 ? periods : [minPeriod]);
@@ -288,7 +294,10 @@ export class BoxSearch {
 
   /** The best dimming box at one period. */
   private searchPeriod(period: number): BoxFit {
-    const binCount = Math.max(3, Math.min(MAX_PHASE_BINS, Math.ceil(period / this.binWidth)));
+    const binCount = Math.max(
+      BOX_SEARCH_SETTINGS.MIN_PHASE_BINS,
+      Math.min(MAX_PHASE_BINS, Math.ceil(period / this.binWidth)),
+    );
     this.fold(period, binCount);
     const sums = this.binSums;
     const counts = this.binCounts;

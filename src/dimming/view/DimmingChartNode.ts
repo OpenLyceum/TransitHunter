@@ -1,3 +1,4 @@
+import { DIMMING_CHART_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * DimmingChartNode.ts
  *
@@ -20,7 +21,7 @@ import { FONTS } from "../../TransitHunterConstants.js";
 import { type DimmingModel, TRACE_ORBITS } from "../model/DimmingModel.js";
 
 /** Headroom above 100 % as a fraction of the zoomed span. */
-const HEADROOM = 0.15;
+const HEADROOM: number = DIMMING_CHART_NODE_SETTINGS.HEADROOM;
 
 /** The brightness span (percent below 100) the axis shows for a dip of `depth` (fraction). */
 function brightnessSpan(depth: number): number {
@@ -38,25 +39,27 @@ export class DimmingChartNode extends Node {
       viewWidth: width,
       viewHeight: height,
       xRange: new Range(0, TRACE_ORBITS),
-      yRange: new Range(99, 100.2),
+      yRange: new Range(DIMMING_CHART_NODE_SETTINGS.FRAME_RANGE_MIN, DIMMING_CHART_NODE_SETTINGS.FRAME_RANGE_MAX),
       xAxisLabelProperty: common.orbitsAxisStringProperty,
       yAxisLabelProperty: common.brightnessAxisStringProperty,
       targetDivisions: 4,
     });
     const line = new LinePlot(frame.chartTransform, [], {
       stroke: TransitHunterColors.lightCurveColorProperty,
-      lineWidth: 2,
+      lineWidth: DIMMING_CHART_NODE_SETTINGS.LINE_LINE_WIDTH,
     });
     frame.plotLayer.addChild(line);
-    const liveDot = new Circle(4, { fill: TransitHunterColors.liveDotColorProperty });
+    const liveDot = new Circle(DIMMING_CHART_NODE_SETTINGS.LIVE_DOT_RADIUS, {
+      fill: TransitHunterColors.liveDotColorProperty,
+    });
     frame.overlayLayer.addChild(liveDot);
 
     const title = new Text(strings.chartTitleStringProperty, {
       font: FONTS.TITLE,
       fill: TransitHunterColors.textColorProperty,
-      maxWidth: width + 40,
-      left: -40,
-      bottom: -6,
+      maxWidth: width + DIMMING_CHART_NODE_SETTINGS.TITLE_MAX_WIDTH_OFFSET,
+      left: DIMMING_CHART_NODE_SETTINGS.TITLE_LEFT,
+      bottom: DIMMING_CHART_NODE_SETTINGS.TITLE_BOTTOM,
     });
 
     const spanTextProperty = new StringProperty("1");
@@ -65,12 +68,12 @@ export class DimmingChartNode extends Node {
       {
         font: FONTS.SMALL,
         fill: TransitHunterColors.mutedTextColorProperty,
-        maxWidth: width + 40,
+        maxWidth: width + DIMMING_CHART_NODE_SETTINGS.ZOOM_NOTE_MAX_WIDTH_OFFSET,
       },
     );
     linkUntilDisposed(this, zoomNote.boundsProperty, () => {
-      zoomNote.left = -40;
-      zoomNote.top = height + 40;
+      zoomNote.left = DIMMING_CHART_NODE_SETTINGS.LEFT_LEFT;
+      zoomNote.top = height + DIMMING_CHART_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     });
 
     this.children = [title, frame, zoomNote];
@@ -83,7 +86,7 @@ export class DimmingChartNode extends Node {
         if (newSpan !== span) {
           span = newSpan;
           frame.setRanges(new Range(0, TRACE_ORBITS), new Range(100 - span, 100 + HEADROOM * span));
-          spanTextProperty.value = formatSignificant(span, 2);
+          spanTextProperty.value = formatSignificant(span, DIMMING_CHART_NODE_SETTINGS.SPAN_TEXT_PROPERTY_DIGITS);
           zoomNote.visible = span < 100;
         }
         const samples = model.traceSamples();

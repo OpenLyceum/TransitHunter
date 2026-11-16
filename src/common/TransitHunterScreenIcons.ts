@@ -15,7 +15,7 @@ import { Circle, Line, Node, Path, Rectangle } from "scenerystack/scenery";
 import { ArrowNode } from "scenerystack/scenery-phet";
 import { ScreenIcon } from "scenerystack/sim";
 import TransitHunterColors from "../TransitHunterColors.js";
-import { SUN_TEMPERATURE_K } from "../TransitHunterConstants.js";
+import { SUN_TEMPERATURE_K, TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS } from "../TransitHunterConstants.js";
 import { StarNode } from "./view/StarNode.js";
 
 const W = 548;
@@ -67,24 +67,36 @@ function dots(x0: number, x1: number, step: number, f: (x: number) => number, sc
   const random = pseudoRandom(seed);
   const shape = new Shape();
   for (let x = x0; x <= x1; x += step) {
-    shape.circle(x, f(x) + scatter * noise(random), 3.2);
+    shape.circle(x, f(x) + scatter * noise(random), TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.DOTS_RADIUS);
     shape.newSubpath();
   }
   return new Path(shape, { fill: TransitHunterColors.measurementColorProperty });
 }
 
 export function createDimmingIcon(): ScreenIcon {
-  const star = new StarNode(SUN_TEMPERATURE_K, 105, { x: W / 2, y: 145, glowScale: 1.3 });
-  const planet = new Circle(28, {
+  const star = new StarNode(SUN_TEMPERATURE_K, 105, {
+    x: W / 2,
+    y: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.STAR_Y,
+    glowScale: 1.3,
+  });
+  const planet = new Circle(TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.PLANET_RADIUS, {
     fill: TransitHunterColors.planetSilhouetteColorProperty,
     stroke: TransitHunterColors.jupiterPlanetColorProperty,
-    lineWidth: 3,
-    x: W / 2 + 35,
-    y: 160,
+    lineWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.PLANET_LINE_WIDTH,
+    x: W / 2 + TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.PLANET_X_OFFSET,
+    y: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.PLANET_Y,
   });
   const lightCurve = new Path(
-    curve(40, W - 40, (x) => 320 + 34 * dipShape(x, W / 2 + 35, 70)),
-    { stroke: TransitHunterColors.lightCurveColorProperty, lineWidth: 8, lineJoin: "round" },
+    curve(
+      40,
+      W - 40,
+      (x) => 320 + 34 * dipShape(x, W / 2 + 35, TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.LIGHT_CURVE_HALF_WIDTH),
+    ),
+    {
+      stroke: TransitHunterColors.lightCurveColorProperty,
+      lineWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.LIGHT_CURVE_LINE_WIDTH,
+      lineJoin: "round",
+    },
   );
   return iconFrom(star, planet, lightCurve);
 }
@@ -92,19 +104,35 @@ export function createDimmingIcon(): ScreenIcon {
 export function createLiningUpIcon(): ScreenIcon {
   const cx = W / 2 - 20;
   const cy = H / 2 - 10;
-  const orbit = new Path(new Shape().ellipse(cx, cy, 210, 62, -0.12), {
-    stroke: TransitHunterColors.orbitPathColorProperty,
-    lineWidth: 6,
-    lineDash: [16, 12],
-  });
+  const orbit = new Path(
+    new Shape().ellipse(
+      cx,
+      cy,
+      TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.ORBIT_RADIUS_X,
+      TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.ORBIT_RADIUS_Y,
+      TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.ORBIT_ROTATION,
+    ),
+    {
+      stroke: TransitHunterColors.orbitPathColorProperty,
+      lineWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.ORBIT_LINE_WIDTH,
+      lineDash: [
+        TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.ORBIT_LINE_DASH_DASH,
+        TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.CREATE_LINING_UP_ICON_ORBIT_LINE_DASH_DASH,
+      ],
+    },
+  );
   const star = new StarNode(SUN_TEMPERATURE_K, 34, { x: cx, y: cy });
-  const planet = new Circle(16, { fill: TransitHunterColors.jupiterPlanetColorProperty, x: cx + 190, y: cy - 2 });
+  const planet = new Circle(TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.PLANET_RADIUS_SEGMENT_2, {
+    fill: TransitHunterColors.jupiterPlanetColorProperty,
+    x: cx + TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.CREATE_LINING_UP_ICON_PLANET_X_OFFSET,
+    y: cy - 2,
+  });
   const toEarth = new ArrowNode(cx, cy, W - 20, cy + 135, {
     fill: TransitHunterColors.earthColorProperty,
     stroke: null,
-    headHeight: 44,
-    headWidth: 50,
-    tailWidth: 14,
+    headHeight: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.TO_EARTH_HEAD_HEIGHT,
+    headWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.TO_EARTH_HEAD_WIDTH,
+    tailWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.TO_EARTH_TAIL_WIDTH,
   });
   return iconFrom(orbit, toEarth, star, planet);
 }
@@ -112,40 +140,55 @@ export function createLiningUpIcon(): ScreenIcon {
 export function createLightCurveIcon(): ScreenIcon {
   const level = 150;
   const depth = 120;
-  const f = (x: number): number => level + depth * (dipShape(x, 110, 34) + dipShape(x, 274, 34) + dipShape(x, 438, 34));
+  const f = (x: number): number =>
+    level +
+    depth *
+      (dipShape(x, 110, TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.F_HALF_WIDTH) +
+        dipShape(x, 274, TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.F_HALF_WIDTH) +
+        dipShape(x, 438, TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.F_HALF_WIDTH));
   return iconFrom(
     dots(20, W - 20, 7, f, 26, 7),
-    new Path(curve(20, W - 20, f), { stroke: TransitHunterColors.lightCurveColorProperty, lineWidth: 7 }),
+    new Path(curve(20, W - 20, f), {
+      stroke: TransitHunterColors.lightCurveColorProperty,
+      lineWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.CREATE_LIGHT_CURVE_ICON_LINE_WIDTH,
+    }),
   );
 }
 
 export function createPlanetHuntIcon(): ScreenIcon {
   const level = 150;
-  const f = (x: number): number => level + 70 * dipShape(x, W / 2, 110);
+  const f = (x: number): number =>
+    level + 70 * dipShape(x, W / 2, TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.F_HALF_WIDTH_SEGMENT_2);
   return iconFrom(
     dots(20, W - 20, 3, f, 120, 11),
-    new Path(curve(20, W - 20, f), { stroke: TransitHunterColors.lightCurveColorProperty, lineWidth: 10 }),
-    new Line(20, level + 70, W - 20, level + 70, {
+    new Path(curve(20, W - 20, f), {
+      stroke: TransitHunterColors.lightCurveColorProperty,
+      lineWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.CREATE_PLANET_HUNT_ICON_LINE_WIDTH,
+    }),
+    new Line(TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.CREATE_PLANET_HUNT_ICON_START_X, level + 70, W - 20, level + 70, {
       stroke: TransitHunterColors.answerCurveColorProperty,
-      lineWidth: 6,
-      lineDash: [22, 12],
+      lineWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.CREATE_PLANET_HUNT_ICON_LINE_WIDTH_VARIANT_2,
+      lineDash: [TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.CREATE_PLANET_HUNT_ICON_LINE_DASH_DASH, 12],
     }),
   );
 }
 
 export function createRockOrGasIcon(): ScreenIcon {
-  const waterTop = 200;
+  const waterTop: number = TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.WATER_TOP;
   const water = new Rectangle(0, waterTop, W, H - waterTop, {
     fill: TransitHunterColors.neptunePlanetColorProperty,
-    opacity: 0.45,
+    opacity: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.WATER_OPACITY,
   });
   const waterLine = new Line(0, waterTop, W, waterTop, {
     stroke: TransitHunterColors.neptunePlanetColorProperty,
-    lineWidth: 5,
+    lineWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.WATER_LINE_LINE_WIDTH,
   });
   // A banded giant floating, about two thirds above the water (Saturn's density is about 0.7 g/cm³).
-  const giantRadius = 100;
-  const giantCentre = { x: 210, y: waterTop - 30 };
+  const giantRadius: number = TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.GIANT_RADIUS;
+  const giantCentre = {
+    x: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.GIANT_CENTRE_X,
+    y: waterTop - TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.GIANT_CENTRE_Y_OFFSET,
+  };
   const bands = new Shape();
   for (const dy of [-55, -15, 25, 62]) {
     bands
@@ -161,18 +204,18 @@ export function createRockOrGasIcon(): ScreenIcon {
       }),
       new Path(bands, {
         stroke: TransitHunterColors.planetSilhouetteColorProperty,
-        lineWidth: 9,
-        opacity: 0.25,
+        lineWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.GIANT_LINE_WIDTH,
+        opacity: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.GIANT_OPACITY,
         clipArea: Shape.circle(giantCentre.x, giantCentre.y, giantRadius),
       }),
     ],
   });
-  const rock = new Circle(30, {
+  const rock = new Circle(TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.ROCK_RADIUS, {
     fill: TransitHunterColors.mutedTextColorProperty,
     stroke: TransitHunterColors.planetSilhouetteColorProperty,
-    lineWidth: 3,
-    x: 430,
-    y: H - 34,
+    lineWidth: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.ROCK_LINE_WIDTH,
+    x: TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.ROCK_X,
+    y: H - TRANSIT_HUNTER_SCREEN_ICONS_SETTINGS.ROCK_Y_OFFSET,
   });
   return iconFrom(giant, water, waterLine, rock);
 }

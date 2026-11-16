@@ -1,3 +1,4 @@
+import { LINING_UP_MODEL_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LiningUpModel.ts
  *
@@ -55,13 +56,13 @@ import {
  * Wall-clock seconds for one pass through the transit window at normal speed.
  * @internal Exported for unit tests; not part of the application API.
  */
-export const LINING_UP_SECONDS_PER_WINDOW = 6;
+export const LINING_UP_SECONDS_PER_WINDOW: number = LINING_UP_MODEL_SETTINGS.LINING_UP_SECONDS_PER_WINDOW;
 
 /**
  * Wall-clock seconds for the fast-forward round the rest of the orbit at normal speed.
  * @internal Exported for unit tests; not part of the application API.
  */
-export const LINING_UP_SECONDS_PER_REST = 3;
+export const LINING_UP_SECONDS_PER_REST: number = LINING_UP_MODEL_SETTINGS.LINING_UP_SECONDS_PER_REST;
 
 /** Wall-clock seconds per orbit at normal speed. */
 const SECONDS_PER_CYCLE = LINING_UP_SECONDS_PER_WINDOW + LINING_UP_SECONDS_PER_REST;
@@ -70,13 +71,13 @@ const SECONDS_PER_CYCLE = LINING_UP_SECONDS_PER_WINDOW + LINING_UP_SECONDS_PER_R
 const WINDOW_SHARE = LINING_UP_SECONDS_PER_WINDOW / SECONDS_PER_CYCLE;
 
 /** Largest end slope of the fast-forward's Hermite curve that keeps it monotonic. */
-const MAX_HERMITE_SLOPE = 3;
+const MAX_HERMITE_SLOPE: number = LINING_UP_MODEL_SETTINGS.MAX_HERMITE_SLOPE;
 
 /** The window is this many edge-on transit durations wide. */
-const WINDOW_IN_DURATIONS = 1.6;
+const WINDOW_IN_DURATIONS: number = LINING_UP_MODEL_SETTINGS.WINDOW_IN_DURATIONS;
 
 /** Systems in the random sample. */
-export const SAMPLE_SIZE = 100;
+export const SAMPLE_SIZE: number = LINING_UP_MODEL_SETTINGS.SAMPLE_SIZE;
 
 /** One randomly oriented system of the sample. */
 export type SampleSystem = {
@@ -94,10 +95,14 @@ export class LiningUpModel implements TModel {
   });
 
   /** Star–planet distance, AU. */
-  public readonly distanceProperty = new NumberProperty(0.05, { range: DISTANCE_RANGE });
+  public readonly distanceProperty = new NumberProperty(LINING_UP_MODEL_SETTINGS.DISTANCE_DEFAULT, {
+    range: DISTANCE_RANGE,
+  });
 
   /** Inclination, degrees (90 = edge-on). */
-  public readonly inclinationProperty = new NumberProperty(90, { range: INCLINATION_RANGE });
+  public readonly inclinationProperty = new NumberProperty(LINING_UP_MODEL_SETTINGS.INCLINATION_DEFAULT, {
+    range: INCLINATION_RANGE,
+  });
 
   /**
    * Position in the current orbit's wall-clock cycle, 0 … 1: the transit window

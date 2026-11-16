@@ -1,3 +1,4 @@
+import { CHART_UTILS_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * chartUtils.ts
  *
@@ -55,7 +56,7 @@ export const formatTickValue = (value: number, decimalPlaces: number): string =>
  * smaller is written in scientific notation with a superscript exponent
  * (rich text).
  */
-export const formatSignificant = (value: number, digits = 3): string => {
+export const formatSignificant = (value: number, digits: number = CHART_UTILS_SETTINGS.DEFAULT_DIGITS): string => {
   if (!Number.isFinite(value)) {
     return "—";
   }

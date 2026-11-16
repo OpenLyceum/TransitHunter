@@ -1,3 +1,4 @@
+import { PLANET_HUNT_MODEL_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * PlanetHuntModel.ts
  *
@@ -38,16 +39,22 @@ import { HuntTarget } from "./HuntTarget.js";
 import { type LightCurve, loadLightCurve } from "./LightCurveData.js";
 
 /** Trial-period range, days. */
-export const HUNT_PERIOD_RANGE = new Range(0.3, 500);
+export const HUNT_PERIOD_RANGE = new Range(
+  PLANET_HUNT_MODEL_SETTINGS.HUNT_PERIOD_RANGE_MIN,
+  PLANET_HUNT_MODEL_SETTINGS.HUNT_PERIOD_RANGE_MAX,
+);
 
 /** Depth-line range, percent of the light. */
-export const HUNT_DEPTH_RANGE = new Range(0.001, 5);
+export const HUNT_DEPTH_RANGE = new Range(
+  PLANET_HUNT_MODEL_SETTINGS.HUNT_DEPTH_RANGE_MIN,
+  PLANET_HUNT_MODEL_SETTINGS.HUNT_DEPTH_RANGE_MAX,
+);
 
 /**
  * Most dip marks kept.
  * @internal Exported for unit tests; not part of the application API.
  */
-export const MAX_MARKS = 8;
+export const MAX_MARKS: number = PLANET_HUNT_MODEL_SETTINGS.MAX_MARKS;
 
 /** Marks closer than this, days, are the same dip marked twice (half the shortest trial period). */
 const MIN_MARK_SEPARATION = HUNT_PERIOD_RANGE.min / 2;
@@ -56,10 +63,10 @@ const MIN_MARK_SEPARATION = HUNT_PERIOD_RANGE.min / 2;
  * Wall-clock time the period search may use per animation frame, ms. The longest
  * light curve (four years of Kepler-22) takes a few seconds in all.
  */
-const SEARCH_MILLISECONDS_PER_STEP = 12;
+const SEARCH_MILLISECONDS_PER_STEP: number = PLANET_HUNT_MODEL_SETTINGS.SEARCH_MILLISECONDS_PER_STEP;
 
-const DEFAULT_PERIOD = 2;
-const DEFAULT_DEPTH = 0.5;
+const DEFAULT_PERIOD: number = PLANET_HUNT_MODEL_SETTINGS.DEFAULT_PERIOD;
+const DEFAULT_DEPTH: number = PLANET_HUNT_MODEL_SETTINGS.DEFAULT_DEPTH;
 
 export class PlanetHuntModel implements TModel {
   public readonly targetProperty = new EnumerationProperty(HuntTarget.HD_189733);

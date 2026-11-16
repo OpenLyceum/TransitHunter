@@ -1,3 +1,4 @@
+import { DENSITY_SCALE_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * DensityScaleNode.ts
  *
@@ -15,12 +16,12 @@ import TransitHunterColors from "../../TransitHunterColors.js";
 import { EARTH_DENSITY_G_CM3, FONTS, WATER_DENSITY_G_CM3 } from "../../TransitHunterConstants.js";
 
 /** Largest density on the scale, g/cm³. */
-const MAX_DENSITY = 9;
+const MAX_DENSITY: number = DENSITY_SCALE_NODE_SETTINGS.MAX_DENSITY;
 
 /** Density of iron, g/cm³ (uncompressed). */
-const IRON_DENSITY = 7.87;
+const IRON_DENSITY: number = DENSITY_SCALE_NODE_SETTINGS.IRON_DENSITY;
 
-const BAR_HEIGHT = 12;
+const BAR_HEIGHT: number = DENSITY_SCALE_NODE_SETTINGS.BAR_HEIGHT;
 
 export class DensityScaleNode extends Node {
   public constructor(densityProperty: TReadOnlyProperty<number>, width: number) {
@@ -33,14 +34,30 @@ export class DensityScaleNode extends Node {
       return planet ? density(planet.massEarth, planet.radiusEarth) : 1;
     };
 
-    const bar = new Rectangle(0, 0, width, BAR_HEIGHT, 3, 3, {
-      fill: TransitHunterColors.chartBackgroundColorProperty,
-      stroke: TransitHunterColors.chartAxisColorProperty,
-    });
-    const floatZone = new Rectangle(0, 0, x(WATER_DENSITY_G_CM3), BAR_HEIGHT, 3, 3, {
-      fill: TransitHunterColors.neptunePlanetColorProperty,
-      opacity: 0.35,
-    });
+    const bar = new Rectangle(
+      0,
+      0,
+      width,
+      BAR_HEIGHT,
+      DENSITY_SCALE_NODE_SETTINGS.BAR_CORNER_X,
+      DENSITY_SCALE_NODE_SETTINGS.BAR_CORNER_Y,
+      {
+        fill: TransitHunterColors.chartBackgroundColorProperty,
+        stroke: TransitHunterColors.chartAxisColorProperty,
+      },
+    );
+    const floatZone = new Rectangle(
+      0,
+      0,
+      x(WATER_DENSITY_G_CM3),
+      BAR_HEIGHT,
+      DENSITY_SCALE_NODE_SETTINGS.FLOAT_ZONE_CORNER_X,
+      DENSITY_SCALE_NODE_SETTINGS.FLOAT_ZONE_CORNER_Y,
+      {
+        fill: TransitHunterColors.neptunePlanetColorProperty,
+        opacity: DENSITY_SCALE_NODE_SETTINGS.FLOAT_ZONE_OPACITY,
+      },
+    );
     const ticks = new Node();
     for (let rho = 0; rho <= MAX_DENSITY; rho++) {
       ticks.addChild(
@@ -51,7 +68,7 @@ export class DensityScaleNode extends Node {
           font: FONTS.TICK_LABEL,
           fill: TransitHunterColors.textColorProperty,
           centerX: x(rho),
-          top: BAR_HEIGHT + 5,
+          top: BAR_HEIGHT + DENSITY_SCALE_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET,
         }),
       );
     }
@@ -65,7 +82,7 @@ export class DensityScaleNode extends Node {
         new Text(labelProperty, {
           font: FONTS.SMALL,
           fill: TransitHunterColors.mutedTextColorProperty,
-          maxWidth: 70,
+          maxWidth: DENSITY_SCALE_NODE_SETTINGS.REFERENCE_MAX_WIDTH,
           centerX: x(rho),
           bottom: top - 1,
         }),
@@ -77,17 +94,24 @@ export class DensityScaleNode extends Node {
     reference(common.earthStringProperty, EARTH_DENSITY_G_CM3, 0);
     reference(strings.ironStringProperty, IRON_DENSITY, 1);
 
-    const marker = new Path(new Shape().moveTo(0, 0).lineTo(-7, 11).lineTo(7, 11).close(), {
-      fill: TransitHunterColors.cursorColorProperty,
-      y: BAR_HEIGHT + 20,
-    });
+    const marker = new Path(
+      new Shape()
+        .moveTo(0, 0)
+        .lineTo(DENSITY_SCALE_NODE_SETTINGS.MARKER_X, DENSITY_SCALE_NODE_SETTINGS.MARKER_Y)
+        .lineTo(DENSITY_SCALE_NODE_SETTINGS.MARKER_X_SEGMENT_2, DENSITY_SCALE_NODE_SETTINGS.MARKER_Y)
+        .close(),
+      {
+        fill: TransitHunterColors.cursorColorProperty,
+        y: BAR_HEIGHT + DENSITY_SCALE_NODE_SETTINGS.MARKER_Y_OFFSET,
+      },
+    );
     const markerLabel = new Text("", { font: FONTS.LABEL, fill: TransitHunterColors.cursorColorProperty });
 
     this.children = [bar, floatZone, ticks, references, marker, markerLabel];
 
     const update = (rho: number): void => {
       marker.x = x(rho);
-      markerLabel.string = formatSignificant(rho, 2);
+      markerLabel.string = formatSignificant(rho, DENSITY_SCALE_NODE_SETTINGS.MARKER_LABEL_DIGITS);
       markerLabel.centerX = Math.max(markerLabel.width / 2, Math.min(width - markerLabel.width / 2, marker.x));
       markerLabel.top = marker.bottom + 1;
     };

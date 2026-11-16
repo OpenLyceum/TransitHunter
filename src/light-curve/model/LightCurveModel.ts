@@ -1,3 +1,4 @@
+import { LIGHT_CURVE_MODEL_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LightCurveModel.ts
  *
@@ -49,26 +50,30 @@ import {
 } from "../../TransitHunterConstants.js";
 
 /** The wide chart spans this many orbits, with dips at ½, 1½, 2½ … orbits. */
-export const WIDE_ORBITS = 3.25;
+export const WIDE_ORBITS: number = LIGHT_CURVE_MODEL_SETTINGS.WIDE_ORBITS;
 
 /** Most points drawn on the wide chart (coarser bins beyond this). */
-export const MAX_WIDE_POINTS = 3000;
+export const MAX_WIDE_POINTS: number = LIGHT_CURVE_MODEL_SETTINGS.MAX_WIDE_POINTS;
 
 /** The zoomed chart spans this many transit durations, centred on mid-transit. */
-const ZOOM_IN_DURATIONS = 2.4;
+const ZOOM_IN_DURATIONS: number = LIGHT_CURVE_MODEL_SETTINGS.ZOOM_IN_DURATIONS;
 
 /** Most points drawn on the zoomed chart. */
-const MAX_ZOOM_POINTS = 400;
+const MAX_ZOOM_POINTS: number = LIGHT_CURVE_MODEL_SETTINGS.MAX_ZOOM_POINTS;
 
 /** A point of a light curve: x in days (wide) or hours (zoomed), brightness relative to normal. */
 export type LightCurvePoint = { readonly x: number; readonly y: number };
 
 export class LightCurveModel implements TModel {
   /** Planet radius, Earth radii. */
-  public readonly planetRadiusProperty = new NumberProperty(11.2, { range: PLANET_RADIUS_RANGE });
+  public readonly planetRadiusProperty = new NumberProperty(LIGHT_CURVE_MODEL_SETTINGS.PLANET_RADIUS_DEFAULT, {
+    range: PLANET_RADIUS_RANGE,
+  });
 
   /** Star–planet distance, AU. */
-  public readonly distanceProperty = new NumberProperty(0.05, { range: DISTANCE_RANGE });
+  public readonly distanceProperty = new NumberProperty(LIGHT_CURVE_MODEL_SETTINGS.DISTANCE_DEFAULT, {
+    range: DISTANCE_RANGE,
+  });
 
   public readonly starPresetProperty = new EnumerationProperty(StarPreset.SUN_LIKE);
 
@@ -202,7 +207,10 @@ export class LightCurveModel implements TModel {
 
   /** Half-width of the zoomed chart, hours. */
   public zoomHalfWidthHours(): number {
-    return (ZOOM_IN_DURATIONS * Math.max(this.durationProperty.value, 0.5)) / 2;
+    return (
+      (ZOOM_IN_DURATIONS * Math.max(this.durationProperty.value, LIGHT_CURVE_MODEL_SETTINGS.MIN_ZOOM_DURATION_HOURS)) /
+      2
+    );
   }
 
   /** The noise-free curve on the zoomed chart (hours from mid-transit). */
@@ -221,7 +229,10 @@ export class LightCurveModel implements TModel {
     const halfWidth = this.zoomHalfWidthHours();
     const periodHours = this.periodProperty.value * 24;
     const g = this.geometryProperty.value;
-    const count = Math.min(MAX_ZOOM_POINTS, Math.max(10, Math.floor((2 * halfWidth * 60) / CADENCE_MINUTES)));
+    const count = Math.min(
+      MAX_ZOOM_POINTS,
+      Math.max(LIGHT_CURVE_MODEL_SETTINGS.MIN_ZOOM_POINTS, Math.floor((2 * halfWidth * 60) / CADENCE_MINUTES)),
+    );
     // A short transit is drawn with more points than were measured (at least 10); each still has
     // the scatter of one measurement per transit, never more.
     const perBin = Math.max(1, (2 * halfWidth * 60) / CADENCE_MINUTES / count);
@@ -258,7 +269,7 @@ function meanObservationFlux(phase: number, width: number, exposures: number, ge
   }
   // Midpoint quadrature at least as fine as the original cadence; a few extra samples resolve
   // ingress and egress in bins only slightly wider than one exposure.
-  const samples = Math.max(16, Math.ceil(exposures));
+  const samples = Math.max(LIGHT_CURVE_MODEL_SETTINGS.MIN_EXPOSURE_SAMPLES, Math.ceil(exposures));
   let flux = 0;
   for (let i = 0; i < samples; i++) {
     flux += relativeFlux(phase + width * ((i + 0.5) / samples - 0.5), geometry);

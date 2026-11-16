@@ -1,3 +1,4 @@
+import { MASS_RADIUS_DIAGRAM_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * MassRadiusDiagramNode.ts
  *
@@ -32,7 +33,7 @@ const MASS_TICKS = [0.1, 1, 10, 100, 1000];
 const RADIUS_TICKS = [0.5, 1, 2, 5, 10, 20];
 
 /** Rocky-planet curves are drawn up to this mass (the fit's range, generously). */
-const ROCKY_MAX_MASS = 30;
+const ROCKY_MAX_MASS: number = MASS_RADIUS_DIAGRAM_NODE_SETTINGS.ROCKY_MAX_MASS;
 
 export class MassRadiusDiagramNode extends Node {
   public constructor(model: RockOrGasModel, width: number, height: number) {
@@ -59,7 +60,7 @@ export class MassRadiusDiagramNode extends Node {
           font: FONTS.TICK_LABEL,
           fill: TransitHunterColors.textColorProperty,
           centerX: x(mass),
-          top: height + 4,
+          top: height + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET,
         }),
       );
     }
@@ -69,7 +70,7 @@ export class MassRadiusDiagramNode extends Node {
         new Text(tickLabel(radius), {
           font: FONTS.TICK_LABEL,
           fill: TransitHunterColors.textColorProperty,
-          right: -5,
+          right: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_RIGHT,
           centerY: y(radius),
         }),
       );
@@ -88,9 +89,9 @@ export class MassRadiusDiagramNode extends Node {
     });
     const placeAxisLabels = (): void => {
       xLabel.centerX = width / 2;
-      xLabel.top = height + 20;
+      xLabel.top = height + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.PLACE_AXIS_LABELS_TOP_OFFSET;
       yLabel.centerY = height / 2;
-      yLabel.right = -26;
+      yLabel.right = MASS_RADIUS_DIAGRAM_NODE_SETTINGS.RIGHT_RIGHT;
     };
     linkUntilDisposed(this, xLabel.boundsProperty, placeAxisLabels);
     linkUntilDisposed(this, yLabel.boundsProperty, placeAxisLabels);
@@ -109,11 +110,14 @@ export class MassRadiusDiagramNode extends Node {
       const label = new Text(labelProperty, {
         font: FONTS.SMALL,
         fill: TransitHunterColors.mutedTextColorProperty,
-        maxWidth: 110,
+        maxWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.LABEL_MAX_WIDTH,
       });
       // At the curve's end, kept inside the plot.
       linkUntilDisposed(this, label.boundsProperty, () => {
-        label.left = Math.min(x(mass) + 4, width - 3 - label.width);
+        label.left = Math.min(
+          x(mass) + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CURVE_LABEL_LEFT_OFFSET,
+          width - MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_CURVE_LABEL_LEFT_OFFSET - label.width,
+        );
         label.centerY = y(radius);
       });
       return label;
@@ -122,22 +126,25 @@ export class MassRadiusDiagramNode extends Node {
       curve((m) => ironRadius(m), ROCKY_MAX_MASS),
       {
         stroke: TransitHunterColors.chartZeroLineColorProperty,
-        lineWidth: 1.5,
+        lineWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.IRON_CURVE_LINE_WIDTH,
       },
     );
     const rockCurve = new Path(
       curve((m) => rockyRadius(m), ROCKY_MAX_MASS),
       {
         stroke: TransitHunterColors.earthColorProperty,
-        lineWidth: 2,
+        lineWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.ROCK_CURVE_LINE_WIDTH,
       },
     );
     const waterGuide = new Path(
       curve((m) => constantDensityRadius(m, WATER_DENSITY_G_CM3), 1000),
       {
         stroke: TransitHunterColors.neptunePlanetColorProperty,
-        lineWidth: 1.5,
-        lineDash: [5, 4],
+        lineWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.WATER_GUIDE_LINE_WIDTH,
+        lineDash: [
+          MASS_RADIUS_DIAGRAM_NODE_SETTINGS.WATER_GUIDE_LINE_DASH_DASH,
+          MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_WATER_GUIDE_LINE_DASH_DASH,
+        ],
       },
     );
     const guides = new Node({
@@ -150,9 +157,11 @@ export class MassRadiusDiagramNode extends Node {
         new Text(strings.waterGuideStringProperty, {
           font: FONTS.SMALL,
           fill: TransitHunterColors.neptunePlanetColorProperty,
-          maxWidth: 130,
-          right: x(40),
-          bottom: y(constantDensityRadius(40, WATER_DENSITY_G_CM3)) - 4,
+          maxWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.GUIDES_MAX_WIDTH,
+          right: x(MASS_RADIUS_DIAGRAM_NODE_SETTINGS.GUIDES_RIGHT),
+          bottom:
+            y(constantDensityRadius(MASS_RADIUS_DIAGRAM_NODE_SETTINGS.GUIDES_BOTTOM, WATER_DENSITY_G_CM3)) -
+            MASS_RADIUS_DIAGRAM_NODE_SETTINGS.GUIDES_BOTTOM_OFFSET,
         }),
       ],
     });
@@ -168,22 +177,26 @@ export class MassRadiusDiagramNode extends Node {
     for (const planet of SOLAR_SYSTEM_PLANETS) {
       const center = { x: x(planet.massEarth), y: y(planet.radiusEarth) };
       solarSystem.addChild(
-        new Circle(3, { fill: TransitHunterColors.mutedTextColorProperty, x: center.x, y: center.y }),
+        new Circle(MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_RADIUS, {
+          fill: TransitHunterColors.mutedTextColorProperty,
+          x: center.x,
+          y: center.y,
+        }),
       );
       const name = named[planet.key];
       if (name) {
         const label = new Text(name, {
           font: FONTS.SMALL,
           fill: TransitHunterColors.mutedTextColorProperty,
-          maxWidth: 70,
+          maxWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_LABEL_MAX_WIDTH,
           top: center.y + 1,
         });
         // Labels near the right edge go on the left of their point.
         if (center.x + 5 + label.width > width) {
-          label.right = center.x - 5;
+          label.right = center.x - MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
           label.bottom = center.y - 2;
         } else {
-          label.left = center.x + 5;
+          label.left = center.x + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
         }
         solarSystem.addChild(label);
       }
@@ -194,18 +207,21 @@ export class MassRadiusDiagramNode extends Node {
     for (const value of CompositionPlanet.enumeration.values) {
       const planet = archivePlanet(value.archiveName);
       exoplanets.addChild(
-        new Circle(4, {
+        new Circle(MASS_RADIUS_DIAGRAM_NODE_SETTINGS.CIRCLE_RADIUS, {
           fill: TransitHunterColors.lightCurveColorProperty,
           x: x(wobbleMass(planet).trueMass),
           y: y(planet.radiusEarth),
         }),
       );
     }
-    const selectedRing = new Circle(9, { stroke: TransitHunterColors.cursorColorProperty, lineWidth: 2 });
+    const selectedRing = new Circle(MASS_RADIUS_DIAGRAM_NODE_SETTINGS.SELECTED_RING_RADIUS, {
+      stroke: TransitHunterColors.cursorColorProperty,
+      lineWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.SELECTED_RING_LINE_WIDTH,
+    });
     const selectedLabel = new Text("", {
       font: FONTS.LABEL,
       fill: TransitHunterColors.cursorColorProperty,
-      maxWidth: 120,
+      maxWidth: MASS_RADIUS_DIAGRAM_NODE_SETTINGS.SELECTED_LABEL_MAX_WIDTH,
     });
 
     const plot = new Node({
@@ -220,11 +236,11 @@ export class MassRadiusDiagramNode extends Node {
       selectedLabel.string = planet.name;
       // Label to the left of the ring (the guide labels are on the right), unless it would run off the left edge.
       if (selectedRing.x - 12 - selectedLabel.width < 0) {
-        selectedLabel.left = selectedRing.x + 12;
+        selectedLabel.left = selectedRing.x + MASS_RADIUS_DIAGRAM_NODE_SETTINGS.MULTILINK_LEFT_OFFSET;
       } else {
-        selectedLabel.right = selectedRing.x - 12;
+        selectedLabel.right = selectedRing.x - MASS_RADIUS_DIAGRAM_NODE_SETTINGS.MULTILINK_RIGHT_OFFSET;
       }
-      selectedLabel.bottom = selectedRing.y - 4;
+      selectedLabel.bottom = selectedRing.y - MASS_RADIUS_DIAGRAM_NODE_SETTINGS.MULTILINK_BOTTOM_OFFSET;
     });
     this.disposeEmitter.addListener(() => multilink.dispose());
   }

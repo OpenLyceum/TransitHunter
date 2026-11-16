@@ -1,3 +1,4 @@
+import { PLANET_HUNT_SCREEN_SUMMARY_CONTENT_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * PlanetHuntScreenSummaryContent.ts
  *
@@ -28,7 +29,7 @@ export class PlanetHuntScreenSummaryContent extends ScreenSummaryContent {
           ? StringUtils.fillIn(strings.marksCountPatternStringProperty.value, { count: model.marks.length })
           : StringUtils.fillIn(strings.marksSpacingPatternStringProperty.value, {
               count: model.marks.length,
-              spacing: plain(spacing, 4),
+              spacing: plain(spacing, PLANET_HUNT_SCREEN_SUMMARY_CONTENT_SETTINGS.UPDATE_MARKS_SPACING),
             });
     };
     model.marks.addItemAddedListener(updateMarks);
@@ -51,7 +52,10 @@ export class PlanetHuntScreenSummaryContent extends ScreenSummaryContent {
           index < 0
             ? ""
             : StringUtils.fillIn(a11y.searchDonePatternStringProperty.value, {
-                period: plain(search.fitAt(index).period, 4),
+                period: plain(
+                  search.fitAt(index).period,
+                  PLANET_HUNT_SCREEN_SUMMARY_CONTENT_SETTINGS.PERIOD_PLAIN_DIGITS,
+                ),
               });
       }
     };
@@ -61,17 +65,25 @@ export class PlanetHuntScreenSummaryContent extends ScreenSummaryContent {
 
     const details = new PatternStringProperty(a11y.currentDetailsPatternStringProperty, {
       star: new DerivedProperty([model.targetProperty], (target) => target.starName),
-      days: new DerivedProperty([model.lightCurveProperty], (curve) => (curve ? plain(curve.spanDays, 3) : "—")),
+      days: new DerivedProperty([model.lightCurveProperty], (curve) =>
+        curve ? plain(curve.spanDays, PLANET_HUNT_SCREEN_SUMMARY_CONTENT_SETTINGS.SPAN_DAYS_PLAIN_DIGITS) : "—",
+      ),
       mission: new DerivedProperty([model.lightCurveProperty], (curve) => (curve ? curve.file.mission : "—")),
       marks: marksProperty,
       search: searchProperty,
-      period: new DerivedProperty([model.periodProperty], (p) => plain(p, 4)),
+      period: new DerivedProperty([model.periodProperty], (p) =>
+        plain(p, PLANET_HUNT_SCREEN_SUMMARY_CONTENT_SETTINGS.DETAILS_DIGITS),
+      ),
       folded: new DerivedProperty(
         [model.foldProperty, a11y.foldedStringProperty, a11y.notFoldedStringProperty],
         (fold, folded, notFolded) => (fold ? folded : notFolded),
       ),
-      depth: new DerivedProperty([model.depthProperty], (d) => plain(d, 2)),
-      radius: new DerivedProperty([model.inferredRadiusProperty], (r) => plain(r, 2)),
+      depth: new DerivedProperty([model.depthProperty], (d) =>
+        plain(d, PLANET_HUNT_SCREEN_SUMMARY_CONTENT_SETTINGS.DETAILS_DIGITS_SEGMENT_2),
+      ),
+      radius: new DerivedProperty([model.inferredRadiusProperty], (r) =>
+        plain(r, PLANET_HUNT_SCREEN_SUMMARY_CONTENT_SETTINGS.DETAILS_DIGITS_SEGMENT_2),
+      ),
     });
 
     super({

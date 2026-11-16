@@ -1,3 +1,4 @@
+import { ORBIT3_D_VIEW_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * Orbit3DViewNode.ts
  *
@@ -35,28 +36,31 @@ import type { LiningUpModel } from "../model/LiningUpModel.js";
 const DEG = Math.PI / 180;
 
 /** Drawn orbit radius, star radius and planet radius, px. */
-const ORBIT_RADIUS = 105;
-const STAR_RADIUS = 14;
-const PLANET_RADIUS = 7;
+const ORBIT_RADIUS: number = ORBIT3_D_VIEW_NODE_SETTINGS.ORBIT_RADIUS;
+const STAR_RADIUS: number = ORBIT3_D_VIEW_NODE_SETTINGS.STAR_RADIUS;
+const PLANET_RADIUS: number = ORBIT3_D_VIEW_NODE_SETTINGS.PLANET_RADIUS;
 
 /** Width of the dark ring around the planet that separates it from the Earth arrow, px. */
-const PLANET_HALO_WIDTH = 2.5;
+const PLANET_HALO_WIDTH: number = ORBIT3_D_VIEW_NODE_SETTINGS.PLANET_HALO_WIDTH;
 
 /** Gap between the planet and its label, px. */
-const PLANET_LABEL_GAP = 3;
+const PLANET_LABEL_GAP: number = ORBIT3_D_VIEW_NODE_SETTINGS.PLANET_LABEL_GAP;
 
 /** Length of the Earth arrow, px. */
-const EARTH_ARROW_LENGTH = 140;
+const EARTH_ARROW_LENGTH: number = ORBIT3_D_VIEW_NODE_SETTINGS.EARTH_ARROW_LENGTH;
 
-const ORBIT_SAMPLES = 90;
+const ORBIT_SAMPLES: number = ORBIT3_D_VIEW_NODE_SETTINGS.ORBIT_SAMPLES;
 
 /** Camera elevation range (degrees above the orbital plane) and keyboard step. */
-const ELEVATION_RANGE = new Range(-85, 85);
-const KEYBOARD_STEP_DEG = 5;
-const DRAG_DEG_PER_PX = 0.5;
+const ELEVATION_RANGE = new Range(
+  ORBIT3_D_VIEW_NODE_SETTINGS.ELEVATION_RANGE_MIN,
+  ORBIT3_D_VIEW_NODE_SETTINGS.ELEVATION_RANGE_MAX,
+);
+const KEYBOARD_STEP_DEG: number = ORBIT3_D_VIEW_NODE_SETTINGS.KEYBOARD_STEP_DEG;
+const DRAG_DEG_PER_PX: number = ORBIT3_D_VIEW_NODE_SETTINGS.DRAG_DEG_PER_PX;
 
 /** Initial camera: 20° above the orbital plane, side-on to the edge-on Earth direction (+x). */
-const INITIAL_ELEVATION = 20;
+const INITIAL_ELEVATION: number = ORBIT3_D_VIEW_NODE_SETTINGS.INITIAL_ELEVATION;
 const INITIAL_AZIMUTH = 0;
 
 /** Projected point: screen offset from the view centre (y down) and depth (toward the camera > 0). */
@@ -77,67 +81,87 @@ export class Orbit3DViewNode extends Node {
     const a11y = stringManager.getLiningUpA11yStrings();
     const center = new Vector2(width / 2, height / 2 + 10);
 
-    const background = new Rectangle(0, 0, width, height, 6, 6, {
-      fill: TransitHunterColors.spaceColorProperty,
-      stroke: TransitHunterColors.spaceBorderColorProperty,
-      cursor: "grab",
-    });
+    const background = new Rectangle(
+      0,
+      0,
+      width,
+      height,
+      ORBIT3_D_VIEW_NODE_SETTINGS.BACKGROUND_CORNER_X,
+      ORBIT3_D_VIEW_NODE_SETTINGS.BACKGROUND_CORNER_Y,
+      {
+        fill: TransitHunterColors.spaceColorProperty,
+        stroke: TransitHunterColors.spaceBorderColorProperty,
+        cursor: "grab",
+      },
+    );
     const title = new Text(strings.view3DTitleStringProperty, {
       font: FONTS.TITLE,
       fill: TransitHunterColors.textColorProperty,
       maxWidth: width,
       left: 0,
-      bottom: -4,
+      bottom: ORBIT3_D_VIEW_NODE_SETTINGS.TITLE_BOTTOM,
     });
     const notToScale = new Text(common.notToScaleStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.mutedTextColorProperty,
       maxWidth: width / 2,
-      left: 8,
-      top: 6,
+      left: ORBIT3_D_VIEW_NODE_SETTINGS.NOT_TO_SCALE_LEFT,
+      top: ORBIT3_D_VIEW_NODE_SETTINGS.NOT_TO_SCALE_TOP,
     });
     const rotateHint = new Text(strings.rotateHintStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.mutedTextColorProperty,
-      maxWidth: width - 16,
+      maxWidth: width - ORBIT3_D_VIEW_NODE_SETTINGS.ROTATE_HINT_MAX_WIDTH_OFFSET,
     });
     linkUntilDisposed(this, rotateHint.boundsProperty, () => {
-      rotateHint.left = 8;
-      rotateHint.bottom = height - 6;
+      rotateHint.left = ORBIT3_D_VIEW_NODE_SETTINGS.LEFT_LEFT;
+      rotateHint.bottom = height - ORBIT3_D_VIEW_NODE_SETTINGS.CONSTRUCTOR_BOTTOM_OFFSET;
     });
     const spedUpNote = new Text(strings.spedUpBetweenTransitsStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.mutedTextColorProperty,
-      maxWidth: width / 2 - 16,
+      maxWidth: width / 2 - ORBIT3_D_VIEW_NODE_SETTINGS.SPED_UP_NOTE_MAX_WIDTH_OFFSET,
     });
     linkUntilDisposed(this, spedUpNote.boundsProperty, () => {
-      spedUpNote.right = width - 8;
-      spedUpNote.top = 6;
+      spedUpNote.right = width - ORBIT3_D_VIEW_NODE_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
+      spedUpNote.top = ORBIT3_D_VIEW_NODE_SETTINGS.TOP_TOP;
     });
     linkUntilDisposed(this, model.fastForwardingProperty, (fastForwarding) => {
       spedUpNote.visible = fastForwarding;
     });
 
-    const planeFill = new Path(null, { fill: TransitHunterColors.orbitPathColorProperty, opacity: 0.12 });
-    const orbit = new Path(null, { stroke: TransitHunterColors.orbitPathColorProperty, lineDash: [4, 4] });
-    const normalLine = new Line(0, 0, 0, 0, { stroke: TransitHunterColors.orbitPathColorProperty, lineDash: [1, 4] });
+    const planeFill = new Path(null, {
+      fill: TransitHunterColors.orbitPathColorProperty,
+      opacity: ORBIT3_D_VIEW_NODE_SETTINGS.PLANE_FILL_OPACITY,
+    });
+    const orbit = new Path(null, {
+      stroke: TransitHunterColors.orbitPathColorProperty,
+      lineDash: [ORBIT3_D_VIEW_NODE_SETTINGS.ORBIT_LINE_DASH_DASH, ORBIT3_D_VIEW_NODE_SETTINGS.ORBIT_LINE_DASH_DASH],
+    });
+    const normalLine = new Line(0, 0, 0, 0, {
+      stroke: TransitHunterColors.orbitPathColorProperty,
+      lineDash: [1, ORBIT3_D_VIEW_NODE_SETTINGS.NORMAL_LINE_LINE_DASH_DASH],
+    });
     const star = new StarNode(SUN_TEMPERATURE_K, STAR_RADIUS);
     const planet = new PlanetNode();
     const planetHalo = new Circle(PLANET_RADIUS + PLANET_HALO_WIDTH, { fill: TransitHunterColors.spaceColorProperty });
     const planetLabel = new Text(common.planetStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.textColorProperty,
-      maxWidth: 80,
+      maxWidth: ORBIT3_D_VIEW_NODE_SETTINGS.PLANET_LABEL_MAX_WIDTH,
     });
     const planetGroup = new Node({ children: [planetHalo, planet, planetLabel] });
 
     const earthArrow = new ArrowNode(0, 0, 1, 0, {
       stroke: null,
-      headHeight: 12,
-      headWidth: 14,
-      tailWidth: 4,
+      headHeight: ORBIT3_D_VIEW_NODE_SETTINGS.EARTH_ARROW_HEAD_HEIGHT,
+      headWidth: ORBIT3_D_VIEW_NODE_SETTINGS.EARTH_ARROW_HEAD_WIDTH,
+      tailWidth: ORBIT3_D_VIEW_NODE_SETTINGS.EARTH_ARROW_TAIL_WIDTH,
     });
-    const earthLabel = new Text(common.toEarthStringProperty, { font: FONTS.LABEL, maxWidth: 90 });
+    const earthLabel = new Text(common.toEarthStringProperty, {
+      font: FONTS.LABEL,
+      maxWidth: ORBIT3_D_VIEW_NODE_SETTINGS.EARTH_LABEL_MAX_WIDTH,
+    });
 
     const bodies = new Node({ children: [planetGroup, star] });
     const scene = new Node({ children: [planeFill, normalLine, orbit, earthArrow, earthLabel, bodies] });
@@ -194,13 +218,15 @@ export class Orbit3DViewNode extends Node {
       earthLabel.fill = color;
       const outward = earthTip.minus(center);
       const labelOffset =
-        outward.magnitude > 1 ? outward.normalized().timesScalar(20).plusXY(0, -12) : new Vector2(0, -18);
+        outward.magnitude > 1
+          ? outward.normalized().timesScalar(20).plusXY(0, ORBIT3_D_VIEW_NODE_SETTINGS.LABEL_OFFSET_Y_OFFSET)
+          : new Vector2(0, ORBIT3_D_VIEW_NODE_SETTINGS.LABEL_OFFSET_Y);
       earthLabel.center = earthTip.plus(labelOffset);
       // Keep the label inside the frame.
-      earthLabel.left = Math.max(earthLabel.left, 4);
-      earthLabel.right = Math.min(earthLabel.right, width - 4);
-      earthLabel.top = Math.max(earthLabel.top, 4);
-      earthLabel.bottom = Math.min(earthLabel.bottom, height - 4);
+      earthLabel.left = Math.max(earthLabel.left, ORBIT3_D_VIEW_NODE_SETTINGS.UPDATE_LEFT);
+      earthLabel.right = Math.min(earthLabel.right, width - ORBIT3_D_VIEW_NODE_SETTINGS.UPDATE_RIGHT_OFFSET);
+      earthLabel.top = Math.max(earthLabel.top, ORBIT3_D_VIEW_NODE_SETTINGS.UPDATE_TOP);
+      earthLabel.bottom = Math.min(earthLabel.bottom, height - ORBIT3_D_VIEW_NODE_SETTINGS.UPDATE_BOTTOM_OFFSET);
     };
 
     const multilink = Multilink.multilinkAny(
@@ -258,7 +284,14 @@ export class Orbit3DViewNode extends Node {
     );
 
     this.children = [background, scene, title, notToScale, spedUpNote, rotateHint];
-    scene.clipArea = Shape.roundRect(0, 0, width, height, 6, 6);
+    scene.clipArea = Shape.roundRect(
+      0,
+      0,
+      width,
+      height,
+      ORBIT3_D_VIEW_NODE_SETTINGS.CLIP_AREA_CORNER_X,
+      ORBIT3_D_VIEW_NODE_SETTINGS.CLIP_AREA_CORNER_Y,
+    );
     scene.pickable = false;
 
     this.disposeEmitter.addListener(() => {

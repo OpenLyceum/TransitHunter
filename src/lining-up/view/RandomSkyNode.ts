@@ -1,3 +1,4 @@
+import { RANDOM_SKY_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * RandomSkyNode.ts
  *
@@ -18,9 +19,9 @@ import TransitHunterColors from "../../TransitHunterColors.js";
 import { FONTS } from "../../TransitHunterConstants.js";
 import { type LiningUpModel, SAMPLE_SIZE } from "../model/LiningUpModel.js";
 
-const COLUMNS = 10;
-const CELL = 20;
-const ORBIT_RADIUS = 8.5;
+const COLUMNS: number = RANDOM_SKY_NODE_SETTINGS.COLUMNS;
+const CELL: number = RANDOM_SKY_NODE_SETTINGS.CELL;
+const ORBIT_RADIUS: number = RANDOM_SKY_NODE_SETTINGS.ORBIT_RADIUS;
 
 export class RandomSkyNode extends VBox {
   /** The "new random sky" button (for the screen's pdomOrder). */
@@ -37,16 +38,30 @@ export class RandomSkyNode extends VBox {
       fill: TransitHunterColors.textColorProperty,
       maxWidth: width,
     });
-    const background = new Rectangle(0, 0, COLUMNS * CELL, rows * CELL, 4, 4, {
-      fill: TransitHunterColors.spaceColorProperty,
-      stroke: TransitHunterColors.spaceBorderColorProperty,
+    const background = new Rectangle(
+      0,
+      0,
+      COLUMNS * CELL,
+      rows * CELL,
+      RANDOM_SKY_NODE_SETTINGS.BACKGROUND_CORNER_X,
+      RANDOM_SKY_NODE_SETTINGS.BACKGROUND_CORNER_Y,
+      {
+        fill: TransitHunterColors.spaceColorProperty,
+        stroke: TransitHunterColors.spaceBorderColorProperty,
+      },
+    );
+    const transiting = new Path(null, {
+      stroke: TransitHunterColors.earthColorProperty,
+      lineWidth: RANDOM_SKY_NODE_SETTINGS.TRANSITING_LINE_WIDTH,
     });
-    const transiting = new Path(null, { stroke: TransitHunterColors.earthColorProperty, lineWidth: 1.6 });
-    const missing = new Path(null, { stroke: TransitHunterColors.orbitPathColorProperty, lineWidth: 0.8 });
+    const missing = new Path(null, {
+      stroke: TransitHunterColors.orbitPathColorProperty,
+      lineWidth: RANDOM_SKY_NODE_SETTINGS.MISSING_LINE_WIDTH,
+    });
     const stars = new Node();
     for (let i = 0; i < SAMPLE_SIZE; i++) {
       stars.addChild(
-        new Circle(1.6, {
+        new Circle(RANDOM_SKY_NODE_SETTINGS.CONSTRUCTOR_RADIUS, {
           fill: TransitHunterColors.backgroundStarColorProperty,
           center: cellCenter(i),
         }),
@@ -59,14 +74,20 @@ export class RandomSkyNode extends VBox {
       new PatternStringProperty(strings.randomSkyCountPatternStringProperty, {
         count: countProperty,
         total: SAMPLE_SIZE,
-        expected: new DerivedProperty([model.probabilityProperty], (p) => formatSignificant(100 * p, 2)),
+        expected: new DerivedProperty([model.probabilityProperty], (p) =>
+          formatSignificant(100 * p, RANDOM_SKY_NODE_SETTINGS.COUNT_TEXT_DIGITS),
+        ),
       }),
       { font: FONTS.READOUT, fill: TransitHunterColors.textColorProperty, lineWrap: width },
     );
     const newSkyButton = createPushButton(strings.newSkyStringProperty, () => model.newSample(), width);
     newSkyButton.accessibleName = a11y.controls.newSkyStringProperty;
 
-    super({ spacing: 6, align: "left", children: [title, grid, countText, newSkyButton] });
+    super({
+      spacing: RANDOM_SKY_NODE_SETTINGS.CONSTRUCTOR_SPACING,
+      align: "left",
+      children: [title, grid, countText, newSkyButton],
+    });
     this.newSkyButton = newSkyButton;
 
     const update = (): void => {

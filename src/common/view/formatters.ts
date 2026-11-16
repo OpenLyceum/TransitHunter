@@ -1,3 +1,4 @@
+import { FORMATTERS_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * formatters.ts
  *
@@ -21,7 +22,7 @@ export function valueWithUnits(value: string, units: string): string {
 
 /** A fraction (0–1) as a percentage with two significant figures: 0.0106 → "1.1", 8.4e-5 → "0.0084". */
 export function formatPercent(fraction: number): string {
-  return formatSignificant(fraction * 100, 2);
+  return formatSignificant(fraction * 100, FORMATTERS_SETTINGS.FORMAT_PERCENT_DIGITS);
 }
 
 /** 1 / fraction to two significant figures with grouped thousands: 8.4e-5 → "12 000". */
@@ -29,7 +30,7 @@ export function formatPartsIn(fraction: number): string {
   if (!(fraction > 0)) {
     return "—";
   }
-  return formatGrouped(Number((1 / fraction).toPrecision(2)));
+  return formatGrouped(Number((1 / fraction).toPrecision(FORMATTERS_SETTINGS.FORMAT_PARTS_IN_SIGNIFICANT_FIGURES)));
 }
 
 /**
@@ -67,28 +68,37 @@ export function drawingMagnification(truePixels: number, minimum: number): numbe
 /** A duration in days ("3.52 days"), or years above two years. */
 export function formatDays(days: number): string {
   const units = StringManager.getInstance().getUnits();
-  return valueWithUnits(formatSignificant(days, 3), units.daysStringProperty.value);
+  return valueWithUnits(
+    formatSignificant(days, FORMATTERS_SETTINGS.FORMAT_DAYS_DIGITS),
+    units.daysStringProperty.value,
+  );
 }
 
 /** A duration in hours ("2.9 h"). */
 export function formatHours(hours: number): string {
   const units = StringManager.getInstance().getUnits();
-  return valueWithUnits(formatSignificant(hours, 2), units.hoursStringProperty.value);
+  return valueWithUnits(
+    formatSignificant(hours, FORMATTERS_SETTINGS.FORMAT_HOURS_DIGITS),
+    units.hoursStringProperty.value,
+  );
 }
 
 /** Earth masses above which a planet mass reads in Jupiter masses. */
-const JUPITER_MASS_THRESHOLD_EARTH = 30;
+const JUPITER_MASS_THRESHOLD_EARTH: number = FORMATTERS_SETTINGS.JUPITER_MASS_THRESHOLD_EARTH;
 
 /** Earth masses per Jupiter mass. */
-const EARTH_MASSES_PER_JUPITER = 317.83;
+const EARTH_MASSES_PER_JUPITER: number = FORMATTERS_SETTINGS.EARTH_MASSES_PER_JUPITER;
 
 /** A planet mass given in Earth masses: in Earth masses when small, Jupiter masses when large. */
 export function formatPlanetMass(massEarth: number): string {
   const units = StringManager.getInstance().getUnits();
   return massEarth < JUPITER_MASS_THRESHOLD_EARTH
-    ? valueWithUnits(formatSignificant(massEarth, 2), units.earthMassesStringProperty.value)
+    ? valueWithUnits(
+        formatSignificant(massEarth, FORMATTERS_SETTINGS.FORMAT_PLANET_MASS_DIGITS),
+        units.earthMassesStringProperty.value,
+      )
     : valueWithUnits(
-        formatSignificant(massEarth / EARTH_MASSES_PER_JUPITER, 2),
+        formatSignificant(massEarth / EARTH_MASSES_PER_JUPITER, FORMATTERS_SETTINGS.FORMAT_PLANET_MASS_DIGITS),
         units.jupiterMassesStringProperty.value,
       );
 }

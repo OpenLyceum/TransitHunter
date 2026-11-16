@@ -1,3 +1,4 @@
+import { TRANSIT_PHYSICS_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * transitPhysics.ts
  *
@@ -136,7 +137,7 @@ export function relativeFlux(phase: number, geometry: TransitGeometry): number {
 }
 
 /** Below this an impact parameter is rounding error (cos 90° is 6 × 10⁻¹⁷ in floating point), and is 0. */
-const IMPACT_PARAMETER_EPSILON = 1e-9;
+const IMPACT_PARAMETER_EPSILON: number = TRANSIT_PHYSICS_SETTINGS.IMPACT_PARAMETER_EPSILON;
 
 /** Impact parameter b = (a/R★) cos i. */
 export function impactParameter(orbitInStarRadii: number, inclinationRad: number): number {

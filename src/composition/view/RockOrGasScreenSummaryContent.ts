@@ -1,3 +1,4 @@
+import { ROCK_OR_GAS_SCREEN_SUMMARY_CONTENT_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * RockOrGasScreenSummaryContent.ts
  *
@@ -24,13 +25,19 @@ export class RockOrGasScreenSummaryContent extends ScreenSummaryContent {
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
       currentDetailsContent: new PatternStringProperty(a11y.currentDetailsPatternStringProperty, {
         planet: new DerivedProperty([model.archiveProperty], (planet) => planet.name),
-        radius: new DerivedProperty([model.archiveProperty], (planet) => plain(planet.radiusEarth, 3)),
-        mass: new DerivedProperty([model.massProperty], (mass) => plain(mass.trueMass, 3)),
+        radius: new DerivedProperty([model.archiveProperty], (planet) =>
+          plain(planet.radiusEarth, ROCK_OR_GAS_SCREEN_SUMMARY_CONTENT_SETTINGS.RADIUS_EARTH_PLAIN_DIGITS),
+        ),
+        mass: new DerivedProperty([model.massProperty], (mass) =>
+          plain(mass.trueMass, ROCK_OR_GAS_SCREEN_SUMMARY_CONTENT_SETTINGS.TRUE_MASS_PLAIN_DIGITS),
+        ),
         source: new DerivedProperty(
           [model.massProperty, a11y.fromWobbleStringProperty, a11y.fromTimingStringProperty],
           (mass, wobble, timing) => (mass.fromWobble ? wobble : timing),
         ),
-        density: new DerivedProperty([model.densityProperty], (rho) => plain(rho, 2)),
+        density: new DerivedProperty([model.densityProperty], (rho) =>
+          plain(rho, ROCK_OR_GAS_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS),
+        ),
         kind: new DerivedProperty(
           [
             model.kindProperty,

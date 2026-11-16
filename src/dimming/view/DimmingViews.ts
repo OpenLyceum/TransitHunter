@@ -1,3 +1,4 @@
+import { DIMMING_VIEWS_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * DimmingViews.ts
  *
@@ -30,28 +31,45 @@ import { FONTS } from "../../TransitHunterConstants.js";
 import { DIMMING_ORBIT_IN_STAR_RADII, type DimmingModel } from "../model/DimmingModel.js";
 
 /** Vertical squash of the orbit in the side view (seen from slightly above). */
-const SIDE_VIEW_SQUASH = 0.28;
+const SIDE_VIEW_SQUASH: number = DIMMING_VIEWS_SETTINGS.SIDE_VIEW_SQUASH;
 
 /** Glow of the zoomed-in stars, as a multiple of their radius. */
-const GLOW_SCALE = 1.25;
+const GLOW_SCALE: number = DIMMING_VIEWS_SETTINGS.GLOW_SCALE;
 
 /** Phase step of one arrow-key press, orbits. */
-const KEYBOARD_PHASE_STEP = 0.005;
+const KEYBOARD_PHASE_STEP: number = DIMMING_VIEWS_SETTINGS.KEYBOARD_PHASE_STEP;
 
 /** A framed dark panel with a title above it. */
 function framedScene(width: number, height: number, titleProperty: TReadOnlyProperty<string>) {
-  const background = new Rectangle(0, 0, width, height, 6, 6, {
-    fill: TransitHunterColors.spaceColorProperty,
-    stroke: TransitHunterColors.spaceBorderColorProperty,
-  });
+  const background = new Rectangle(
+    0,
+    0,
+    width,
+    height,
+    DIMMING_VIEWS_SETTINGS.BACKGROUND_CORNER_X,
+    DIMMING_VIEWS_SETTINGS.BACKGROUND_CORNER_Y,
+    {
+      fill: TransitHunterColors.spaceColorProperty,
+      stroke: TransitHunterColors.spaceBorderColorProperty,
+    },
+  );
   const title = new Text(titleProperty, {
     font: FONTS.TITLE,
     fill: TransitHunterColors.textColorProperty,
     maxWidth: width,
     left: 0,
-    bottom: -4,
+    bottom: DIMMING_VIEWS_SETTINGS.TITLE_BOTTOM,
   });
-  const scene = new Node({ clipArea: Shape.roundRect(0, 0, width, height, 6, 6) });
+  const scene = new Node({
+    clipArea: Shape.roundRect(
+      0,
+      0,
+      width,
+      height,
+      DIMMING_VIEWS_SETTINGS.SCENE_CORNER_X,
+      DIMMING_VIEWS_SETTINGS.SCENE_CORNER_Y,
+    ),
+  });
   return { background, title, scene };
 }
 
@@ -78,7 +96,14 @@ export class SideViewNode extends Node {
     // Far half of the orbit (behind the star) and near half (in front of it).
     const halfEllipse = (near: boolean): Shape =>
       new Shape().ellipticalArc(cx, cy, orbitRadius, orbitRadius * SIDE_VIEW_SQUASH, 0, 0, Math.PI, !near);
-    const orbitStyle = { stroke: TransitHunterColors.orbitPathColorProperty, lineWidth: 1.5, lineDash: [5, 4] };
+    const orbitStyle = {
+      stroke: TransitHunterColors.orbitPathColorProperty,
+      lineWidth: DIMMING_VIEWS_SETTINGS.ORBIT_STYLE_LINE_WIDTH,
+      lineDash: [
+        DIMMING_VIEWS_SETTINGS.ORBIT_STYLE_LINE_DASH_DASH,
+        DIMMING_VIEWS_SETTINGS.CONSTRUCTOR_ORBIT_STYLE_LINE_DASH_DASH,
+      ],
+    };
     const farOrbit = new Path(halfEllipse(false), orbitStyle);
     const nearOrbit = new Path(halfEllipse(true), orbitStyle);
 
@@ -90,25 +115,25 @@ export class SideViewNode extends Node {
     const toEarth = new ArrowNode(cx, cy + orbitRadius * SIDE_VIEW_SQUASH + 8, cx, height - 22, {
       fill: TransitHunterColors.earthColorProperty,
       stroke: null,
-      headHeight: 9,
-      headWidth: 12,
-      tailWidth: 3,
+      headHeight: DIMMING_VIEWS_SETTINGS.TO_EARTH_HEAD_HEIGHT,
+      headWidth: DIMMING_VIEWS_SETTINGS.TO_EARTH_HEAD_WIDTH,
+      tailWidth: DIMMING_VIEWS_SETTINGS.TO_EARTH_TAIL_WIDTH,
     });
     const toEarthLabel = new Text(common.toEarthStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.earthColorProperty,
-      maxWidth: 120,
+      maxWidth: DIMMING_VIEWS_SETTINGS.TO_EARTH_LABEL_MAX_WIDTH,
     });
     linkUntilDisposed(this, toEarthLabel.boundsProperty, () => {
-      toEarthLabel.left = toEarth.right + 6;
-      toEarthLabel.bottom = height - 8;
+      toEarthLabel.left = toEarth.right + DIMMING_VIEWS_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+      toEarthLabel.bottom = height - DIMMING_VIEWS_SETTINGS.CONSTRUCTOR_BOTTOM_OFFSET;
     });
     const notToScale = new RichText(strings.orbitNotToScaleStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.mutedTextColorProperty,
-      lineWrap: 105,
-      left: 8,
-      top: 6,
+      lineWrap: DIMMING_VIEWS_SETTINGS.NOT_TO_SCALE_LINE_WRAP,
+      left: DIMMING_VIEWS_SETTINGS.NOT_TO_SCALE_LEFT,
+      top: DIMMING_VIEWS_SETTINGS.NOT_TO_SCALE_TOP,
     });
 
     scene.children = [farOrbit, star, planet, occluder, nearOrbit, toEarth, toEarthLabel, notToScale];
@@ -116,7 +141,7 @@ export class SideViewNode extends Node {
     const telescopeCaption = new RichText(common.telescopeCaptionStringProperty, {
       font: FONTS.LABEL,
       fill: TransitHunterColors.mutedTextColorProperty,
-      lineWrap: width - 40,
+      lineWrap: width - DIMMING_VIEWS_SETTINGS.TELESCOPE_CAPTION_LINE_WRAP_OFFSET,
     });
     linkUntilDisposed(this, telescopeCaption.boundsProperty, () => {
       telescopeCaption.center = background.center;
@@ -221,20 +246,24 @@ export class EarthViewNode extends Node {
         ],
         (factor, magnified, toScale) => (factor > 1 ? magnified : toScale),
       ),
-      { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, maxWidth: width - 16 },
+      {
+        font: FONTS.SMALL,
+        fill: TransitHunterColors.mutedTextColorProperty,
+        maxWidth: width - DIMMING_VIEWS_SETTINGS.MAGNIFICATION_TEXT_MAX_WIDTH_OFFSET,
+      },
     );
     linkUntilDisposed(this, magnificationText.boundsProperty, () => {
-      magnificationText.left = 8;
+      magnificationText.left = DIMMING_VIEWS_SETTINGS.LEFT_LEFT;
       magnificationText.bottom = height - 6;
     });
     const dragHint = new Text(strings.dragHintStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.mutedTextColorProperty,
-      maxWidth: width - 16,
+      maxWidth: width - DIMMING_VIEWS_SETTINGS.DRAG_HINT_MAX_WIDTH_OFFSET,
     });
     linkUntilDisposed(this, dragHint.boundsProperty, () => {
-      dragHint.left = 8;
-      dragHint.top = 6;
+      dragHint.left = DIMMING_VIEWS_SETTINGS.LEFT_LEFT;
+      dragHint.top = DIMMING_VIEWS_SETTINGS.TOP_TOP;
     });
 
     const detail = new Node({ children: [star, planet, occluder, magnificationText, dragHint] });

@@ -1,3 +1,4 @@
+import { LINING_UP_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LiningUpScreenView.ts
  *
@@ -45,16 +46,16 @@ import { SkyViewNode } from "./SkyViewNode.js";
 
 export type LiningUpScreenViewOptions = ScreenViewOptions;
 
-const VIEW_WIDTH = 340;
-const VIEW_3D_HEIGHT = 270;
-const SKY_VIEW_HEIGHT = 170;
-const SKY_STAR_RADIUS = 55;
-const CHART_WIDTH = 230;
-const CHART_HEIGHT = 150;
+const VIEW_WIDTH: number = LINING_UP_SCREEN_VIEW_SETTINGS.VIEW_WIDTH;
+const VIEW_3D_HEIGHT: number = LINING_UP_SCREEN_VIEW_SETTINGS.VIEW_3_D_HEIGHT;
+const SKY_VIEW_HEIGHT: number = LINING_UP_SCREEN_VIEW_SETTINGS.SKY_VIEW_HEIGHT;
+const SKY_STAR_RADIUS: number = LINING_UP_SCREEN_VIEW_SETTINGS.SKY_STAR_RADIUS;
+const CHART_WIDTH: number = LINING_UP_SCREEN_VIEW_SETTINGS.CHART_WIDTH;
+const CHART_HEIGHT: number = LINING_UP_SCREEN_VIEW_SETTINGS.CHART_HEIGHT;
 const READOUT_WIDTH = CONTROL_PANEL_WIDTH;
 
 /** How far the step button moves the clock, wall-clock seconds at normal speed. */
-const STEP_SECONDS = 0.12;
+const STEP_SECONDS: number = LINING_UP_SCREEN_VIEW_SETTINGS.STEP_SECONDS;
 
 export class LiningUpScreenView extends ScreenView {
   private readonly orbitView: Orbit3DViewNode;
@@ -78,14 +79,14 @@ export class LiningUpScreenView extends ScreenView {
     // ── Views ─────────────────────────────────────────────────────────────────
     this.orbitView = new Orbit3DViewNode(model, VIEW_WIDTH, VIEW_3D_HEIGHT);
     this.orbitView.left = bounds.minX + SCREEN_VIEW_MARGIN;
-    this.orbitView.top = bounds.minY + SCREEN_VIEW_MARGIN + 20;
+    this.orbitView.top = bounds.minY + SCREEN_VIEW_MARGIN + LINING_UP_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     const skyView = new SkyViewNode(model, VIEW_WIDTH, SKY_VIEW_HEIGHT, SKY_STAR_RADIUS);
     skyView.left = this.orbitView.left;
     skyView.top = this.orbitView.bottom + 32;
 
     // ── Chart and random sky ──────────────────────────────────────────────────
     const chart = new LiningUpChartNode(model, CHART_WIDTH, CHART_HEIGHT);
-    chart.left = this.orbitView.right + 70;
+    chart.left = this.orbitView.right + LINING_UP_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
     chart.top = bounds.minY + SCREEN_VIEW_MARGIN + 22;
     const randomSky = new RandomSkyNode(model, CHART_WIDTH + 50);
     randomSky.left = this.orbitView.right + 22;
@@ -96,7 +97,7 @@ export class LiningUpScreenView extends ScreenView {
       new Text(stringProperty, {
         font: FONTS.LABEL,
         fill: TransitHunterColors.textColorProperty,
-        maxWidth: CONTROL_PANEL_WIDTH - 40,
+        maxWidth: CONTROL_PANEL_WIDTH - LINING_UP_SCREEN_VIEW_SETTINGS.LABEL_MAX_WIDTH_OFFSET,
       });
     const planetRadios = new AquaRadioButtonGroup(
       model.planetPresetProperty,
@@ -105,7 +106,11 @@ export class LiningUpScreenView extends ScreenView {
         { value: PlanetPreset.NEPTUNE, createNode: () => label(common.neptuneSizedStringProperty) },
         { value: PlanetPreset.JUPITER, createNode: () => label(common.jupiterSizedStringProperty) },
       ],
-      { spacing: 5, radioButtonOptions: { radius: 7 }, accessibleName: a11y.controls.planetStringProperty },
+      {
+        spacing: LINING_UP_SCREEN_VIEW_SETTINGS.PLANET_RADIOS_SPACING,
+        radioButtonOptions: { radius: LINING_UP_SCREEN_VIEW_SETTINGS.PLANET_RADIOS_RADIUS },
+        accessibleName: a11y.controls.planetStringProperty,
+      },
     );
     const inclinationControl = createNumberControl(
       common.inclinationStringProperty,
@@ -114,20 +119,20 @@ export class LiningUpScreenView extends ScreenView {
       {
         unitsProperty: units.degreesStringProperty,
         compactUnits: true,
-        significantFigures: 4,
-        delta: 0.1,
+        significantFigures: LINING_UP_SCREEN_VIEW_SETTINGS.INCLINATION_CONTROL_SIGNIFICANT_FIGURES,
+        delta: LINING_UP_SCREEN_VIEW_SETTINGS.INCLINATION_CONTROL_DELTA,
         accessibleName: a11y.controls.inclinationStringProperty,
       },
     );
     const distanceControl = createNumberControl(common.distanceStringProperty, model.distanceProperty, DISTANCE_RANGE, {
       unitsProperty: units.auStringProperty,
       logarithmic: true,
-      significantFigures: 2,
+      significantFigures: LINING_UP_SCREEN_VIEW_SETTINGS.DISTANCE_CONTROL_SIGNIFICANT_FIGURES,
       accessibleName: a11y.controls.distanceStringProperty,
     });
     const controlPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 10,
+        spacing: LINING_UP_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_SPACING,
         align: "left",
         children: [
           new Text(common.planetSizeHeadingStringProperty, {
@@ -140,7 +145,7 @@ export class LiningUpScreenView extends ScreenView {
           distanceControl,
         ],
       }),
-      { minWidth: CONTROL_PANEL_WIDTH + 24 },
+      { minWidth: CONTROL_PANEL_WIDTH + LINING_UP_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_MIN_WIDTH_OFFSET },
     );
     controlPanel.right = bounds.maxX - SCREEN_VIEW_MARGIN;
     controlPanel.top = bounds.minY + SCREEN_VIEW_MARGIN;
@@ -175,17 +180,23 @@ export class LiningUpScreenView extends ScreenView {
     );
     const impactText = readout(
       new PatternStringProperty(strings.impactPatternStringProperty, {
-        value: new DerivedProperty([model.impactParameterProperty], (b) => formatSignificant(b, 2)),
+        value: new DerivedProperty([model.impactParameterProperty], (b) =>
+          formatSignificant(b, LINING_UP_SCREEN_VIEW_SETTINGS.IMPACT_TEXT_DIGITS),
+        ),
       }),
     );
     const tiltLimitText = readout(
       new PatternStringProperty(strings.tiltLimitPatternStringProperty, {
-        value: new DerivedProperty([model.tiltLimitProperty], (limit) => formatSignificant(limit, 2)),
+        value: new DerivedProperty([model.tiltLimitProperty], (limit) =>
+          formatSignificant(limit, LINING_UP_SCREEN_VIEW_SETTINGS.TILT_LIMIT_TEXT_DIGITS),
+        ),
       }),
     );
     const probabilityText = readout(
       new PatternStringProperty(strings.probabilityPatternStringProperty, {
-        value: new DerivedProperty([model.probabilityProperty], (p) => formatSignificant(100 * p, 2)),
+        value: new DerivedProperty([model.probabilityProperty], (p) =>
+          formatSignificant(100 * p, LINING_UP_SCREEN_VIEW_SETTINGS.PROBABILITY_TEXT_DIGITS),
+        ),
       }),
     );
     const equation = createEquationNode(strings.equationStringProperty, READOUT_WIDTH);
@@ -200,23 +211,26 @@ export class LiningUpScreenView extends ScreenView {
       a11y.controls.explanationStringProperty,
     );
     const explanationRow = new HBox({
-      spacing: 8,
+      spacing: LINING_UP_SCREEN_VIEW_SETTINGS.EXPLANATION_ROW_SPACING,
       children: [
         explanationButton,
         new Text(common.explanationButtonStringProperty, {
           font: FONTS.LABEL,
           fill: TransitHunterColors.textColorProperty,
-          maxWidth: READOUT_WIDTH - 40,
+          maxWidth: READOUT_WIDTH - LINING_UP_SCREEN_VIEW_SETTINGS.EXPLANATION_ROW_MAX_WIDTH_OFFSET,
         }),
       ],
     });
     const readoutPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 7,
+        spacing: LINING_UP_SCREEN_VIEW_SETTINGS.READOUT_PANEL_SPACING,
         align: "left",
         children: [durationText, impactText, periodText, tiltLimitText, probabilityText, equation, explanationRow],
       }),
-      { minWidth: CONTROL_PANEL_WIDTH + 24, maxWidth: CONTROL_PANEL_WIDTH + 24 },
+      {
+        minWidth: CONTROL_PANEL_WIDTH + LINING_UP_SCREEN_VIEW_SETTINGS.READOUT_PANEL_MIN_WIDTH_OFFSET,
+        maxWidth: CONTROL_PANEL_WIDTH + LINING_UP_SCREEN_VIEW_SETTINGS.READOUT_PANEL_MAX_WIDTH_OFFSET,
+      },
     );
     readoutPanel.right = controlPanel.right;
     readoutPanel.top = controlPanel.bottom + 12;
@@ -243,7 +257,7 @@ export class LiningUpScreenView extends ScreenView {
       right: bounds.maxX - SCREEN_VIEW_MARGIN,
       bottom: bounds.maxY - SCREEN_VIEW_MARGIN,
     });
-    timeControlNode.right = resetAllButton.left - 30;
+    timeControlNode.right = resetAllButton.left - LINING_UP_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
     timeControlNode.bottom = resetAllButton.bottom;
 
     this.children = [

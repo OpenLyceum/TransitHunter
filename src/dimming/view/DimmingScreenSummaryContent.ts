@@ -1,3 +1,4 @@
+import { DIMMING_SCREEN_SUMMARY_CONTENT_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * DimmingScreenSummaryContent.ts
  *
@@ -44,7 +45,9 @@ export class DimmingScreenSummaryContent extends ScreenSummaryContent {
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
       currentDetailsContent: new PatternStringProperty(a11y.currentDetailsPatternStringProperty, {
         planet: planetProperty,
-        starRadius: new DerivedProperty([model.starPresetProperty], (star) => formatSignificant(star.radiusSun, 2)),
+        starRadius: new DerivedProperty([model.starPresetProperty], (star) =>
+          formatSignificant(star.radiusSun, DIMMING_SCREEN_SUMMARY_CONTENT_SETTINGS.FORMAT_SIGNIFICANT_DIGITS),
+        ),
         percent: new DerivedProperty([model.maxBlockedFractionProperty], (depth) => toPlainText(formatPercent(depth))),
         brightness: new DerivedProperty([model.brightnessProperty, model.maxBlockedFractionProperty], (b, depth) =>
           formatTickValue(b * 100, brightnessDecimals(depth)),

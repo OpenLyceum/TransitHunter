@@ -1,3 +1,4 @@
+import { COMPOSITION_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * composition.ts
  *
@@ -19,7 +20,7 @@ export function constantDensityRadius(massEarth: number, densityGcm3: number): n
 }
 
 /** Core mass fraction of an Earth-like rocky planet (Zeng, Sasselov & Jacobsen 2016). */
-const EARTH_LIKE_CORE_MASS_FRACTION = 0.325;
+const EARTH_LIKE_CORE_MASS_FRACTION: number = COMPOSITION_SETTINGS.EARTH_LIKE_CORE_MASS_FRACTION;
 
 /**
  * Radius (Earth radii) of a rocky planet of this mass (Earth masses) and core
@@ -35,7 +36,7 @@ export function rockyRadius(massEarth: number, coreMassFraction = EARTH_LIKE_COR
 export type PlanetKind = "rocky" | "inBetween" | "giant";
 
 /** Radius above which a planet is called a giant, Earth radii (about 0.5 R_J). */
-const GIANT_RADIUS_EARTH = 6;
+const GIANT_RADIUS_EARTH: number = COMPOSITION_SETTINGS.GIANT_RADIUS_EARTH;
 
 /**
  * Classifies a planet: "rocky" if it is no bigger than a rocky planet of its mass

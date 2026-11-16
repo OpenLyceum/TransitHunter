@@ -1,3 +1,4 @@
+import { DIMMING_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * DimmingScreenView.ts
  *
@@ -43,16 +44,16 @@ import { EarthViewNode, SideViewNode } from "./DimmingViews.js";
 
 export type DimmingScreenViewOptions = ScreenViewOptions;
 
-const VIEW_WIDTH = 360;
-const SIDE_VIEW_HEIGHT = 170;
-const EARTH_VIEW_HEIGHT = 180;
-const STAR_RADIUS = 65;
-const CHART_WIDTH = 250;
-const CHART_HEIGHT = 200;
-const READOUT_WIDTH = 300;
+const VIEW_WIDTH: number = DIMMING_SCREEN_VIEW_SETTINGS.VIEW_WIDTH;
+const SIDE_VIEW_HEIGHT: number = DIMMING_SCREEN_VIEW_SETTINGS.SIDE_VIEW_HEIGHT;
+const EARTH_VIEW_HEIGHT: number = DIMMING_SCREEN_VIEW_SETTINGS.EARTH_VIEW_HEIGHT;
+const STAR_RADIUS: number = DIMMING_SCREEN_VIEW_SETTINGS.STAR_RADIUS;
+const CHART_WIDTH: number = DIMMING_SCREEN_VIEW_SETTINGS.CHART_WIDTH;
+const CHART_HEIGHT: number = DIMMING_SCREEN_VIEW_SETTINGS.CHART_HEIGHT;
+const READOUT_WIDTH: number = DIMMING_SCREEN_VIEW_SETTINGS.READOUT_WIDTH;
 
 /** Fraction blocked above which the planet is said to hide the whole star. */
-const WHOLE_STAR = 0.9999;
+const WHOLE_STAR: number = DIMMING_SCREEN_VIEW_SETTINGS.WHOLE_STAR;
 
 export class DimmingScreenView extends ScreenView {
   private readonly telescopeViewProperty = new BooleanProperty(false);
@@ -76,14 +77,14 @@ export class DimmingScreenView extends ScreenView {
     // ── Side view and view from Earth ─────────────────────────────────────────
     const sideView = new SideViewNode(model, this.telescopeViewProperty, VIEW_WIDTH, SIDE_VIEW_HEIGHT, STAR_RADIUS);
     sideView.left = bounds.minX + SCREEN_VIEW_MARGIN;
-    sideView.top = bounds.minY + SCREEN_VIEW_MARGIN + 20;
+    sideView.top = bounds.minY + SCREEN_VIEW_MARGIN + DIMMING_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     const earthView = new EarthViewNode(model, this.telescopeViewProperty, VIEW_WIDTH, EARTH_VIEW_HEIGHT, STAR_RADIUS);
     earthView.left = sideView.left;
     earthView.top = sideView.bottom + 32;
 
     // ── Light curve ───────────────────────────────────────────────────────────
     const chart = new DimmingChartNode(model, CHART_WIDTH, CHART_HEIGHT);
-    chart.left = sideView.right + 70;
+    chart.left = sideView.right + DIMMING_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
     chart.top = bounds.minY + SCREEN_VIEW_MARGIN + 22;
 
     // ── Readouts ──────────────────────────────────────────────────────────────
@@ -116,7 +117,9 @@ export class DimmingScreenView extends ScreenView {
     );
     const starSizeText = new RichText(
       new PatternStringProperty(strings.starSizePatternStringProperty, {
-        value: new DerivedProperty([model.starPresetProperty], (star) => formatSignificant(star.radiusSun, 2)),
+        value: new DerivedProperty([model.starPresetProperty], (star) =>
+          formatSignificant(star.radiusSun, DIMMING_SCREEN_VIEW_SETTINGS.STAR_SIZE_TEXT_DIGITS),
+        ),
       }),
       { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, maxWidth: READOUT_WIDTH },
     );
@@ -132,23 +135,26 @@ export class DimmingScreenView extends ScreenView {
       a11y.controls.explanationStringProperty,
     );
     const explanationRow = new HBox({
-      spacing: 8,
+      spacing: DIMMING_SCREEN_VIEW_SETTINGS.EXPLANATION_ROW_SPACING,
       children: [
         explanationButton,
         new Text(common.explanationButtonStringProperty, {
           font: FONTS.LABEL,
           fill: TransitHunterColors.textColorProperty,
-          maxWidth: READOUT_WIDTH - 40,
+          maxWidth: READOUT_WIDTH - DIMMING_SCREEN_VIEW_SETTINGS.EXPLANATION_ROW_MAX_WIDTH_OFFSET,
         }),
       ],
     });
     const readoutPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 8,
+        spacing: DIMMING_SCREEN_VIEW_SETTINGS.READOUT_PANEL_SPACING,
         align: "left",
         children: [brightnessText, blocksText, starSizeText, equation, explanationRow],
       }),
-      { minWidth: READOUT_WIDTH + 24, maxWidth: READOUT_WIDTH + 24 },
+      {
+        minWidth: READOUT_WIDTH + DIMMING_SCREEN_VIEW_SETTINGS.READOUT_PANEL_MIN_WIDTH_OFFSET,
+        maxWidth: READOUT_WIDTH + DIMMING_SCREEN_VIEW_SETTINGS.READOUT_PANEL_MAX_WIDTH_OFFSET,
+      },
     );
     readoutPanel.left = sideView.right + 20;
     readoutPanel.top = chart.bottom + 62;
@@ -158,7 +164,7 @@ export class DimmingScreenView extends ScreenView {
       new Text(stringProperty, {
         font: FONTS.LABEL,
         fill: TransitHunterColors.textColorProperty,
-        maxWidth: CONTROL_PANEL_WIDTH - 40,
+        maxWidth: CONTROL_PANEL_WIDTH - DIMMING_SCREEN_VIEW_SETTINGS.LABEL_MAX_WIDTH_OFFSET,
       });
     const heading = (stringProperty: TReadOnlyProperty<string>): Text =>
       new Text(stringProperty, {
@@ -166,7 +172,10 @@ export class DimmingScreenView extends ScreenView {
         fill: TransitHunterColors.textColorProperty,
         maxWidth: CONTROL_PANEL_WIDTH,
       });
-    const radioOptions = { spacing: 6, radioButtonOptions: { radius: 7 } };
+    const radioOptions = {
+      spacing: DIMMING_SCREEN_VIEW_SETTINGS.RADIO_OPTIONS_SPACING,
+      radioButtonOptions: { radius: DIMMING_SCREEN_VIEW_SETTINGS.RADIO_OPTIONS_RADIUS },
+    };
     const planetRadios = new AquaRadioButtonGroup(
       model.planetPresetProperty,
       [
@@ -184,7 +193,7 @@ export class DimmingScreenView extends ScreenView {
       {
         unitsProperty: units.earthRadiiStringProperty,
         logarithmic: true,
-        significantFigures: 2,
+        significantFigures: DIMMING_SCREEN_VIEW_SETTINGS.CUSTOM_RADIUS_CONTROL_SIGNIFICANT_FIGURES,
         enabledRangeProperty: model.customRadiusRangeProperty,
         accessibleName: a11y.controls.customRadiusStringProperty,
         numberControlOptions: {
@@ -208,7 +217,7 @@ export class DimmingScreenView extends ScreenView {
 
     const controlPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 10,
+        spacing: DIMMING_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_SPACING,
         align: "left",
         children: [
           heading(strings.planetHeadingStringProperty),
@@ -219,7 +228,7 @@ export class DimmingScreenView extends ScreenView {
           telescopeCheckbox,
         ],
       }),
-      { minWidth: CONTROL_PANEL_WIDTH + 24 },
+      { minWidth: CONTROL_PANEL_WIDTH + DIMMING_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_MIN_WIDTH_OFFSET },
     );
     controlPanel.right = bounds.maxX - SCREEN_VIEW_MARGIN;
     controlPanel.top = bounds.minY + SCREEN_VIEW_MARGIN;
@@ -246,7 +255,7 @@ export class DimmingScreenView extends ScreenView {
       right: bounds.maxX - SCREEN_VIEW_MARGIN,
       bottom: bounds.maxY - SCREEN_VIEW_MARGIN,
     });
-    timeControlNode.right = resetAllButton.left - 30;
+    timeControlNode.right = resetAllButton.left - DIMMING_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
     timeControlNode.bottom = resetAllButton.bottom;
 
     this.children = [sideView, earthView, chart, readoutPanel, controlPanel, timeControlNode, resetAllButton];

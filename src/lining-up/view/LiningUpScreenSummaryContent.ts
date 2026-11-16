@@ -1,3 +1,4 @@
+import { LINING_UP_SCREEN_SUMMARY_CONTENT_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LiningUpScreenSummaryContent.ts
  *
@@ -27,7 +28,9 @@ export class LiningUpScreenSummaryContent extends ScreenSummaryContent {
     model.sampleChangedEmitter.addListener(updateCount);
 
     const transitPattern = new PatternStringProperty(a11y.transitPatternStringProperty, {
-      hours: new DerivedProperty([model.durationProperty], (hours) => toPlainText(formatSignificant(hours, 2))),
+      hours: new DerivedProperty([model.durationProperty], (hours) =>
+        toPlainText(formatSignificant(hours, LINING_UP_SCREEN_SUMMARY_CONTENT_SETTINGS.TRANSIT_PATTERN_DIGITS)),
+      ),
     });
     const plain = (value: number, digits: number): string => toPlainText(formatSignificant(value, digits));
 
@@ -36,14 +39,22 @@ export class LiningUpScreenSummaryContent extends ScreenSummaryContent {
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
       currentDetailsContent: new PatternStringProperty(a11y.currentDetailsPatternStringProperty, {
         planet: createPlanetNameProperty(model.planetPresetProperty, common.planetStringProperty),
-        distance: new DerivedProperty([model.distanceProperty], (d) => plain(d, 2)),
-        period: new DerivedProperty([model.periodProperty], (p) => plain(p, 3)),
-        inclination: new DerivedProperty([model.inclinationProperty], (i) => plain(i, 4)),
+        distance: new DerivedProperty([model.distanceProperty], (d) =>
+          plain(d, LINING_UP_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS),
+        ),
+        period: new DerivedProperty([model.periodProperty], (p) =>
+          plain(p, LINING_UP_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS_SEGMENT_2),
+        ),
+        inclination: new DerivedProperty([model.inclinationProperty], (i) =>
+          plain(i, LINING_UP_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS_SEGMENT_3),
+        ),
         transit: new DerivedProperty(
           [model.transitsProperty, transitPattern, a11y.noTransitStringProperty],
           (transits, yes, no) => (transits ? yes : no),
         ),
-        limit: new DerivedProperty([model.tiltLimitProperty], (limit) => plain(limit, 2)),
+        limit: new DerivedProperty([model.tiltLimitProperty], (limit) =>
+          plain(limit, LINING_UP_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS),
+        ),
         count: countProperty,
       }),
       interactionHintContent: a11y.screenSummary.interactionHintStringProperty,

@@ -1,3 +1,4 @@
+import { PLANET_HUNT_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * PlanetHuntScreenView.ts
  *
@@ -51,9 +52,9 @@ import { PlanetHuntScreenSummaryContent } from "./PlanetHuntScreenSummaryContent
 
 export type PlanetHuntScreenViewOptions = ScreenViewOptions;
 
-const CHART_WIDTH = 610;
-const CHART_HEIGHT = 245;
-const PANEL_WIDTH = 318;
+const CHART_WIDTH: number = PLANET_HUNT_SCREEN_VIEW_SETTINGS.CHART_WIDTH;
+const CHART_HEIGHT: number = PLANET_HUNT_SCREEN_VIEW_SETTINGS.CHART_HEIGHT;
+const PANEL_WIDTH: number = PLANET_HUNT_SCREEN_VIEW_SETTINGS.PANEL_WIDTH;
 
 /**
  * Arrow steps of the trial period (decades) and of the fold's slide (fraction of
@@ -62,8 +63,8 @@ const PANEL_WIDTH = 318;
  * four transits by under an hour over the four years of data, and 0.0002 of a
  * period (1.4 h at Kepler-22 b's 290 days).
  */
-const PERIOD_STEP_DECADES = 0.00001;
-const SHIFT_STEP = 0.0002;
+const PERIOD_STEP_DECADES: number = PLANET_HUNT_SCREEN_VIEW_SETTINGS.PERIOD_STEP_DECADES;
+const SHIFT_STEP: number = PLANET_HUNT_SCREEN_VIEW_SETTINGS.SHIFT_STEP;
 
 export class PlanetHuntScreenView extends ScreenView {
   private readonly chart: HuntChartNode;
@@ -86,8 +87,8 @@ export class PlanetHuntScreenView extends ScreenView {
 
     // ── Chart ─────────────────────────────────────────────────────────────────
     this.chart = new HuntChartNode(model, CHART_WIDTH, CHART_HEIGHT);
-    this.chart.left = bounds.minX + SCREEN_VIEW_MARGIN + 60;
-    this.chart.top = bounds.minY + SCREEN_VIEW_MARGIN + 8;
+    this.chart.left = bounds.minX + SCREEN_VIEW_MARGIN + PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+    this.chart.top = bounds.minY + SCREEN_VIEW_MARGIN + PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     const searchNode = new PeriodSearchNode(model, CHART_WIDTH, CHART_HEIGHT);
     searchNode.translation = this.chart.translation;
     model.showSearchProperty.link((show) => {
@@ -113,8 +114,16 @@ export class PlanetHuntScreenView extends ScreenView {
     model.marks.addItemRemovedListener(updateMarksText);
     strings.marksCountPatternStringProperty.link(updateMarksText);
     strings.marksSpacingPatternStringProperty.link(updateMarksText);
-    const useSpacingButton = createPushButton(strings.useSpacingStringProperty, () => model.useMarkSpacing(), 150);
-    const clearMarksButton = createPushButton(strings.clearMarksStringProperty, () => model.marks.clear(), 150);
+    const useSpacingButton = createPushButton(
+      strings.useSpacingStringProperty,
+      () => model.useMarkSpacing(),
+      PLANET_HUNT_SCREEN_VIEW_SETTINGS.USE_SPACING_CREATE_PUSH_BUTTON_MAX_TEXT_WIDTH,
+    );
+    const clearMarksButton = createPushButton(
+      strings.clearMarksStringProperty,
+      () => model.marks.clear(),
+      PLANET_HUNT_SCREEN_VIEW_SETTINGS.CLEAR_MARKS_CREATE_PUSH_BUTTON_MAX_TEXT_WIDTH,
+    );
     const updateMarkButtons = (): void => {
       useSpacingButton.enabled = model.marks.length >= 2;
       clearMarksButton.enabled = model.marks.length > 0;
@@ -125,15 +134,24 @@ export class PlanetHuntScreenView extends ScreenView {
 
     const radiusText = text(
       new PatternStringProperty(strings.radiusPatternStringProperty, {
-        depth: new DerivedProperty([model.depthProperty], (depth) => formatSignificant(depth, 2)),
+        depth: new DerivedProperty([model.depthProperty], (depth) =>
+          formatSignificant(depth, PLANET_HUNT_SCREEN_VIEW_SETTINGS.RADIUS_TEXT_DIGITS),
+        ),
         earth: new DerivedProperty(
           [model.inferredRadiusProperty, units.earthRadiiStringProperty, units.valueUnitsPatternStringProperty],
-          (radius, earthRadii) => valueWithUnits(formatSignificant(radius, 2), earthRadii),
+          (radius, earthRadii) =>
+            valueWithUnits(formatSignificant(radius, PLANET_HUNT_SCREEN_VIEW_SETTINGS.RADIUS_TEXT_DIGITS), earthRadii),
         ),
         jupiter: new DerivedProperty(
           [model.inferredRadiusProperty, units.jupiterRadiiStringProperty, units.valueUnitsPatternStringProperty],
           (radius, jupiterRadii) =>
-            valueWithUnits(formatSignificant((radius * EARTH_RADIUS_M) / JUPITER_RADIUS_M, 2), jupiterRadii),
+            valueWithUnits(
+              formatSignificant(
+                (radius * EARTH_RADIUS_M) / JUPITER_RADIUS_M,
+                PLANET_HUNT_SCREEN_VIEW_SETTINGS.RADIUS_TEXT_DIGITS,
+              ),
+              jupiterRadii,
+            ),
         ),
       }),
     );
@@ -142,7 +160,15 @@ export class PlanetHuntScreenView extends ScreenView {
         radius: new DerivedProperty(
           [model.planetsProperty, units.solarRadiiStringProperty, units.valueUnitsPatternStringProperty],
           (planets, solarRadii) =>
-            planets[0] ? valueWithUnits(formatSignificant(planets[0].starRadiusSun, 3), solarRadii) : "—",
+            planets[0]
+              ? valueWithUnits(
+                  formatSignificant(
+                    planets[0].starRadiusSun,
+                    PLANET_HUNT_SCREEN_VIEW_SETTINGS.STAR_RADIUS_SUN_FORMAT_SIGNIFICANT_DIGITS,
+                  ),
+                  solarRadii,
+                )
+              : "—",
         ),
         mission: new DerivedProperty([model.lightCurveProperty], (curve) =>
           curve ? `${curve.file.mission} (${curve.file.pipeline})` : "—",
@@ -165,7 +191,7 @@ export class PlanetHuntScreenView extends ScreenView {
     );
     const measurementPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 6,
+        spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.MEASUREMENT_PANEL_SPACING,
         align: "left",
         children: [
           new Text(strings.measurementsTitleStringProperty, {
@@ -174,33 +200,39 @@ export class PlanetHuntScreenView extends ScreenView {
             maxWidth: PANEL_WIDTH,
           }),
           text(marksTextProperty),
-          new HBox({ spacing: 8, children: [useSpacingButton, clearMarksButton] }),
+          new HBox({
+            spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_MEASUREMENT_PANEL_SPACING,
+            children: [useSpacingButton, clearMarksButton],
+          }),
           radiusText,
           starText,
           equation,
           new HBox({
-            spacing: 8,
+            spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_MEASUREMENT_PANEL_SPACING,
             children: [
               explanationButton,
               new Text(common.explanationButtonStringProperty, {
                 font: FONTS.LABEL,
                 fill: TransitHunterColors.textColorProperty,
-                maxWidth: PANEL_WIDTH - 40,
+                maxWidth: PANEL_WIDTH - PLANET_HUNT_SCREEN_VIEW_SETTINGS.MEASUREMENT_PANEL_MAX_WIDTH_OFFSET,
               }),
             ],
           }),
         ],
       }),
-      { minWidth: PANEL_WIDTH + 24, maxWidth: PANEL_WIDTH + 24 },
+      {
+        minWidth: PANEL_WIDTH + PLANET_HUNT_SCREEN_VIEW_SETTINGS.MEASUREMENT_PANEL_MIN_WIDTH_OFFSET,
+        maxWidth: PANEL_WIDTH + PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_MEASUREMENT_PANEL_MAX_WIDTH_OFFSET,
+      },
     );
     measurementPanel.left = bounds.minX + SCREEN_VIEW_MARGIN;
     measurementPanel.top = this.chart.bottom + 12;
 
     // ── Archive answer ────────────────────────────────────────────────────────
-    const answerList = new VBox({ spacing: 3, align: "left" });
+    const answerList = new VBox({ spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.ANSWER_LIST_SPACING, align: "left" });
     const answerPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 6,
+        spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.ANSWER_PANEL_SPACING,
         align: "left",
         children: [
           new Text(strings.answerTitleStringProperty, {
@@ -216,7 +248,11 @@ export class PlanetHuntScreenView extends ScreenView {
           }),
         ],
       }),
-      { minWidth: PANEL_WIDTH + 24, maxWidth: PANEL_WIDTH + 24, visibleProperty: model.revealProperty },
+      {
+        minWidth: PANEL_WIDTH + PLANET_HUNT_SCREEN_VIEW_SETTINGS.ANSWER_PANEL_MIN_WIDTH_OFFSET,
+        maxWidth: PANEL_WIDTH + PLANET_HUNT_SCREEN_VIEW_SETTINGS.ANSWER_PANEL_MAX_WIDTH_OFFSET,
+        visibleProperty: model.revealProperty,
+      },
     );
     answerPanel.left = measurementPanel.right + 12;
     answerPanel.top = measurementPanel.top;
@@ -225,21 +261,28 @@ export class PlanetHuntScreenView extends ScreenView {
         StringUtils.fillIn(strings.answerRowPatternStringProperty.value, {
           name: planet.name,
           period: formatDays(planet.periodDays),
-          radius: valueWithUnits(formatSignificant(planet.radiusEarth, 2), units.earthRadiiStringProperty.value),
+          radius: valueWithUnits(
+            formatSignificant(planet.radiusEarth, PLANET_HUNT_SCREEN_VIEW_SETTINGS.LINE_DIGITS),
+            units.earthRadiiStringProperty.value,
+          ),
           year: planet.discoveryYear,
         }),
-        { font: FONTS.SMALL, fill: TransitHunterColors.textColorProperty, maxWidth: PANEL_WIDTH - 70 },
+        {
+          font: FONTS.SMALL,
+          fill: TransitHunterColors.textColorProperty,
+          maxWidth: PANEL_WIDTH - PLANET_HUNT_SCREEN_VIEW_SETTINGS.LINE_MAX_WIDTH_OFFSET,
+        },
       );
       const foldButton = createPushButton(
         strings.foldOnItStringProperty,
         () => model.useArchiveEphemeris(planet),
-        60,
+        PLANET_HUNT_SCREEN_VIEW_SETTINGS.FOLD_ON_IT_CREATE_PUSH_BUTTON_MAX_TEXT_WIDTH,
         true,
       );
       foldButton.accessibleName = StringUtils.fillIn(a11y.controls.foldOnPatternStringProperty.value, {
         name: planet.name,
       });
-      return new HBox({ spacing: 8, children: [foldButton, line] });
+      return new HBox({ spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.ANSWER_ROW_SPACING, children: [foldButton, line] });
     };
     const updateAnswers = (): void => {
       for (const child of answerList.children) {
@@ -271,7 +314,11 @@ export class PlanetHuntScreenView extends ScreenView {
               star: target.starName,
               difficulty: difficultyName(target.difficulty),
             }),
-            { font: FONTS.LABEL, fill: LIGHT_SURFACE_TEXT_FILL, maxWidth: CONTROL_PANEL_WIDTH - 50 },
+            {
+              font: FONTS.LABEL,
+              fill: LIGHT_SURFACE_TEXT_FILL,
+              maxWidth: CONTROL_PANEL_WIDTH - PLANET_HUNT_SCREEN_VIEW_SETTINGS.TARGET_COMBO_BOX_MAX_WIDTH_OFFSET,
+            },
           ),
       })),
       comboListParent,
@@ -280,7 +327,7 @@ export class PlanetHuntScreenView extends ScreenView {
     const periodControl = createNumberControl(strings.periodStringProperty, model.periodProperty, HUNT_PERIOD_RANGE, {
       unitsProperty: units.daysStringProperty,
       logarithmic: true,
-      significantFigures: 6,
+      significantFigures: PLANET_HUNT_SCREEN_VIEW_SETTINGS.PERIOD_CONTROL_SIGNIFICANT_FIGURES,
       delta: PERIOD_STEP_DECADES,
       accessibleName: a11y.controls.periodStringProperty,
     });
@@ -289,7 +336,7 @@ export class PlanetHuntScreenView extends ScreenView {
       model.shiftProperty,
       model.shiftProperty.range,
       {
-        significantFigures: 4,
+        significantFigures: PLANET_HUNT_SCREEN_VIEW_SETTINGS.SHIFT_CONTROL_SIGNIFICANT_FIGURES,
         delta: SHIFT_STEP,
         accessibleName: a11y.controls.shiftStringProperty,
       },
@@ -303,13 +350,13 @@ export class PlanetHuntScreenView extends ScreenView {
     const depthControl = createNumberControl(strings.depthStringProperty, model.depthProperty, HUNT_DEPTH_RANGE, {
       unitsProperty: units.percentStringProperty,
       logarithmic: true,
-      significantFigures: 2,
+      significantFigures: PLANET_HUNT_SCREEN_VIEW_SETTINGS.DEPTH_CONTROL_SIGNIFICANT_FIGURES,
       accessibleName: a11y.controls.depthStringProperty,
     });
     const revealCheckbox = createCheckbox(model.revealProperty, strings.revealStringProperty);
     const controlPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 8,
+        spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_SPACING,
         align: "left",
         children: [
           new Text(strings.starTitleStringProperty, {
@@ -327,7 +374,7 @@ export class PlanetHuntScreenView extends ScreenView {
           revealCheckbox,
         ],
       }),
-      { minWidth: CONTROL_PANEL_WIDTH + 24 },
+      { minWidth: CONTROL_PANEL_WIDTH + PLANET_HUNT_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_MIN_WIDTH_OFFSET },
     );
     controlPanel.right = bounds.maxX - SCREEN_VIEW_MARGIN;
     controlPanel.top = bounds.minY + SCREEN_VIEW_MARGIN;

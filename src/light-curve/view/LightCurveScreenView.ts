@@ -1,3 +1,4 @@
+import { LIGHT_CURVE_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LightCurveScreenView.ts
  *
@@ -58,18 +59,18 @@ import { LightCurveScreenSummaryContent } from "./LightCurveScreenSummaryContent
 
 export type LightCurveScreenViewOptions = ScreenViewOptions;
 
-const CHART_WIDTH = 560;
-const WIDE_HEIGHT = 120;
-const ZOOM_HEIGHT = 165;
-const MODEL_SAMPLES = 1200;
-const READOUT_COLUMN_WIDTH = 330;
+const CHART_WIDTH: number = LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CHART_WIDTH;
+const WIDE_HEIGHT: number = LIGHT_CURVE_SCREEN_VIEW_SETTINGS.WIDE_HEIGHT;
+const ZOOM_HEIGHT: number = LIGHT_CURVE_SCREEN_VIEW_SETTINGS.ZOOM_HEIGHT;
+const MODEL_SAMPLES: number = LIGHT_CURVE_SCREEN_VIEW_SETTINGS.MODEL_SAMPLES;
+const READOUT_COLUMN_WIDTH: number = LIGHT_CURVE_SCREEN_VIEW_SETTINGS.READOUT_COLUMN_WIDTH;
 
 /** Style of the measuring marks. */
 const MARK_ARROW_OPTIONS = {
   doubleHead: true,
-  headHeight: 7,
-  headWidth: 9,
-  tailWidth: 1.5,
+  headHeight: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.MARK_ARROW_OPTIONS_HEAD_HEIGHT,
+  headWidth: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.MARK_ARROW_OPTIONS_HEAD_WIDTH,
+  tailWidth: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.MARK_ARROW_OPTIONS_TAIL_WIDTH,
   stroke: null,
   fill: TransitHunterColors.cursorColorProperty,
 };
@@ -101,8 +102,8 @@ export class LightCurveScreenView extends ScreenView {
       CHART_WIDTH,
       WIDE_HEIGHT,
     );
-    wideChart.left = bounds.minX + SCREEN_VIEW_MARGIN + 60;
-    wideChart.top = bounds.minY + SCREEN_VIEW_MARGIN + 22;
+    wideChart.left = bounds.minX + SCREEN_VIEW_MARGIN + LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+    wideChart.top = bounds.minY + SCREEN_VIEW_MARGIN + LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     const zoomChart = new LightCurveChartNode(
       strings.zoomChartTitleStringProperty,
       common.hoursFromMidTransitAxisStringProperty,
@@ -115,15 +116,19 @@ export class LightCurveScreenView extends ScreenView {
 
     // Measuring marks: period on the wide chart, depth and duration on the zoomed one.
     const markLabel = (): RichText =>
-      new RichText("", { font: FONTS.SMALL, fill: TransitHunterColors.cursorColorProperty, maxWidth: 200 });
+      new RichText("", {
+        font: FONTS.SMALL,
+        fill: TransitHunterColors.cursorColorProperty,
+        maxWidth: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.MARK_LABEL_MAX_WIDTH,
+      });
     // A dark backing keeps a label readable over scattered measurements.
     const backed = (text: RichText): Panel =>
       new Panel(text, {
         fill: TransitHunterColors.markBackingColorProperty,
         stroke: null,
-        xMargin: 3,
+        xMargin: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.BACKED_X_MARGIN,
         yMargin: 1,
-        cornerRadius: 3,
+        cornerRadius: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.BACKED_CORNER_RADIUS,
       });
     const periodArrow = new ArrowNode(0, 0, 1, 0, MARK_ARROW_OPTIONS);
     const periodLabel = markLabel();
@@ -174,7 +179,7 @@ export class LightCurveScreenView extends ScreenView {
         value: formatDays(period),
       });
       periodBacking.centerX = wide.modelToViewX(period);
-      periodBacking.bottom = markY - 3;
+      periodBacking.bottom = markY - LIGHT_CURVE_SCREEN_VIEW_SETTINGS.UPDATE_BOTTOM_OFFSET;
 
       const zoom = zoomChart.frame.chartTransform;
       const x0 = zoom.modelToViewX(0);
@@ -182,8 +187,10 @@ export class LightCurveScreenView extends ScreenView {
       depthLabel.string = StringUtils.fillIn(strings.depthMarkPatternStringProperty.value, {
         value: formatPercent(depth),
       });
-      depthBacking.left = x0 + 6;
-      depthBacking.centerY = zoom.modelToViewY(100 * (1 - depth / 2));
+      depthBacking.left = x0 + LIGHT_CURVE_SCREEN_VIEW_SETTINGS.UPDATE_LEFT_OFFSET;
+      depthBacking.centerY = zoom.modelToViewY(
+        LIGHT_CURVE_SCREEN_VIEW_SETTINGS.UPDATE_CENTER_Y_FACTOR * (1 - depth / 2),
+      );
       const durationY = zoom.modelToViewY(100) - 12;
       durationArrow.setTailAndTip(
         zoom.modelToViewX(-duration / 2),
@@ -195,7 +202,7 @@ export class LightCurveScreenView extends ScreenView {
         value: formatHours(duration),
       });
       durationBacking.centerX = x0;
-      durationBacking.bottom = durationY - 4;
+      durationBacking.bottom = durationY - LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_UPDATE_BOTTOM_OFFSET;
     };
     const multilink = Multilink.multilinkAny(
       [
@@ -226,7 +233,8 @@ export class LightCurveScreenView extends ScreenView {
         depth: new DerivedProperty([model.depthProperty], formatPercent),
         radius: new DerivedProperty(
           [model.inferredRadiusProperty, units.earthRadiiStringProperty, units.valueUnitsPatternStringProperty],
-          (radius, earthRadii) => valueWithUnits(formatSignificant(radius, 2), earthRadii),
+          (radius, earthRadii) =>
+            valueWithUnits(formatSignificant(radius, LIGHT_CURVE_SCREEN_VIEW_SETTINGS.RADIUS_TEXT_DIGITS), earthRadii),
         ),
       }),
     );
@@ -238,7 +246,8 @@ export class LightCurveScreenView extends ScreenView {
         ),
         distance: new DerivedProperty(
           [model.distanceProperty, units.auStringProperty, units.valueUnitsPatternStringProperty],
-          (distance, au) => valueWithUnits(formatSignificant(distance, 2), au),
+          (distance, au) =>
+            valueWithUnits(formatSignificant(distance, LIGHT_CURVE_SCREEN_VIEW_SETTINGS.DISTANCE_TEXT_DIGITS), au),
         ),
       }),
     );
@@ -262,7 +271,7 @@ export class LightCurveScreenView extends ScreenView {
     const snrText = readout(
       new PatternStringProperty(strings.snrReadoutPatternStringProperty, {
         snr: new DerivedProperty([model.signalToNoiseProperty], (snr) =>
-          Number.isFinite(snr) ? formatSignificant(snr, 2) : "∞",
+          Number.isFinite(snr) ? formatSignificant(snr, LIGHT_CURVE_SCREEN_VIEW_SETTINGS.SNR_TEXT_DIGITS) : "∞",
         ),
         verdict: verdictProperty,
       }),
@@ -286,27 +295,35 @@ export class LightCurveScreenView extends ScreenView {
       a11y.controls.explanationStringProperty,
     );
     const explanationRow = new HBox({
-      spacing: 8,
+      spacing: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.EXPLANATION_ROW_SPACING,
       children: [
         explanationButton,
         new Text(common.explanationButtonStringProperty, {
           font: FONTS.LABEL,
           fill: TransitHunterColors.textColorProperty,
-          maxWidth: 200,
+          maxWidth: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.EXPLANATION_ROW_MAX_WIDTH,
         }),
       ],
     });
     const readoutPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 6,
+        spacing: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.READOUT_PANEL_SPACING,
         align: "left",
         children: [
           new HBox({
-            spacing: 20,
+            spacing: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_READOUT_PANEL_SPACING,
             align: "top",
             children: [
-              new VBox({ spacing: 5, align: "left", children: [radiusText, limbNote, distanceText] }),
-              new VBox({ spacing: 5, align: "left", children: [snrText, pointsText, explanationRow] }),
+              new VBox({
+                spacing: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.READOUT_PANEL_ITEM_1_SPACING,
+                align: "left",
+                children: [radiusText, limbNote, distanceText],
+              }),
+              new VBox({
+                spacing: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.READOUT_PANEL_ITEM_2_SPACING,
+                align: "left",
+                children: [snrText, pointsText, explanationRow],
+              }),
             ],
           }),
           equation,
@@ -324,7 +341,7 @@ export class LightCurveScreenView extends ScreenView {
       {
         unitsProperty: units.earthRadiiStringProperty,
         logarithmic: true,
-        significantFigures: 2,
+        significantFigures: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.RADIUS_CONTROL_SIGNIFICANT_FIGURES,
         enabledRangeProperty: model.planetRadiusRangeProperty,
         accessibleName: a11y.controls.planetRadiusStringProperty,
       },
@@ -332,7 +349,7 @@ export class LightCurveScreenView extends ScreenView {
     const distanceControl = createNumberControl(common.distanceStringProperty, model.distanceProperty, DISTANCE_RANGE, {
       unitsProperty: units.auStringProperty,
       logarithmic: true,
-      significantFigures: 2,
+      significantFigures: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.DISTANCE_CONTROL_SIGNIFICANT_FIGURES,
       enabledRangeProperty: model.distanceRangeProperty,
       accessibleName: a11y.controls.distanceStringProperty,
     });
@@ -340,7 +357,7 @@ export class LightCurveScreenView extends ScreenView {
       new Text(stringProperty, {
         font: FONTS.LABEL,
         fill: TransitHunterColors.textColorProperty,
-        maxWidth: CONTROL_PANEL_WIDTH - 40,
+        maxWidth: CONTROL_PANEL_WIDTH - LIGHT_CURVE_SCREEN_VIEW_SETTINGS.LABEL_MAX_WIDTH_OFFSET,
       });
     const starRadios = new AquaRadioButtonGroup(
       model.starPresetProperty,
@@ -349,18 +366,22 @@ export class LightCurveScreenView extends ScreenView {
         { value: StarPreset.RED_DWARF, createNode: () => label(common.redDwarfStringProperty) },
         { value: StarPreset.BIG_STAR, createNode: () => label(common.bigStarStringProperty) },
       ],
-      { spacing: 5, radioButtonOptions: { radius: 7 }, accessibleName: a11y.controls.starStringProperty },
+      {
+        spacing: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.STAR_RADIOS_SPACING,
+        radioButtonOptions: { radius: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.STAR_RADIOS_RADIUS },
+        accessibleName: a11y.controls.starStringProperty,
+      },
     );
     const limbCheckbox = createCheckbox(model.limbDarkeningProperty, strings.limbDarkeningStringProperty);
     const noiseControl = createNumberControl(strings.noiseStringProperty, model.noiseProperty, NOISE_RANGE_PPM, {
       unitsProperty: units.ppmStringProperty,
-      significantFigures: 3,
-      delta: 10,
+      significantFigures: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.NOISE_CONTROL_SIGNIFICANT_FIGURES,
+      delta: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.NOISE_CONTROL_DELTA,
       accessibleName: a11y.controls.noiseStringProperty,
       numberControlOptions: { sliderOptions: { constrainValue: (value: number) => Math.round(value / 10) * 10 } },
     });
     const stackControl = createNumberControl(strings.stackStringProperty, model.stackProperty, STACK_RANGE, {
-      significantFigures: 3,
+      significantFigures: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.STACK_CONTROL_SIGNIFICANT_FIGURES,
       delta: 1,
       accessibleName: a11y.controls.stackStringProperty,
       numberControlOptions: { sliderOptions: { constrainValue: (value: number) => Math.round(value) } },
@@ -373,7 +394,7 @@ export class LightCurveScreenView extends ScreenView {
     const measurementsCheckbox = createCheckbox(this.showMeasurementsProperty, strings.showMeasurementsStringProperty);
     const controlPanel = new TransitHunterPanel(
       new VBox({
-        spacing: 9,
+        spacing: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_SPACING,
         align: "left",
         children: [
           radiusControl,
@@ -386,7 +407,7 @@ export class LightCurveScreenView extends ScreenView {
           measurementsCheckbox,
         ],
       }),
-      { minWidth: CONTROL_PANEL_WIDTH + 24 },
+      { minWidth: CONTROL_PANEL_WIDTH + LIGHT_CURVE_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_MIN_WIDTH_OFFSET },
     );
     controlPanel.right = bounds.maxX - SCREEN_VIEW_MARGIN;
     controlPanel.top = bounds.minY + SCREEN_VIEW_MARGIN;

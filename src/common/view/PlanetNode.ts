@@ -1,3 +1,4 @@
+import { PLANET_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * PlanetNode.ts
  *
@@ -12,7 +13,7 @@ import { PlanetPreset } from "../model/PlanetPreset.js";
 import { drawingMagnification } from "./formatters.js";
 
 /** Smallest drawn planet radius, px. */
-const MIN_PLANET_RADIUS = 4;
+const MIN_PLANET_RADIUS: number = PLANET_NODE_SETTINGS.MIN_PLANET_RADIUS;
 
 /**
  * Drawn planet radius (px) for a star drawn `starRadius` px: true size, unless that
@@ -64,6 +65,6 @@ export class PlanetNode extends Circle {
     const color = planetColor(this.preset);
     this.fill = this.silhouette ? TransitHunterColors.planetSilhouetteColorProperty : color;
     this.stroke = this.silhouette ? color : null;
-    this.lineWidth = 1.2;
+    this.lineWidth = PLANET_NODE_SETTINGS.LINE_WIDTH_LINE_WIDTH;
   }
 }

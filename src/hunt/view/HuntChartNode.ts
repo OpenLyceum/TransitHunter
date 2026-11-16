@@ -1,3 +1,4 @@
+import { HUNT_CHART_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * HuntChartNode.ts
  *
@@ -51,32 +52,32 @@ import { PointCloudNode } from "./PointCloudNode.js";
 import { panTimeWindow, zoomTimeWindow } from "./timeWindow.js";
 
 /** Narrowest window, in days (unfolded) or hours (folded). */
-const MIN_SPAN_DAYS = 0.3;
-const MIN_SPAN_HOURS = 3;
+const MIN_SPAN_DAYS: number = HUNT_CHART_NODE_SETTINGS.MIN_SPAN_DAYS;
+const MIN_SPAN_HOURS: number = HUNT_CHART_NODE_SETTINGS.MIN_SPAN_HOURS;
 
 /** Folded charts open on ±this many hours (or the whole period if shorter). */
-const FOLDED_HALF_WINDOW_HOURS = 30;
+const FOLDED_HALF_WINDOW_HOURS: number = HUNT_CHART_NODE_SETTINGS.FOLDED_HALF_WINDOW_HOURS;
 
 /** Centred on the far side, the chart opens on ±this fraction of the period, which leaves out the transit. */
-const FAR_SIDE_HALF_WINDOW_FRACTION = 0.35;
+const FAR_SIDE_HALF_WINDOW_FRACTION: number = HUNT_CHART_NODE_SETTINGS.FAR_SIDE_HALF_WINDOW_FRACTION;
 
-const BUTTON_ZOOM_FACTOR = 0.5;
-const BUTTON_SCROLL_FRACTION = 0.25;
-const WHEEL_ZOOM_PER_PIXEL = 0.002;
-const PIXELS_PER_WHEEL_LINE = 16;
-const BUTTON_SIZE = 26;
+const BUTTON_ZOOM_FACTOR: number = HUNT_CHART_NODE_SETTINGS.BUTTON_ZOOM_FACTOR;
+const BUTTON_SCROLL_FRACTION: number = HUNT_CHART_NODE_SETTINGS.BUTTON_SCROLL_FRACTION;
+const WHEEL_ZOOM_PER_PIXEL: number = HUNT_CHART_NODE_SETTINGS.WHEEL_ZOOM_PER_PIXEL;
+const PIXELS_PER_WHEEL_LINE: number = HUNT_CHART_NODE_SETTINGS.PIXELS_PER_WHEEL_LINE;
+const BUTTON_SIZE: number = HUNT_CHART_NODE_SETTINGS.BUTTON_SIZE;
 
 /** A press that moves less than this (px) is a click, which marks a dip. */
-const CLICK_TOLERANCE = 4;
+const CLICK_TOLERANCE: number = HUNT_CHART_NODE_SETTINGS.CLICK_TOLERANCE;
 
 /** Bins of the folded averages across the shown window. */
-const FOLDED_BINS = 90;
+const FOLDED_BINS: number = HUNT_CHART_NODE_SETTINGS.FOLDED_BINS;
 
 /**
  * Points left outside the brightness axis at each end (stray outliers). A fixed
  * count, not a fraction: a long light curve has few points inside its transits.
  */
-const Y_CLIP_POINTS = 2;
+const Y_CLIP_POINTS: number = HUNT_CHART_NODE_SETTINGS.Y_CLIP_POINTS;
 
 /** Distinct tick colours for the planets of one star. */
 const REVEAL_COLORS = [
@@ -119,7 +120,7 @@ export class HuntChartNode extends Node {
       viewWidth: width,
       viewHeight: height,
       xRange: new Range(0, 1),
-      yRange: new Range(99, 100.2),
+      yRange: new Range(HUNT_CHART_NODE_SETTINGS.FRAME_RANGE_MIN, HUNT_CHART_NODE_SETTINGS.FRAME_RANGE_MAX),
       xAxisLabelProperty: xAxisLabelProperty,
       yAxisLabelProperty: common.brightnessAxisStringProperty,
       targetDivisions: 6,
@@ -129,12 +130,18 @@ export class HuntChartNode extends Node {
     const points = new PointCloudNode(transform, TransitHunterColors.measurementColorProperty, 2);
     const averages = new LinePlot(transform, [], {
       stroke: TransitHunterColors.lightCurveColorProperty,
-      lineWidth: 2.5,
+      lineWidth: HUNT_CHART_NODE_SETTINGS.AVERAGES_LINE_WIDTH,
     });
-    const marksPath = new Path(null, { stroke: TransitHunterColors.fitCurveColorProperty, lineWidth: 1.5 });
+    const marksPath = new Path(null, {
+      stroke: TransitHunterColors.fitCurveColorProperty,
+      lineWidth: HUNT_CHART_NODE_SETTINGS.MARKS_PATH_LINE_WIDTH,
+    });
     const centreLine = new Line(width / 2, 0, width / 2, height, {
       stroke: TransitHunterColors.chordColorProperty,
-      lineDash: [3, 4],
+      lineDash: [
+        HUNT_CHART_NODE_SETTINGS.CENTRE_LINE_LINE_DASH_DASH,
+        HUNT_CHART_NODE_SETTINGS.CONSTRUCTOR_CENTRE_LINE_LINE_DASH_DASH,
+      ],
     });
     const revealLayer = new Node();
     frame.plotLayer.children = [centreLine, points, averages, marksPath, revealLayer];
@@ -142,16 +149,25 @@ export class HuntChartNode extends Node {
     // ── Depth line (folded) ───────────────────────────────────────────────────
     const depthLineVisual = new Line(0, 0, width, 0, {
       stroke: TransitHunterColors.answerCurveColorProperty,
-      lineWidth: 2,
-      lineDash: [8, 4],
+      lineWidth: HUNT_CHART_NODE_SETTINGS.DEPTH_LINE_VISUAL_LINE_WIDTH,
+      lineDash: [
+        HUNT_CHART_NODE_SETTINGS.DEPTH_LINE_VISUAL_LINE_DASH_DASH,
+        HUNT_CHART_NODE_SETTINGS.CONSTRUCTOR_DEPTH_LINE_VISUAL_LINE_DASH_DASH,
+      ],
     });
-    const depthHandle = new Rectangle(0, -7, width, 14, { fill: "rgba(0,0,0,0)", cursor: "ns-resize" });
+    const depthHandle = new Rectangle(
+      0,
+      HUNT_CHART_NODE_SETTINGS.DEPTH_HANDLE_Y,
+      width,
+      HUNT_CHART_NODE_SETTINGS.DEPTH_HANDLE_HEIGHT,
+      { fill: "rgba(0,0,0,0)", cursor: "ns-resize" },
+    );
     const depthLabel = new Text(strings.depthLineStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.answerCurveColorProperty,
-      maxWidth: 150,
-      right: width - 4,
-      bottom: -3,
+      maxWidth: HUNT_CHART_NODE_SETTINGS.DEPTH_LABEL_MAX_WIDTH,
+      right: width - HUNT_CHART_NODE_SETTINGS.DEPTH_LABEL_RIGHT_OFFSET,
+      bottom: HUNT_CHART_NODE_SETTINGS.DEPTH_LABEL_BOTTOM,
     });
     const depthLine = new Node({ children: [depthLineVisual, depthHandle, depthLabel] });
     this.depthLine = depthLine;
@@ -187,7 +203,7 @@ export class HuntChartNode extends Node {
     // ── Data ranges ───────────────────────────────────────────────────────────
     let foldedTimes = new Float64Array(0);
     let percent = new Float64Array(0);
-    let yRange = new Range(99, 100.2);
+    let yRange = new Range(HUNT_CHART_NODE_SETTINGS.Y_RANGE_MIN, HUNT_CHART_NODE_SETTINGS.Y_RANGE_MAX);
 
     const fullRange = (): Range => {
       const curve = model.lightCurveProperty.value;
@@ -269,7 +285,7 @@ export class HuntChartNode extends Node {
           marks.moveTo(x, 0).lineTo(x, height);
           marks
             .moveTo(x - 5, 0)
-            .lineTo(x, 7)
+            .lineTo(x, HUNT_CHART_NODE_SETTINGS.UPDATE_Y)
             .lineTo(x + 5, 0);
         }
       }
@@ -278,7 +294,10 @@ export class HuntChartNode extends Node {
       // Depth line.
       depthLine.visible = fold && !farSide;
       // Kept on the chart: a depth below the axis pins the line to the bottom edge.
-      depthLine.y = Math.min(height, Math.max(0, transform.modelToViewY(100 - model.depthProperty.value)));
+      depthLine.y = Math.min(
+        height,
+        Math.max(0, transform.modelToViewY(HUNT_CHART_NODE_SETTINGS.UPDATE_Y_OFFSET - model.depthProperty.value)),
+      );
 
       // Revealed transit times.
       const revealed: Node[] = [];
@@ -295,7 +314,12 @@ export class HuntChartNode extends Node {
               shape.moveTo(x, height).lineTo(x, height - tickHeight);
             }
           }
-          revealed.push(new Path(shape, { stroke: REVEAL_COLORS[index % REVEAL_COLORS.length] ?? null, lineWidth: 2 }));
+          revealed.push(
+            new Path(shape, {
+              stroke: REVEAL_COLORS[index % REVEAL_COLORS.length] ?? null,
+              lineWidth: HUNT_CHART_NODE_SETTINGS.UPDATE_LINE_WIDTH,
+            }),
+          );
         });
       }
       revealLayer.children = revealed;
@@ -465,10 +489,10 @@ export class HuntChartNode extends Node {
       maxWidth: width,
     });
     const controls = new VBox({
-      spacing: 4,
+      spacing: HUNT_CHART_NODE_SETTINGS.CONTROLS_SPACING,
       children: [
         new HBox({
-          spacing: 6,
+          spacing: HUNT_CHART_NODE_SETTINGS.CONSTRUCTOR_CONTROLS_SPACING,
           children: [
             scrollEarlierButton,
             zoomOutButton,
@@ -483,7 +507,7 @@ export class HuntChartNode extends Node {
     });
     linkUntilDisposed(this, controls.boundsProperty, () => {
       controls.centerX = width / 2;
-      controls.top = height + 44;
+      controls.top = height + HUNT_CHART_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     });
     this.buttons = [
       scrollEarlierButton,

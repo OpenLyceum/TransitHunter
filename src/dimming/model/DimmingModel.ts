@@ -1,3 +1,4 @@
+import { DIMMING_MODEL_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * DimmingModel.ts
  *
@@ -41,19 +42,19 @@ import {
 } from "../../TransitHunterConstants.js";
 
 /** Orbit radius in star radii as drawn on this screen (real orbits are tens to hundreds). */
-export const DIMMING_ORBIT_IN_STAR_RADII = 2.2;
+export const DIMMING_ORBIT_IN_STAR_RADII: number = DIMMING_MODEL_SETTINGS.DIMMING_ORBIT_IN_STAR_RADII;
 
 /** Wall-clock seconds per orbit at normal speed. */
-const DIMMING_SECONDS_PER_ORBIT = 12;
+const DIMMING_SECONDS_PER_ORBIT: number = DIMMING_MODEL_SETTINGS.DIMMING_SECONDS_PER_ORBIT;
 
 /** Orbits shown across the light-curve chart before the sweep restarts. */
-export const TRACE_ORBITS = 2;
+export const TRACE_ORBITS: number = DIMMING_MODEL_SETTINGS.TRACE_ORBITS;
 
 /** Light-curve samples per orbit. */
-const SAMPLES_PER_ORBIT = 400;
+const SAMPLES_PER_ORBIT: number = DIMMING_MODEL_SETTINGS.SAMPLES_PER_ORBIT;
 
 /** Phase at start-up and after Reset All: a quarter orbit before the first transit. */
-const INITIAL_PHASE = -0.25;
+const INITIAL_PHASE: number = DIMMING_MODEL_SETTINGS.INITIAL_PHASE;
 
 /** Sweeps start half an orbit before a transit, so the dips sit at ½, 1½, … orbits across the chart. */
 function sweepStartFor(phase: number): number {

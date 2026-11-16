@@ -1,3 +1,4 @@
+import { STAR_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * StarNode.ts
  *
@@ -39,7 +40,7 @@ export class StarNode extends Node {
     const glowRadius = radius * options.glowScale;
     const glow = new Circle(glowRadius, { visible: options.glow });
     // A thin darker rim keeps the pale disc visible on the light projector background.
-    const disc = new Circle(radius, { lineWidth: radius * 0.08 });
+    const disc = new Circle(radius, { lineWidth: radius * STAR_NODE_SETTINGS.DISC_LINE_WIDTH_FACTOR });
     super(options);
     this.children = [glow, disc];
 

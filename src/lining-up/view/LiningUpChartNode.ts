@@ -1,3 +1,4 @@
+import { LINING_UP_CHART_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LiningUpChartNode.ts
  *
@@ -20,8 +21,8 @@ import TransitHunterColors from "../../TransitHunterColors.js";
 import { FONTS } from "../../TransitHunterConstants.js";
 import type { LiningUpModel } from "../model/LiningUpModel.js";
 
-const SAMPLES = 300;
-const HEADROOM = 0.15;
+const SAMPLES: number = LINING_UP_CHART_NODE_SETTINGS.SAMPLES;
+const HEADROOM: number = LINING_UP_CHART_NODE_SETTINGS.HEADROOM;
 
 export class LiningUpChartNode extends Node {
   public constructor(model: LiningUpModel, width: number, height: number) {
@@ -34,47 +35,56 @@ export class LiningUpChartNode extends Node {
       viewWidth: width,
       viewHeight: height,
       xRange: new Range(-1, 1),
-      yRange: new Range(99, 100.2),
+      yRange: new Range(LINING_UP_CHART_NODE_SETTINGS.FRAME_RANGE_MIN, LINING_UP_CHART_NODE_SETTINGS.FRAME_RANGE_MAX),
       xAxisLabelProperty: common.hoursFromMidTransitAxisStringProperty,
       yAxisLabelProperty: common.brightnessAxisStringProperty,
       targetDivisions: 4,
     });
     const ghost = new LinePlot(frame.chartTransform, [], {
       stroke: TransitHunterColors.mutedTextColorProperty,
-      lineWidth: 1.5,
-      lineDash: [5, 4],
+      lineWidth: LINING_UP_CHART_NODE_SETTINGS.GHOST_LINE_WIDTH,
+      lineDash: [
+        LINING_UP_CHART_NODE_SETTINGS.GHOST_LINE_DASH_DASH,
+        LINING_UP_CHART_NODE_SETTINGS.CONSTRUCTOR_GHOST_LINE_DASH_DASH,
+      ],
     });
     const line = new LinePlot(frame.chartTransform, [], {
       stroke: TransitHunterColors.lightCurveColorProperty,
-      lineWidth: 2,
+      lineWidth: LINING_UP_CHART_NODE_SETTINGS.LINE_LINE_WIDTH,
     });
     frame.plotLayer.children = [ghost, line];
-    const liveDot = new Circle(4, { fill: TransitHunterColors.liveDotColorProperty });
+    const liveDot = new Circle(LINING_UP_CHART_NODE_SETTINGS.LIVE_DOT_RADIUS, {
+      fill: TransitHunterColors.liveDotColorProperty,
+    });
     frame.overlayLayer.addChild(liveDot);
 
     const title = new Text(strings.chartTitleStringProperty, {
       font: FONTS.TITLE,
       fill: TransitHunterColors.textColorProperty,
-      maxWidth: width + 40,
-      left: -40,
-      bottom: -6,
+      maxWidth: width + LINING_UP_CHART_NODE_SETTINGS.TITLE_MAX_WIDTH_OFFSET,
+      left: LINING_UP_CHART_NODE_SETTINGS.TITLE_LEFT,
+      bottom: LINING_UP_CHART_NODE_SETTINGS.TITLE_BOTTOM,
     });
     const legend = new RichText(strings.ghostLegendStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.mutedTextColorProperty,
-      maxWidth: width + 40,
+      maxWidth: width + LINING_UP_CHART_NODE_SETTINGS.LEGEND_MAX_WIDTH_OFFSET,
     });
     const spanTextProperty = new StringProperty("1");
     const zoomNote = new RichText(
       new PatternStringProperty(common.axisZoomPatternStringProperty, { percent: spanTextProperty }),
-      { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, maxWidth: width + 40 },
+      {
+        font: FONTS.SMALL,
+        fill: TransitHunterColors.mutedTextColorProperty,
+        maxWidth: width + LINING_UP_CHART_NODE_SETTINGS.ZOOM_NOTE_MAX_WIDTH_OFFSET,
+      },
     );
     linkUntilDisposed(this, legend.boundsProperty, () => {
-      legend.left = -40;
-      legend.top = height + 38;
+      legend.left = LINING_UP_CHART_NODE_SETTINGS.LEFT_LEFT;
+      legend.top = height + LINING_UP_CHART_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     });
     linkUntilDisposed(this, zoomNote.boundsProperty, () => {
-      zoomNote.left = -40;
+      zoomNote.left = LINING_UP_CHART_NODE_SETTINGS.LEFT_LEFT;
       zoomNote.top = height + 54;
     });
 
@@ -87,7 +97,7 @@ export class LiningUpChartNode extends Node {
       const hours = halfWidth * model.periodProperty.value * 24;
       const span = Math.min(100, niceCeil(uniformDepth(g.radiusRatio) * 100 * 1.25));
       frame.setRanges(new Range(-hours, hours), new Range(100 - span, 100 + HEADROOM * span));
-      spanTextProperty.value = formatSignificant(span, 2);
+      spanTextProperty.value = formatSignificant(span, LINING_UP_CHART_NODE_SETTINGS.SPAN_TEXT_PROPERTY_DIGITS);
       zoomNote.visible = span < 100;
       const curve = (geometry: typeof g): Vector2[] =>
         Array.from({ length: SAMPLES + 1 }, (_, i) => {

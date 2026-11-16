@@ -1,3 +1,4 @@
+import { LIGHT_CURVE_CHART_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LightCurveChartNode.ts
  *
@@ -37,27 +38,30 @@ export class LightCurveChartNode extends Node {
       viewWidth: width,
       viewHeight: height,
       xRange: new Range(0, 1),
-      yRange: new Range(99, 100.2),
+      yRange: new Range(
+        LIGHT_CURVE_CHART_NODE_SETTINGS.FRAME_RANGE_MIN,
+        LIGHT_CURVE_CHART_NODE_SETTINGS.FRAME_RANGE_MAX,
+      ),
       xAxisLabelProperty: xAxisLabelProperty,
       yAxisLabelProperty: yAxisLabelProperty,
       targetDivisions: 4,
     });
     this.dots = new ScatterPlot(this.frame.chartTransform, [], {
       fill: TransitHunterColors.measurementColorProperty,
-      radius: 1.6,
+      radius: LIGHT_CURVE_CHART_NODE_SETTINGS.DOTS_RADIUS,
     });
     this.line = new LinePlot(this.frame.chartTransform, [], {
       stroke: TransitHunterColors.lightCurveColorProperty,
-      lineWidth: 2,
+      lineWidth: LIGHT_CURVE_CHART_NODE_SETTINGS.LINE_LINE_WIDTH,
     });
     this.frame.plotLayer.children = [this.dots, this.line];
     this.frame.overlayLayer.addChild(this.annotationLayer);
     const title = new Text(titleProperty, {
       font: FONTS.TITLE,
       fill: TransitHunterColors.textColorProperty,
-      maxWidth: width + 50,
-      left: -50,
-      bottom: -6,
+      maxWidth: width + LIGHT_CURVE_CHART_NODE_SETTINGS.TITLE_MAX_WIDTH_OFFSET,
+      left: LIGHT_CURVE_CHART_NODE_SETTINGS.TITLE_LEFT,
+      bottom: LIGHT_CURVE_CHART_NODE_SETTINGS.TITLE_BOTTOM,
     });
     this.children = [title, this.frame];
   }

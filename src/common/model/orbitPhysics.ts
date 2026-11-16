@@ -1,3 +1,4 @@
+import { ORBIT_SOLVER } from "../../TransitHunterConstants.js";
 /**
  * orbitPhysics.ts
  *
@@ -59,9 +60,9 @@ export function planetMassFromWobble(
   }
   const factor = (semiAmplitudeMS * (periodS / (2 * Math.PI * G_SI)) ** (1 / 3)) / sinI;
   let mass = factor * starMassKg ** (2 / 3);
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < ORBIT_SOLVER.MASS_ITERATIONS; i++) {
     const next = factor * (starMassKg + mass) ** (2 / 3);
-    if (Math.abs(next - mass) <= 1e-12 * next) {
+    if (Math.abs(next - mass) <= ORBIT_SOLVER.MASS_RELATIVE_TOLERANCE * next) {
       return next;
     }
     mass = next;

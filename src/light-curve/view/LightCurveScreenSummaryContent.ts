@@ -1,3 +1,4 @@
+import { LIGHT_CURVE_SCREEN_SUMMARY_CONTENT_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LightCurveScreenSummaryContent.ts
  *
@@ -25,14 +26,26 @@ export class LightCurveScreenSummaryContent extends ScreenSummaryContent {
       playAreaContent: a11y.screenSummary.playAreaStringProperty,
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
       currentDetailsContent: new PatternStringProperty(a11y.currentDetailsPatternStringProperty, {
-        radius: new DerivedProperty([model.planetRadiusProperty], (r) => plain(r, 2)),
-        distance: new DerivedProperty([model.distanceProperty], (d) => plain(d, 2)),
-        period: new DerivedProperty([model.periodProperty], (p) => plain(p, 3)),
-        duration: new DerivedProperty([model.durationProperty], (t) => plain(t, 2)),
+        radius: new DerivedProperty([model.planetRadiusProperty], (r) =>
+          plain(r, LIGHT_CURVE_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS),
+        ),
+        distance: new DerivedProperty([model.distanceProperty], (d) =>
+          plain(d, LIGHT_CURVE_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS),
+        ),
+        period: new DerivedProperty([model.periodProperty], (p) =>
+          plain(p, LIGHT_CURVE_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS_SEGMENT_2),
+        ),
+        duration: new DerivedProperty([model.durationProperty], (t) =>
+          plain(t, LIGHT_CURVE_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS),
+        ),
         depth: new DerivedProperty([model.depthProperty], (depth) => toPlainText(formatPercent(depth))),
-        noise: new DerivedProperty([model.noiseProperty], (n) => plain(n, 3)),
+        noise: new DerivedProperty([model.noiseProperty], (n) =>
+          plain(n, LIGHT_CURVE_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS_SEGMENT_2),
+        ),
         stack: model.stackProperty,
-        snr: new DerivedProperty([model.signalToNoiseProperty], (snr) => (Number.isFinite(snr) ? plain(snr, 2) : "∞")),
+        snr: new DerivedProperty([model.signalToNoiseProperty], (snr) =>
+          Number.isFinite(snr) ? plain(snr, LIGHT_CURVE_SCREEN_SUMMARY_CONTENT_SETTINGS.PLAIN_DIGITS) : "∞",
+        ),
         verdict: new DerivedProperty(
           [
             model.signalToNoiseProperty,

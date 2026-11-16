@@ -1,3 +1,4 @@
+import { SKY_VIEW_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * SkyViewNode.ts
  *
@@ -29,59 +30,80 @@ export class SkyViewNode extends Node {
     const cx = width / 2;
     const cy = height / 2 + 6;
 
-    const background = new Rectangle(0, 0, width, height, 6, 6, {
-      fill: TransitHunterColors.spaceColorProperty,
-      stroke: TransitHunterColors.spaceBorderColorProperty,
-    });
+    const background = new Rectangle(
+      0,
+      0,
+      width,
+      height,
+      SKY_VIEW_NODE_SETTINGS.BACKGROUND_CORNER_X,
+      SKY_VIEW_NODE_SETTINGS.BACKGROUND_CORNER_Y,
+      {
+        fill: TransitHunterColors.spaceColorProperty,
+        stroke: TransitHunterColors.spaceBorderColorProperty,
+      },
+    );
     const title = new Text(strings.skyViewTitleStringProperty, {
       font: FONTS.TITLE,
       fill: TransitHunterColors.textColorProperty,
       maxWidth: width,
       left: 0,
-      bottom: -4,
+      bottom: SKY_VIEW_NODE_SETTINGS.TITLE_BOTTOM,
     });
 
     const star = new StarNode(SUN_TEMPERATURE_K, starRadius, { x: cx, y: cy, glowScale: 1.25 });
     const occluder = new StarNode(SUN_TEMPERATURE_K, starRadius, { x: cx, y: cy, glow: false });
     const chord = new Line(0, 0, width, 0, {
       stroke: TransitHunterColors.chordColorProperty,
-      lineDash: [6, 5],
-      lineWidth: 1.5,
+      lineDash: [SKY_VIEW_NODE_SETTINGS.CHORD_LINE_DASH_DASH, SKY_VIEW_NODE_SETTINGS.CONSTRUCTOR_CHORD_LINE_DASH_DASH],
+      lineWidth: SKY_VIEW_NODE_SETTINGS.CHORD_LINE_WIDTH,
     });
     const planet = new PlanetNode();
 
     const farAbove = new Node({
       children: [
-        new ArrowNode(cx, 34, cx, 12, {
+        new ArrowNode(cx, SKY_VIEW_NODE_SETTINGS.FAR_ABOVE_START_Y, cx, SKY_VIEW_NODE_SETTINGS.FAR_ABOVE_END_Y, {
           fill: TransitHunterColors.planetColorProperty,
           stroke: null,
-          headHeight: 9,
-          headWidth: 12,
-          tailWidth: 3,
+          headHeight: SKY_VIEW_NODE_SETTINGS.FAR_ABOVE_HEAD_HEIGHT,
+          headWidth: SKY_VIEW_NODE_SETTINGS.FAR_ABOVE_HEAD_WIDTH,
+          tailWidth: SKY_VIEW_NODE_SETTINGS.FAR_ABOVE_TAIL_WIDTH,
         }),
       ],
     });
     const farAboveText = new RichText(
       new PatternStringProperty(strings.passesAbovePatternStringProperty, {
-        value: new DerivedProperty([model.impactParameterProperty], (b) => formatSignificant(b, 2)),
+        value: new DerivedProperty([model.impactParameterProperty], (b) =>
+          formatSignificant(b, SKY_VIEW_NODE_SETTINGS.FAR_ABOVE_TEXT_DIGITS),
+        ),
       }),
-      { font: FONTS.SMALL, fill: TransitHunterColors.textColorProperty, maxWidth: width / 2 - 20 },
+      {
+        font: FONTS.SMALL,
+        fill: TransitHunterColors.textColorProperty,
+        maxWidth: width / 2 - SKY_VIEW_NODE_SETTINGS.FAR_ABOVE_TEXT_MAX_WIDTH_OFFSET,
+      },
     );
     linkUntilDisposed(this, farAboveText.boundsProperty, () => {
-      farAboveText.left = cx + 12;
-      farAboveText.centerY = 23;
+      farAboveText.left = cx + SKY_VIEW_NODE_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+      farAboveText.centerY = SKY_VIEW_NODE_SETTINGS.CENTER_Y_CENTER_Y;
     });
     farAbove.addChild(farAboveText);
 
     const magnificationText = new RichText("", {
       font: FONTS.SMALL,
       fill: TransitHunterColors.mutedTextColorProperty,
-      maxWidth: width - 16,
+      maxWidth: width - SKY_VIEW_NODE_SETTINGS.MAGNIFICATION_TEXT_MAX_WIDTH_OFFSET,
     });
 
     const scene = new Node({
       children: [star, chord, planet, occluder, farAbove, magnificationText],
-      clipArea: Shape.roundRect(0, 0, width, height, 6, 6),
+      clipArea: Shape.roundRect(
+        0,
+        0,
+        width,
+        height,
+        SKY_VIEW_NODE_SETTINGS.SCENE_CORNER_X,
+        SKY_VIEW_NODE_SETTINGS.SCENE_CORNER_Y,
+      ),
     });
     this.children = [background, scene, title];
 
@@ -115,8 +137,8 @@ export class SkyViewNode extends Node {
           drawn.factor > 1
             ? StringUtils.fillIn(common.planetMagnifiedPatternStringProperty.value, { factor: drawn.factor })
             : common.planetToScaleStringProperty.value;
-        magnificationText.left = 8;
-        magnificationText.bottom = height - 6;
+        magnificationText.left = SKY_VIEW_NODE_SETTINGS.LEFT_LEFT;
+        magnificationText.bottom = height - SKY_VIEW_NODE_SETTINGS.MULTILINK_BOTTOM_OFFSET;
       },
     );
     this.disposeEmitter.addListener(() => {

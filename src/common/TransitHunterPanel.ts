@@ -1,3 +1,4 @@
+import { TRANSIT_HUNTER_PANEL_SETTINGS } from "../TransitHunterConstants.js";
 /**
  * TransitHunterPanel.ts
  *
@@ -40,8 +41,8 @@ export class TransitHunterPanel extends Panel {
         fill: TransitHunterColors.panelBackgroundColorProperty,
         stroke: TransitHunterColors.panelBorderColorProperty,
         cornerRadius: PANEL_CORNER_RADIUS,
-        xMargin: 12,
-        yMargin: 10,
+        xMargin: TRANSIT_HUNTER_PANEL_SETTINGS.OPTIONS_X_MARGIN,
+        yMargin: TRANSIT_HUNTER_PANEL_SETTINGS.OPTIONS_Y_MARGIN,
       },
       providedOptions,
     );

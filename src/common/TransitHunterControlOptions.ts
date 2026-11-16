@@ -1,3 +1,4 @@
+import { TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS } from "../TransitHunterConstants.js";
 /**
  * TransitHunterControlOptions.ts
  *
@@ -14,10 +15,19 @@ import type { CheckboxOptions, HSliderOptions } from "scenerystack/sun";
 import TransitHunterColors from "../TransitHunterColors.js";
 import { FLAT_RECTANGULAR_BUTTON_OPTIONS } from "./TransitHunterButtonOptions.js";
 
-const SLIDER_THUMB_SIZE = new Dimension2(12, 22);
-const STANDALONE_SLIDER_TRACK_SIZE = new Dimension2(150, 3);
-const NUMBER_CONTROL_SLIDER_TRACK_SIZE = new Dimension2(110, 3);
-const CHECKBOX_BOX_WIDTH = 16;
+const SLIDER_THUMB_SIZE = new Dimension2(
+  TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.SLIDER_THUMB_SIZE_WIDTH,
+  TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.SLIDER_THUMB_SIZE_HEIGHT,
+);
+const STANDALONE_SLIDER_TRACK_SIZE = new Dimension2(
+  TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.STANDALONE_SLIDER_TRACK_SIZE_WIDTH,
+  TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.STANDALONE_SLIDER_TRACK_SIZE_HEIGHT,
+);
+const NUMBER_CONTROL_SLIDER_TRACK_SIZE = new Dimension2(
+  TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.NUMBER_CONTROL_SLIDER_TRACK_SIZE_WIDTH,
+  TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.NUMBER_CONTROL_SLIDER_TRACK_SIZE_HEIGHT,
+);
+const CHECKBOX_BOX_WIDTH: number = TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.CHECKBOX_BOX_WIDTH;
 
 /** Options for standalone HSlider instances in control panels. @public */
 export const TRANSIT_HUNTER_SLIDER_OPTIONS = {
@@ -28,11 +38,15 @@ export const TRANSIT_HUNTER_SLIDER_OPTIONS = {
 
 /** Base NumberControl options; spread into each instance and add titleNodeOptions as needed. @public */
 export const TRANSIT_HUNTER_NUMBER_CONTROL_OPTIONS = {
-  arrowButtonOptions: { ...FLAT_RECTANGULAR_BUTTON_OPTIONS, scale: 0.75 },
+  arrowButtonOptions: {
+    ...FLAT_RECTANGULAR_BUTTON_OPTIONS,
+    scale: TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.TRANSIT_HUNTER_NUMBER_CONTROL_OPTIONS_SCALE,
+  },
   layoutFunction: NumberControl.createLayoutFunction4({
-    sliderPadding: 4,
-    arrowButtonSpacing: 3,
-    verticalSpacing: 4,
+    sliderPadding: TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.TRANSIT_HUNTER_NUMBER_CONTROL_OPTIONS_SLIDER_PADDING,
+    arrowButtonSpacing:
+      TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.TRANSIT_HUNTER_NUMBER_CONTROL_OPTIONS_ARROW_BUTTON_SPACING,
+    verticalSpacing: TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.TRANSIT_HUNTER_NUMBER_CONTROL_OPTIONS_VERTICAL_SPACING,
   }),
   sliderOptions: {
     trackSize: NUMBER_CONTROL_SLIDER_TRACK_SIZE,
@@ -53,7 +67,7 @@ export const TRANSIT_HUNTER_NUMBER_CONTROL_OPTIONS = {
  */
 export const TRANSIT_HUNTER_CHECKBOX_OPTIONS = {
   boxWidth: CHECKBOX_BOX_WIDTH,
-  spacing: 4,
+  spacing: TRANSIT_HUNTER_CONTROL_OPTIONS_SETTINGS.TRANSIT_HUNTER_CHECKBOX_OPTIONS_SPACING,
   checkboxColor: TransitHunterColors.textColorProperty,
   checkboxColorBackground: TransitHunterColors.panelBackgroundColorProperty,
 } satisfies CheckboxOptions;

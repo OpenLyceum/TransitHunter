@@ -1,3 +1,4 @@
+import { PERIOD_SEARCH_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * PeriodSearchNode.ts
  *
@@ -27,9 +28,9 @@ import type { PlanetHuntModel } from "../model/PlanetHuntModel.js";
 const PERIOD_TICKS = [0.3, 0.5, 1, 2, 3, 5, 10, 20, 30, 50, 100, 200, 300, 500];
 
 /** A click folds on the strongest dip within this many pixels of it. */
-const CLICK_PICK_PIXELS = 8;
+const CLICK_PICK_PIXELS: number = PERIOD_SEARCH_NODE_SETTINGS.CLICK_PICK_PIXELS;
 
-const BUTTON_HEIGHT = 26;
+const BUTTON_HEIGHT: number = PERIOD_SEARCH_NODE_SETTINGS.BUTTON_HEIGHT;
 
 /** Colours of the archive planets' period marks (as the light curve's reveal ticks). */
 const REVEAL_COLORS = [
@@ -68,12 +69,12 @@ export class PeriodSearchNode extends Node {
     const tickLabels = new Node({ pickable: false });
     const curve = new Path(null, {
       stroke: TransitHunterColors.lightCurveColorProperty,
-      lineWidth: 1.5,
+      lineWidth: PERIOD_SEARCH_NODE_SETTINGS.CURVE_LINE_WIDTH,
       pickable: false,
     });
     const trialLine = new Line(0, 0, 0, height, {
       stroke: TransitHunterColors.fitCurveColorProperty,
-      lineWidth: 2,
+      lineWidth: PERIOD_SEARCH_NODE_SETTINGS.TRIAL_LINE_LINE_WIDTH,
       pickable: false,
     });
     const revealLayer = new Node({ pickable: false });
@@ -90,7 +91,7 @@ export class PeriodSearchNode extends Node {
     });
     xAxisLabel.boundsProperty.link(() => {
       xAxisLabel.centerX = width / 2;
-      xAxisLabel.top = height + 20;
+      xAxisLabel.top = height + PERIOD_SEARCH_NODE_SETTINGS.CONSTRUCTOR_TOP_OFFSET;
     });
     const yAxisLabel = new Text(strings.searchPowerAxisStringProperty, {
       font: FONTS.AXIS_LABEL,
@@ -100,7 +101,7 @@ export class PeriodSearchNode extends Node {
     });
     yAxisLabel.boundsProperty.link(() => {
       yAxisLabel.centerY = height / 2;
-      yAxisLabel.right = -36;
+      yAxisLabel.right = PERIOD_SEARCH_NODE_SETTINGS.RIGHT_RIGHT;
     });
 
     const progressText = new Text(
@@ -111,11 +112,16 @@ export class PeriodSearchNode extends Node {
         },
         { maps: { percent: (progress: number) => Math.floor(100 * progress) } },
       ),
-      { font: FONTS.LABEL, fill: TransitHunterColors.mutedTextColorProperty, maxWidth: width - 20, pickable: false },
+      {
+        font: FONTS.LABEL,
+        fill: TransitHunterColors.mutedTextColorProperty,
+        maxWidth: width - PERIOD_SEARCH_NODE_SETTINGS.PROGRESS_TEXT_MAX_WIDTH_OFFSET,
+        pickable: false,
+      },
     );
     progressText.boundsProperty.link(() => {
-      progressText.right = width - 8;
-      progressText.top = 6;
+      progressText.right = width - PERIOD_SEARCH_NODE_SETTINGS.CONSTRUCTOR_RIGHT_OFFSET;
+      progressText.top = PERIOD_SEARCH_NODE_SETTINGS.TOP_TOP;
     });
 
     background.addInputListener({
@@ -139,13 +145,13 @@ export class PeriodSearchNode extends Node {
     const hint = new Text(strings.searchHintStringProperty, {
       font: FONTS.SMALL,
       fill: TransitHunterColors.mutedTextColorProperty,
-      maxWidth: width - 240,
+      maxWidth: width - PERIOD_SEARCH_NODE_SETTINGS.HINT_MAX_WIDTH_OFFSET,
     });
     const placeControls = (): void => {
       const total = this.usePeakButton.width + 12 + hint.width;
       this.usePeakButton.left = width / 2 - total / 2;
-      this.usePeakButton.top = height + 44;
-      hint.left = this.usePeakButton.right + 12;
+      this.usePeakButton.top = height + PERIOD_SEARCH_NODE_SETTINGS.PLACE_CONTROLS_TOP_OFFSET;
+      hint.left = this.usePeakButton.right + PERIOD_SEARCH_NODE_SETTINGS.PLACE_CONTROLS_LEFT_OFFSET;
       hint.centerY = this.usePeakButton.centerY;
     };
     this.usePeakButton.boundsProperty.lazyLink(placeControls);
@@ -169,7 +175,7 @@ export class PeriodSearchNode extends Node {
             font: FONTS.TICK_LABEL,
             fill: TransitHunterColors.textColorProperty,
             centerX: x,
-            top: height + 6,
+            top: height + PERIOD_SEARCH_NODE_SETTINGS.DRAW_AXES_TOP_OFFSET,
           }),
         );
       }
@@ -177,12 +183,12 @@ export class PeriodSearchNode extends Node {
       for (let power = 0; power <= powerMax + 1e-9; power += step) {
         const y = powerToY(power);
         gridShape.moveTo(0, y).lineTo(width, y);
-        tickShape.moveTo(-5, y).lineTo(0, y);
+        tickShape.moveTo(PERIOD_SEARCH_NODE_SETTINGS.DRAW_AXES_X, y).lineTo(0, y);
         labels.push(
           new Text(formatTickValue(power, 0), {
             font: FONTS.TICK_LABEL,
             fill: TransitHunterColors.textColorProperty,
-            right: -7,
+            right: PERIOD_SEARCH_NODE_SETTINGS.DRAW_AXES_RIGHT,
             centerY: y,
           }),
         );
@@ -254,8 +260,11 @@ export class PeriodSearchNode extends Node {
             const x = periodToX(planet.periodDays);
             return new Line(x, 0, x, height, {
               stroke: REVEAL_COLORS[index % REVEAL_COLORS.length] ?? null,
-              lineWidth: 2,
-              lineDash: [6, 4],
+              lineWidth: PERIOD_SEARCH_NODE_SETTINGS.CHILDREN_LINE_WIDTH,
+              lineDash: [
+                PERIOD_SEARCH_NODE_SETTINGS.PLACE_MARKERS_LINE_DASH_DASH,
+                PERIOD_SEARCH_NODE_SETTINGS.CONSTRUCTOR_PLACE_MARKERS_LINE_DASH_DASH,
+              ],
             });
           })
         : [];

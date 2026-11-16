@@ -1,3 +1,4 @@
+import { TRANSIT_HUNTER_PREFERENCES_NODE_SETTINGS } from "../TransitHunterConstants.js";
 /**
  * TransitHunterPreferencesNode.ts
  *
@@ -23,34 +24,34 @@ export class TransitHunterPreferencesNode extends VBox {
     // colors (readable on white in both default and projector profiles), not textColorProperty
     // (which is near-white in default mode and would be invisible on the white dialog).
     const header = new Text(prefStrings.titleStringProperty, {
-      font: new PhetFont({ size: 18, weight: "bold" }),
+      font: new PhetFont({ size: TRANSIT_HUNTER_PREFERENCES_NODE_SETTINGS.HEADER_FONT_SIZE, weight: "bold" }),
       fill: TransitHunterColors.controlSurfaceTextColorProperty,
     });
 
     const showEquationsCheckbox = new Checkbox(
       preferencesModel.showEquationsProperty,
       new Text(prefStrings.showEquationsStringProperty, {
-        font: new PhetFont(14),
+        font: new PhetFont(TRANSIT_HUNTER_PREFERENCES_NODE_SETTINGS.SHOW_EQUATIONS_CHECKBOX_FONT_SIZE),
         fill: TransitHunterColors.controlSurfaceTextColorProperty,
       }),
       {
         checkboxColor: TransitHunterColors.controlSurfaceTextColorProperty,
         checkboxColorBackground: TransitHunterColors.controlSurfaceColorProperty,
-        spacing: 8,
+        spacing: TRANSIT_HUNTER_PREFERENCES_NODE_SETTINGS.SHOW_EQUATIONS_CHECKBOX_SPACING,
         accessibleHelpText: prefStrings.showEquationsHelpStringProperty,
         ...(tandem && { tandem: tandem.createTandem("showEquationsCheckbox") }),
       },
     );
 
     const description = new Text(prefStrings.showEquationsHelpStringProperty, {
-      font: new PhetFont(12),
+      font: new PhetFont(TRANSIT_HUNTER_PREFERENCES_NODE_SETTINGS.DESCRIPTION_FONT_SIZE),
       fill: TransitHunterColors.controlSurfaceTextColorProperty,
-      maxWidth: 420,
+      maxWidth: TRANSIT_HUNTER_PREFERENCES_NODE_SETTINGS.DESCRIPTION_MAX_WIDTH,
     });
 
     super({
       align: "left",
-      spacing: 12,
+      spacing: TRANSIT_HUNTER_PREFERENCES_NODE_SETTINGS.CONSTRUCTOR_SPACING,
       children: [header, showEquationsCheckbox, description],
     });
   }
