@@ -79,7 +79,6 @@ Standard fleet pattern:
 
 ## Compliance carve-outs
 
-- `.github/workflows/ci.yml`: `unused-mode: advisory` until both Knip default and production baselines are reviewed and cleared ([Baton/doc/knip.md](https://github.com/OpenLyceum/Baton/blob/main/doc/knip.md)).
 - **Hardcoded colors (transparent hit areas).** The Planet Hunt chart's drag area and depth-line
   handle are `rgba(0,0,0,0)` rectangles: invisible input regions, not theme colours. StellarWobble's
   Observatory chart does the same.
