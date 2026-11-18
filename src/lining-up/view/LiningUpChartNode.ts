@@ -7,7 +7,7 @@ import { LINING_UP_CHART_NODE_SETTINGS } from "../../TransitHunterConstants.js";
  * shorter, then V-shaped (grazing), then it disappears.
  */
 
-import { Multilink, PatternStringProperty, StringProperty } from "scenerystack/axon";
+import { DerivedProperty, Multilink, PatternStringProperty, StringProperty } from "scenerystack/axon";
 import { LinePlot } from "scenerystack/bamboo";
 import { Range, Vector2 } from "scenerystack/dot";
 import { Circle, Node, RichText, Text } from "scenerystack/scenery";
@@ -87,36 +87,48 @@ export class LiningUpChartNode extends Node {
 
     this.children = [title, frame, legend, zoomNote];
 
-    const updateCurves = (): void => {
-      const g = model.geometryProperty.value;
-      const edgeOn = model.edgeOnGeometryProperty.value;
-      const halfWidth = model.windowHalfWidthProperty.value;
-      const hours = halfWidth * model.periodProperty.value * 24;
-      const span = Math.min(100, niceCeil(uniformDepth(g.radiusRatio) * 100 * 1.25));
-      frame.setRanges(new Range(-hours, hours), new Range(100 - span, 100 + HEADROOM * span));
-      spanTextProperty.value = formatSignificant(span, LINING_UP_CHART_NODE_SETTINGS.SPAN_TEXT_PROPERTY_DIGITS);
-      zoomNote.visible = span < 100;
-      const curve = (geometry: typeof g): Vector2[] =>
-        Array.from({ length: SAMPLES + 1 }, (_, i) => {
-          const t = -0.5 + i / SAMPLES;
-          return new Vector2(2 * t * hours, 100 * relativeFlux(2 * t * halfWidth, geometry));
-        });
-      ghost.setDataSet(curve(edgeOn));
-      line.setDataSet(curve(g));
+    // Half-span of the hours axis. The period updates after the geometry when the
+    // distance changes, so every drawing below takes the span from here rather than
+    // reading the period itself (which would lag one step behind).
+    const hoursHalfSpanProperty = new DerivedProperty(
+      [model.windowHalfWidthProperty, model.periodProperty],
+      (halfWidth, period) => halfWidth * period * 24,
+    );
+    const updateDot = (): void => {
+      const hours = hoursHalfSpanProperty.value;
+      liveDot.center = frame.chartTransform.modelToViewXY(
+        2 * model.windowTimeProperty.value * hours,
+        100 * model.brightnessProperty.value,
+      );
+      liveDot.visible = !model.fastForwardingProperty.value;
     };
-    const curveLink = Multilink.multilink([model.geometryProperty, model.windowHalfWidthProperty], updateCurves);
+    const curveLink = Multilink.multilink(
+      [model.geometryProperty, model.edgeOnGeometryProperty, model.windowHalfWidthProperty, hoursHalfSpanProperty],
+      (g, edgeOn, halfWidth, hours) => {
+        const span = Math.min(100, niceCeil(uniformDepth(g.radiusRatio) * 100 * 1.25));
+        frame.setRanges(new Range(-hours, hours), new Range(100 - span, 100 + HEADROOM * span));
+        spanTextProperty.value = formatSignificant(span, LINING_UP_CHART_NODE_SETTINGS.SPAN_TEXT_PROPERTY_DIGITS);
+        zoomNote.visible = span < 100;
+        const curve = (geometry: typeof g): Vector2[] =>
+          Array.from({ length: SAMPLES + 1 }, (_, i) => {
+            const t = -0.5 + i / SAMPLES;
+            return new Vector2(2 * t * hours, 100 * relativeFlux(2 * t * halfWidth, geometry));
+          });
+        ghost.setDataSet(curve(edgeOn));
+        line.setDataSet(curve(g));
+        // The ranges just changed, so the dot moves with them.
+        updateDot();
+      },
+    );
     // Between transits the time is off the chart, so the dot is hidden.
     const dotLink = Multilink.multilink(
-      [model.windowTimeProperty, model.brightnessProperty, model.geometryProperty, model.fastForwardingProperty],
-      (t, brightness, _geometry, fastForwarding) => {
-        const hours = model.windowHalfWidthProperty.value * model.periodProperty.value * 24;
-        liveDot.center = frame.chartTransform.modelToViewXY(2 * t * hours, 100 * brightness);
-        liveDot.visible = !fastForwarding;
-      },
+      [model.windowTimeProperty, model.brightnessProperty, model.fastForwardingProperty],
+      updateDot,
     );
     this.disposeEmitter.addListener(() => {
       curveLink.dispose();
       dotLink.dispose();
+      hoursHalfSpanProperty.dispose();
     });
   }
 }
