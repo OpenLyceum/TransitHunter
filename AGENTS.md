@@ -77,12 +77,6 @@ Standard fleet pattern:
   starts/stops when a slider changes it (Lining Up).
 - Numbers in descriptions go through `toPlainText` (no rich-text markup).
 
-## Compliance carve-outs
-
-- **Hardcoded colors (transparent hit areas).** The Planet Hunt chart's drag area and depth-line
-  handle are `rgba(0,0,0,0)` rectangles: invisible input regions, not theme colours. StellarWobble's
-  Observatory chart does the same.
-
 ## Commands
 
 ```bash
