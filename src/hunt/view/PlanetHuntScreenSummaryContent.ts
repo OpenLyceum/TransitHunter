@@ -7,7 +7,7 @@ import { PLANET_HUNT_SCREEN_SUMMARY_CONTENT_SETTINGS } from "../../TransitHunter
  * whether the light curve is folded, and the depth line's planet size.
  */
 
-import { DerivedProperty, PatternStringProperty, StringProperty } from "scenerystack/axon";
+import { DerivedProperty, Multilink, PatternStringProperty, StringProperty } from "scenerystack/axon";
 import { StringUtils } from "scenerystack/phetcommon";
 import { ScreenSummaryContent } from "scenerystack/sim";
 import { formatSignificant, toPlainText } from "../../common/view/chartUtils.js";
@@ -34,7 +34,11 @@ export class PlanetHuntScreenSummaryContent extends ScreenSummaryContent {
     };
     model.marks.addItemAddedListener(updateMarks);
     model.marks.addItemRemovedListener(updateMarks);
-    strings.marksCountPatternStringProperty.link(updateMarks);
+    // Both patterns: on a language change the count pattern updates before the spacing one.
+    Multilink.multilink(
+      [strings.marksCountPatternStringProperty, strings.marksSpacingPatternStringProperty],
+      updateMarks,
+    );
 
     // The period search: nothing before it starts, its progress while it runs, then its strongest dip.
     const searchProperty = new StringProperty("");
