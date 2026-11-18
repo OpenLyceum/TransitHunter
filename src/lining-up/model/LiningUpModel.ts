@@ -146,7 +146,7 @@ export class LiningUpModel implements TModel {
   public sample: readonly SampleSystem[];
   public readonly sampleChangedEmitter = new Emitter();
 
-  public readonly timer = new TimeModel(true);
+  public readonly timer = new TimeModel({ initiallyPlaying: true });
   public readonly timeSpeedProperty = new EnumerationProperty(TimeSpeed.NORMAL);
 
   public constructor() {

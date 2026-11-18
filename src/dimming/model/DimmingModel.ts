@@ -95,7 +95,7 @@ export class DimmingModel implements TModel {
   /** True while the user drags the planet (the clock waits). */
   public readonly isDraggingProperty = new BooleanProperty(false);
 
-  public readonly timer = new TimeModel(true);
+  public readonly timer = new TimeModel({ initiallyPlaying: true });
   public readonly timeSpeedProperty = new EnumerationProperty(TimeSpeed.NORMAL);
 
   public constructor() {
