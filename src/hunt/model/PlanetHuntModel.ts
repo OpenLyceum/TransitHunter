@@ -89,7 +89,8 @@ export class PlanetHuntModel implements TModel {
   public readonly showSearchProperty = new BooleanProperty(false);
 
   /** Progress of the period search, 0–1 (0 before it starts). */
-  public readonly searchProgressProperty = new NumberProperty(0, { range: new Range(0, 1) });
+  private readonly _searchProgressProperty = new NumberProperty(0, { range: new Range(0, 1) });
+  public readonly searchProgressProperty: TReadOnlyProperty<number> = this._searchProgressProperty;
 
   /** Fires as the period search advances (and when it is cleared). */
   public readonly searchChangedEmitter = new Emitter();
@@ -207,7 +208,7 @@ export class PlanetHuntModel implements TModel {
       minPeriod: HUNT_PERIOD_RANGE.min,
       maxPeriod: Math.min(HUNT_PERIOD_RANGE.max, curve.spanDays / 2),
     });
-    this.searchProgressProperty.value = 0;
+    this._searchProgressProperty.value = 0;
     this.searchChangedEmitter.emit();
   }
 
@@ -259,7 +260,7 @@ export class PlanetHuntModel implements TModel {
 
   private clearSearch(): void {
     this.boxSearch = null;
-    this.searchProgressProperty.value = 0;
+    this._searchProgressProperty.value = 0;
     this.searchChangedEmitter.emit();
   }
 
@@ -287,7 +288,7 @@ export class PlanetHuntModel implements TModel {
     const search = this.boxSearch;
     if (search && !search.done) {
       search.advanceFor(SEARCH_MILLISECONDS_PER_STEP);
-      this.searchProgressProperty.value = search.progress;
+      this._searchProgressProperty.value = search.progress;
       this.searchChangedEmitter.emit();
     }
   }
