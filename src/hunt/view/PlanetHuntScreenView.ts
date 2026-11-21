@@ -277,7 +277,16 @@ export class PlanetHuntScreenView extends ScreenView {
       foldButton.accessibleName = StringUtils.fillIn(a11y.controls.foldOnPatternStringProperty.value, {
         name: planet.name,
       });
-      return new HBox({ spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.ANSWER_ROW_SPACING, children: [foldButton, line] });
+      const row = new HBox({
+        spacing: PLANET_HUNT_SCREEN_VIEW_SETTINGS.ANSWER_ROW_SPACING,
+        children: [foldButton, line],
+      });
+      // Node.dispose() leaves children alone, so the row disposes its button and text itself.
+      row.disposeEmitter.addListener(() => {
+        foldButton.dispose();
+        line.dispose();
+      });
+      return row;
     };
     const updateAnswers = (): void => {
       for (const child of answerList.children) {
