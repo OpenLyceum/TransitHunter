@@ -170,8 +170,9 @@ export class RockOrGasScreenView extends ScreenView {
       ],
     });
     model.archiveProperty.link((planet) => {
+      // disposeSubtree: the disc's label Text links planetNameProperty, which outlives it.
       for (const child of planetDiscHolder.children) {
-        child.dispose();
+        child.disposeSubtree();
       }
       planetDiscHolder.children = [
         sizeDisc(planetNameProperty, planet.radiusEarth, TransitHunterColors.lightCurveColorProperty),
