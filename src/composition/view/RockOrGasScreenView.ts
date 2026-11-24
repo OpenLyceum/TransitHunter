@@ -1,3 +1,4 @@
+import type { TransitHunterPreferencesModel } from "../../preferences/TransitHunterPreferencesModel.js";
 import { ROCK_OR_GAS_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * RockOrGasScreenView.ts
@@ -54,7 +55,11 @@ const PX_PER_EARTH_RADIUS: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.PX_PER_EART
 const SIZE_ROW_HEIGHT: number = ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.SIZE_ROW_HEIGHT;
 
 export class RockOrGasScreenView extends ScreenView {
-  public constructor(model: RockOrGasModel, providedOptions?: RockOrGasScreenViewOptions) {
+  public constructor(
+    model: RockOrGasModel,
+    preferences: TransitHunterPreferencesModel,
+    providedOptions?: RockOrGasScreenViewOptions,
+  ) {
     const options = optionize<RockOrGasScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       {
         screenSummaryContent: new RockOrGasScreenSummaryContent(model),
@@ -281,7 +286,11 @@ export class RockOrGasScreenView extends ScreenView {
       visibleProperty: new DerivedProperty([model.densityProperty], (rho) => rho < WATER_DENSITY_G_CM3),
     });
     const scale = new DensityScaleNode(model.densityProperty, MIDDLE_WIDTH - 20);
-    const equation = createEquationNode(strings.equationStringProperty, MIDDLE_WIDTH);
+    const equation = createEquationNode(
+      preferences.showEquationsProperty,
+      strings.equationStringProperty,
+      MIDDLE_WIDTH,
+    );
     const densityPanel = new TransitHunterPanel(
       new VBox({
         spacing: ROCK_OR_GAS_SCREEN_VIEW_SETTINGS.DENSITY_PANEL_SPACING,

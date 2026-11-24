@@ -59,7 +59,7 @@ Physics and data: [`doc/model.md`](doc/model.md). Architecture and decisions:
 | `src/hunt/view/PointCloudNode.ts` | Canvas painting of up to ~18 000 points |
 | `src/common/view/PlanetNode.ts` | Planet disc in its preset colour, silhouette against the star, `drawnPlanet` magnification |
 | `src/common/view/controls.ts` | Number controls (log scale), checkboxes, push buttons, explanation dialog, equation node |
-| `src/preferences/TransitHunterPreferencesModel.ts` | `transitHunterPreferences` singleton: Show equations (`?showEquations`) |
+| `src/preferences/TransitHunterPreferencesModel.ts` | Show equations (`?showEquations`) |
 
 ## Accessibility
 
@@ -85,3 +85,11 @@ npm run lint && npm run check && npm run build && npm test
 
 For screenshots, run the dev server with `npx vite --port <free port>`. Screen models are reachable
 from the console as `phet.joist.sim.screens[i].model` (with `?screens=n`, at index 0).
+
+## Testing
+
+See the shared Vitest setup (`vitest.config.ts`, `tests/setup.ts`) and `tests/memory-leak.test.ts` for disposal coverage. Add sim-specific unit tests under `tests/` as physics and UI logic land.
+
+## Compliance carve-outs
+
+None.

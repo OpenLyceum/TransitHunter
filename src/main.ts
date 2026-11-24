@@ -27,35 +27,41 @@ import { PlanetHuntScreen } from "./hunt/PlanetHuntScreen.js";
 import { StringManager } from "./i18n/StringManager.js";
 import { LightCurveScreen } from "./light-curve/LightCurveScreen.js";
 import { LiningUpScreen } from "./lining-up/LiningUpScreen.js";
-import { transitHunterPreferences } from "./preferences/TransitHunterPreferencesModel.js";
+import { TransitHunterPreferencesModel } from "./preferences/TransitHunterPreferencesModel.js";
 import { TransitHunterPreferencesNode } from "./preferences/TransitHunterPreferencesNode.js";
 import TransitHunterColors from "./TransitHunterColors.js";
 
 onReadyToLaunch(() => {
   const stringManager = StringManager.getInstance();
 
+  const simPreferences = new TransitHunterPreferencesModel(Tandem.ROOT.createTandem("preferences"));
   const screens = [
     new DimmingScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().dimmingStringProperty,
       tandem: Tandem.ROOT.createTandem("dimmingScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
     }),
     new LiningUpScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().liningUpStringProperty,
       tandem: Tandem.ROOT.createTandem("liningUpScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
     }),
     new LightCurveScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().lightCurveStringProperty,
       tandem: Tandem.ROOT.createTandem("lightCurveScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
     }),
     new PlanetHuntScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().huntStringProperty,
       tandem: Tandem.ROOT.createTandem("huntScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
     }),
     new RockOrGasScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().compositionStringProperty,
       tandem: Tandem.ROOT.createTandem("compositionScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
@@ -73,7 +79,7 @@ onReadyToLaunch(() => {
       simulationOptions: {
         customPreferences: [
           {
-            createContent: (tandem: Tandem) => new TransitHunterPreferencesNode(transitHunterPreferences, tandem),
+            createContent: (tandem: Tandem) => new TransitHunterPreferencesNode(simPreferences, tandem),
           },
         ],
       },

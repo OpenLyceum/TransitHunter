@@ -1,3 +1,4 @@
+import type { TransitHunterPreferencesModel } from "../../preferences/TransitHunterPreferencesModel.js";
 import { LIGHT_CURVE_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LightCurveScreenView.ts
@@ -19,7 +20,7 @@ import {
   PatternStringProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
-import { Range } from "scenerystack/dot";
+import { Range, roundSymmetric } from "scenerystack/dot";
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import { StringUtils } from "scenerystack/phetcommon";
 import { HBox, Node, RichText, Text, VBox } from "scenerystack/scenery";
@@ -78,7 +79,11 @@ const MARK_ARROW_OPTIONS = {
 export class LightCurveScreenView extends ScreenView {
   private readonly showMeasurementsProperty = new BooleanProperty(true);
 
-  public constructor(model: LightCurveModel, providedOptions?: LightCurveScreenViewOptions) {
+  public constructor(
+    model: LightCurveModel,
+    preferences: TransitHunterPreferencesModel,
+    providedOptions?: LightCurveScreenViewOptions,
+  ) {
     const options = optionize<LightCurveScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       {
         screenSummaryContent: new LightCurveScreenSummaryContent(model),
@@ -283,7 +288,11 @@ export class LightCurveScreenView extends ScreenView {
       }),
       { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, lineWrap: READOUT_COLUMN_WIDTH },
     );
-    const equation = createEquationNode(strings.equationStringProperty, 2 * READOUT_COLUMN_WIDTH);
+    const equation = createEquationNode(
+      preferences.showEquationsProperty,
+      strings.equationStringProperty,
+      2 * READOUT_COLUMN_WIDTH,
+    );
     const explanationButton = createExplanationButton(
       strings.explanationTitleStringProperty,
       [
@@ -378,13 +387,13 @@ export class LightCurveScreenView extends ScreenView {
       significantFigures: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.NOISE_CONTROL_SIGNIFICANT_FIGURES,
       delta: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.NOISE_CONTROL_DELTA,
       accessibleName: a11y.controls.noiseStringProperty,
-      numberControlOptions: { sliderOptions: { constrainValue: (value: number) => Math.round(value / 10) * 10 } },
+      numberControlOptions: { sliderOptions: { constrainValue: (value: number) => roundSymmetric(value / 10) * 10 } },
     });
     const stackControl = createNumberControl(strings.stackStringProperty, model.stackProperty, STACK_RANGE, {
       significantFigures: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.STACK_CONTROL_SIGNIFICANT_FIGURES,
       delta: 1,
       accessibleName: a11y.controls.stackStringProperty,
-      numberControlOptions: { sliderOptions: { constrainValue: (value: number) => Math.round(value) } },
+      numberControlOptions: { sliderOptions: { constrainValue: (value: number) => roundSymmetric(value) } },
     });
     const newObservationsButton = createPushButton(
       strings.newObservationsStringProperty,

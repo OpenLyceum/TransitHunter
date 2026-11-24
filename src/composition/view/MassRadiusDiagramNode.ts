@@ -1,3 +1,4 @@
+import { roundSymmetric } from "scenerystack/dot";
 import { MASS_RADIUS_DIAGRAM_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * MassRadiusDiagramNode.ts
@@ -52,7 +53,7 @@ export class MassRadiusDiagramNode extends Node {
     });
     const grid = new Shape();
     const labels = new Node();
-    const tickLabel = (value: number): string => (value < 1 ? String(value) : String(Math.round(value)));
+    const tickLabel = (value: number): string => (value < 1 ? String(value) : String(roundSymmetric(value)));
     for (const mass of MASS_TICKS) {
       grid.moveTo(x(mass), 0).lineTo(x(mass), height);
       labels.addChild(

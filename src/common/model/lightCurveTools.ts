@@ -1,3 +1,5 @@
+import { roundSymmetric } from "scenerystack/dot";
+
 /**
  * lightCurveTools.ts
  *
@@ -117,7 +119,7 @@ export function ephemerisFromMarks(times: readonly number[], minSeparation: numb
   }
   let referenceTime = first;
   for (let iteration = 0; iteration < 2; iteration++) {
-    const cycles = distinct.map((time) => Math.round((time - first) / period));
+    const cycles = distinct.map((time) => roundSymmetric((time - first) / period));
     const count = distinct.length;
     const meanN = cycles.reduce((sum, n) => sum + n, 0) / count;
     const meanT = distinct.reduce((sum, t) => sum + t, 0) / count;

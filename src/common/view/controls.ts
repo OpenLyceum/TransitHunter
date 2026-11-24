@@ -29,7 +29,6 @@ import { InfoButton, NumberControl, type NumberControlOptions, PhetFont } from "
 import { Dialog } from "scenerystack/sim";
 import { Checkbox, type CheckboxOptions, TextPushButton } from "scenerystack/sun";
 import { StringManager } from "../../i18n/StringManager.js";
-import { transitHunterPreferences } from "../../preferences/TransitHunterPreferencesModel.js";
 import TransitHunterColors from "../../TransitHunterColors.js";
 import { FONTS } from "../../TransitHunterConstants.js";
 import { FLAT_PANEL_PUSH_BUTTON_OPTIONS, LIGHT_SURFACE_TEXT_FILL } from "../TransitHunterButtonOptions.js";
@@ -68,15 +67,15 @@ const roundToFigures = (value: number, significantFigures: number): number =>
   value === 0 ? 0 : Number(value.toPrecision(significantFigures));
 
 /**
- * A log₁₀ proxy of `property` for a logarithmic slider, kept in step both ways.
- * A value the proxy sets is rounded to the readout's figures and kept in range.
+ * A log₁₀ proxyProperty of `property` for a logarithmic slider, kept in step both ways.
+ * A value the proxyProperty sets is rounded to the readout's figures and kept in range.
  */
 function createLogarithmicProxy(property: PhetioProperty<number>, range: Range, figures: number): NumberProperty {
-  const proxy = new NumberProperty(Math.log10(property.value), {
+  const proxyProperty = new NumberProperty(Math.log10(property.value), {
     range: new Range(Math.log10(range.min), Math.log10(range.max)),
   });
   let updating = false;
-  proxy.lazyLink((log) => {
+  proxyProperty.lazyLink((log) => {
     if (!updating) {
       updating = true;
       property.value = range.constrainValue(roundToFigures(10 ** log, figures));
@@ -86,11 +85,11 @@ function createLogarithmicProxy(property: PhetioProperty<number>, range: Range, 
   property.lazyLink((value) => {
     if (!updating) {
       updating = true;
-      proxy.value = proxy.range.constrainValue(Math.log10(value));
+      proxyProperty.value = proxyProperty.range.constrainValue(Math.log10(value));
       updating = false;
     }
   });
-  return proxy;
+  return proxyProperty;
 }
 
 export function createNumberControl(
@@ -231,6 +230,7 @@ export function createExplanationButton(
 
 /** Rich text visible only while the "Show equations" preference is on. */
 export function createEquationNode(
+  showEquationsProperty: TReadOnlyProperty<boolean>,
   equationProperty: TReadOnlyProperty<string>,
   maxWidth: number = CONTROLS_SETTINGS.DEFAULT_MAX_WIDTH,
 ): Node {
@@ -238,7 +238,7 @@ export function createEquationNode(
     font: FONTS.READOUT,
     fill: TransitHunterColors.accentColorProperty,
     maxWidth: maxWidth,
-    visibleProperty: transitHunterPreferences.showEquationsProperty,
+    visibleProperty: showEquationsProperty,
   });
 }
 

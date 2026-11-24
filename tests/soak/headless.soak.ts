@@ -19,34 +19,41 @@ import { PlanetHuntScreen } from "../../src/hunt/PlanetHuntScreen.js";
 import { StringManager } from "../../src/i18n/StringManager.js";
 import { LightCurveScreen } from "../../src/light-curve/LightCurveScreen.js";
 import { LiningUpScreen } from "../../src/lining-up/LiningUpScreen.js";
+import { TransitHunterPreferencesModel } from "../../src/preferences/TransitHunterPreferencesModel.js";
 import TransitHunterColors from "../../src/TransitHunterColors.js";
 import { describeHeadlessSoak } from "../helpers/headlessSoak.js";
 
 function buildSim() {
   const stringManager = StringManager.getInstance();
 
+  const simPreferences = new TransitHunterPreferencesModel(Tandem.ROOT.createTandem("preferences"));
   const screens = [
     new DimmingScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().dimmingStringProperty,
       tandem: Tandem.ROOT.createTandem("dimmingScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
     }),
     new LiningUpScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().liningUpStringProperty,
       tandem: Tandem.ROOT.createTandem("liningUpScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
     }),
     new LightCurveScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().lightCurveStringProperty,
       tandem: Tandem.ROOT.createTandem("lightCurveScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
     }),
     new PlanetHuntScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().huntStringProperty,
       tandem: Tandem.ROOT.createTandem("huntScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,
     }),
     new RockOrGasScreen({
+      preferences: simPreferences,
       name: stringManager.getScreenNames().compositionStringProperty,
       tandem: Tandem.ROOT.createTandem("compositionScreen"),
       backgroundColorProperty: TransitHunterColors.backgroundColorProperty,

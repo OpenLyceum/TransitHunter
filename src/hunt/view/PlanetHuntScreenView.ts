@@ -1,3 +1,4 @@
+import type { TransitHunterPreferencesModel } from "../../preferences/TransitHunterPreferencesModel.js";
 import { PLANET_HUNT_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * PlanetHuntScreenView.ts
@@ -63,7 +64,11 @@ const SHIFT_STEP: number = PLANET_HUNT_SCREEN_VIEW_SETTINGS.SHIFT_STEP;
 export class PlanetHuntScreenView extends ScreenView {
   private readonly chart: HuntChartNode;
 
-  public constructor(model: PlanetHuntModel, providedOptions?: PlanetHuntScreenViewOptions) {
+  public constructor(
+    model: PlanetHuntModel,
+    preferences: TransitHunterPreferencesModel,
+    providedOptions?: PlanetHuntScreenViewOptions,
+  ) {
     const options = optionize<PlanetHuntScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       {
         screenSummaryContent: new PlanetHuntScreenSummaryContent(model),
@@ -171,7 +176,7 @@ export class PlanetHuntScreenView extends ScreenView {
       }),
       FONTS.SMALL,
     );
-    const equation = createEquationNode(strings.equationStringProperty, PANEL_WIDTH);
+    const equation = createEquationNode(preferences.showEquationsProperty, strings.equationStringProperty, PANEL_WIDTH);
     const explanationButton = createExplanationButton(
       strings.explanationTitleStringProperty,
       [

@@ -8,18 +8,20 @@
  * Registered in the screens array in src/main.ts. Its home-screen and navigation-bar
  * icons come from createLightCurveIcon() in src/common/TransitHunterScreenIcons.ts.
  */
+
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import type { ScreenOptions } from "scenerystack/sim";
 import { Screen } from "scenerystack/sim";
 import type { Tandem } from "scenerystack/tandem";
 import { createLightCurveIcon } from "../common/TransitHunterScreenIcons.js";
+import type { TransitHunterPreferencesModel } from "../preferences/TransitHunterPreferencesModel.js";
 import TransitHunterColors from "../TransitHunterColors.js";
 import { LightCurveModel } from "./model/LightCurveModel.js";
 import { LightCurveKeyboardHelpContent } from "./view/LightCurveKeyboardHelpContent.js";
 import { LightCurveScreenView } from "./view/LightCurveScreenView.js";
 
 // Require tandem to be explicit — accidental omission would break PhET-iO.
-type LightCurveScreenOptions = ScreenOptions & { tandem: Tandem };
+type LightCurveScreenOptions = ScreenOptions & { tandem: Tandem; preferences: TransitHunterPreferencesModel };
 
 export class LightCurveScreen extends Screen<LightCurveModel, LightCurveScreenView> {
   public constructor(options: LightCurveScreenOptions) {
@@ -28,7 +30,7 @@ export class LightCurveScreen extends Screen<LightCurveModel, LightCurveScreenVi
       () => new LightCurveModel(),
       // View factory — receives the model instance
       (model) =>
-        new LightCurveScreenView(model, {
+        new LightCurveScreenView(model, options.preferences, {
           tandem: options.tandem.createTandem("view"),
         }),
       optionize<LightCurveScreenOptions, EmptySelfOptions, ScreenOptions>()(

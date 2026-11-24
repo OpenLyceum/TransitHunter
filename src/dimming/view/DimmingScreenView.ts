@@ -1,3 +1,4 @@
+import type { TransitHunterPreferencesModel } from "../../preferences/TransitHunterPreferencesModel.js";
 import { DIMMING_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * DimmingScreenView.ts
@@ -58,7 +59,11 @@ const WHOLE_STAR: number = DIMMING_SCREEN_VIEW_SETTINGS.WHOLE_STAR;
 export class DimmingScreenView extends ScreenView {
   private readonly telescopeViewProperty = new BooleanProperty(false);
 
-  public constructor(model: DimmingModel, providedOptions?: DimmingScreenViewOptions) {
+  public constructor(
+    model: DimmingModel,
+    preferences: TransitHunterPreferencesModel,
+    providedOptions?: DimmingScreenViewOptions,
+  ) {
     const options = optionize<DimmingScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       {
         screenSummaryContent: new DimmingScreenSummaryContent(model),
@@ -123,7 +128,11 @@ export class DimmingScreenView extends ScreenView {
       }),
       { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, maxWidth: READOUT_WIDTH },
     );
-    const equation = createEquationNode(strings.equationStringProperty, READOUT_WIDTH);
+    const equation = createEquationNode(
+      preferences.showEquationsProperty,
+      strings.equationStringProperty,
+      READOUT_WIDTH,
+    );
     const explanationButton = createExplanationButton(
       strings.explanationTitleStringProperty,
       [

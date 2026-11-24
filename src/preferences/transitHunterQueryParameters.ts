@@ -18,7 +18,9 @@ const transitHunterQueryParameters = QueryStringMachine.getAll({
    * default because the first screens are pitched at beginners.
    */
   showEquations: {
-    type: "flag",
+    type: "custom",
+    defaultValue: false,
+    parse: (value: string | null): boolean => value === null || value === "true",
     public: true,
   },
 });

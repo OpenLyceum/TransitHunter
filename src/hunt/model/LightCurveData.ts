@@ -69,25 +69,31 @@ function unpackLightCurve(file: LightCurveFile): LightCurve {
 
 /** Loads the light curve of a target by id (code-split: one chunk per target). */
 export async function loadLightCurve(id: string): Promise<LightCurve> {
-  const module = (await LOADERS[id]?.()) as { default: LightCurveFile } | undefined;
-  if (!module) {
+  const loader = loaders.get(id);
+  if (!loader) {
     throw new Error(`No light curve for ${id}`);
   }
-  return unpackLightCurve(module.default);
+  const { default: file } = await loader();
+  const { timeSystem } = file;
+  if (timeSystem !== "BKJD" && timeSystem !== "BTJD") {
+    throw new Error(`Unknown time system for ${id}: ${timeSystem}`);
+  }
+  return unpackLightCurve({ ...file, timeSystem });
 }
 
-const LOADERS: Record<string, () => Promise<unknown>> = {
-  hd189733: () => import("./data/hd189733.json"),
-  hd209458: () => import("./data/hd209458.json"),
-  hatp7: () => import("./data/hatp7.json"),
-  kepler7: () => import("./data/kepler7.json"),
-  kepler10: () => import("./data/kepler10.json"),
-  kepler22: () => import("./data/kepler22.json"),
-  kepler11: () => import("./data/kepler11.json"),
-};
+type BundledLightCurve = Omit<LightCurveFile, "timeSystem"> & { readonly timeSystem: string };
+const loaders = new Map<string, () => Promise<{ default: BundledLightCurve }>>([
+  ["hd189733", () => import("./data/hd189733.json")],
+  ["hd209458", () => import("./data/hd209458.json")],
+  ["hatp7", () => import("./data/hatp7.json")],
+  ["kepler7", () => import("./data/kepler7.json")],
+  ["kepler10", () => import("./data/kepler10.json")],
+  ["kepler22", () => import("./data/kepler22.json")],
+  ["kepler11", () => import("./data/kepler11.json")],
+]);
 
 /**
  * Ids of the light curves bundled with the sim.
  * @internal Exported for unit tests; not part of the application API.
  */
-export const LIGHT_CURVE_IDS: readonly string[] = Object.keys(LOADERS);
+export const LIGHT_CURVE_IDS: readonly string[] = [...loaders.keys()];

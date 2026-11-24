@@ -8,18 +8,20 @@
  * Registered in the screens array in src/main.ts. Its home-screen and navigation-bar
  * icons come from createLiningUpIcon() in src/common/TransitHunterScreenIcons.ts.
  */
+
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import type { ScreenOptions } from "scenerystack/sim";
 import { Screen } from "scenerystack/sim";
 import type { Tandem } from "scenerystack/tandem";
 import { createLiningUpIcon } from "../common/TransitHunterScreenIcons.js";
+import type { TransitHunterPreferencesModel } from "../preferences/TransitHunterPreferencesModel.js";
 import TransitHunterColors from "../TransitHunterColors.js";
 import { LiningUpModel } from "./model/LiningUpModel.js";
 import { LiningUpKeyboardHelpContent } from "./view/LiningUpKeyboardHelpContent.js";
 import { LiningUpScreenView } from "./view/LiningUpScreenView.js";
 
 // Require tandem to be explicit — accidental omission would break PhET-iO.
-type LiningUpScreenOptions = ScreenOptions & { tandem: Tandem };
+type LiningUpScreenOptions = ScreenOptions & { tandem: Tandem; preferences: TransitHunterPreferencesModel };
 
 export class LiningUpScreen extends Screen<LiningUpModel, LiningUpScreenView> {
   public constructor(options: LiningUpScreenOptions) {
@@ -28,7 +30,7 @@ export class LiningUpScreen extends Screen<LiningUpModel, LiningUpScreenView> {
       () => new LiningUpModel(),
       // View factory — receives the model instance
       (model) =>
-        new LiningUpScreenView(model, {
+        new LiningUpScreenView(model, options.preferences, {
           tandem: options.tandem.createTandem("view"),
         }),
       optionize<LiningUpScreenOptions, EmptySelfOptions, ScreenOptions>()(
