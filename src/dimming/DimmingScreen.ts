@@ -8,18 +8,20 @@
  * Registered in the screens array in src/main.ts. Its home-screen and navigation-bar
  * icons come from createDimmingIcon() in src/common/TransitHunterScreenIcons.ts.
  */
+
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import type { ScreenOptions } from "scenerystack/sim";
 import { Screen } from "scenerystack/sim";
 import type { Tandem } from "scenerystack/tandem";
 import { createDimmingIcon } from "../common/TransitHunterScreenIcons.js";
+import type { TransitHunterPreferencesModel } from "../preferences/TransitHunterPreferencesModel.js";
 import TransitHunterColors from "../TransitHunterColors.js";
 import { DimmingModel } from "./model/DimmingModel.js";
 import { DimmingKeyboardHelpContent } from "./view/DimmingKeyboardHelpContent.js";
 import { DimmingScreenView } from "./view/DimmingScreenView.js";
 
 // Require tandem to be explicit — accidental omission would break PhET-iO.
-type DimmingScreenOptions = ScreenOptions & { tandem: Tandem };
+type DimmingScreenOptions = ScreenOptions & { tandem: Tandem; preferences: TransitHunterPreferencesModel };
 
 export class DimmingScreen extends Screen<DimmingModel, DimmingScreenView> {
   public constructor(options: DimmingScreenOptions) {
@@ -28,7 +30,7 @@ export class DimmingScreen extends Screen<DimmingModel, DimmingScreenView> {
       () => new DimmingModel(),
       // View factory — receives the model instance
       (model) =>
-        new DimmingScreenView(model, {
+        new DimmingScreenView(model, options.preferences, {
           tandem: options.tandem.createTandem("view"),
         }),
       optionize<DimmingScreenOptions, EmptySelfOptions, ScreenOptions>()(

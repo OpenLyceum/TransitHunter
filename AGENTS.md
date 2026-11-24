@@ -59,7 +59,7 @@ Physics and data: [`doc/model.md`](doc/model.md). Architecture and decisions:
 | `src/hunt/view/PointCloudNode.ts` | Canvas painting of up to ~18 000 points |
 | `src/common/view/PlanetNode.ts` | Planet disc in its preset colour, silhouette against the star, `drawnPlanet` magnification |
 | `src/common/view/controls.ts` | Number controls (log scale), checkboxes, push buttons, explanation dialog, equation node |
-| `src/preferences/TransitHunterPreferencesModel.ts` | `transitHunterPreferences` singleton: Show equations (`?showEquations`) |
+| `src/preferences/TransitHunterPreferencesModel.ts` | Show equations (`?showEquations`) |
 
 ## Accessibility
 

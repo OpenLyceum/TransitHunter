@@ -8,18 +8,20 @@
  * Registered in the screens array in src/main.ts. Its home-screen and navigation-bar
  * icons come from createRockOrGasIcon() in src/common/TransitHunterScreenIcons.ts.
  */
+
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import type { ScreenOptions } from "scenerystack/sim";
 import { Screen } from "scenerystack/sim";
 import type { Tandem } from "scenerystack/tandem";
 import { createRockOrGasIcon } from "../common/TransitHunterScreenIcons.js";
+import type { TransitHunterPreferencesModel } from "../preferences/TransitHunterPreferencesModel.js";
 import TransitHunterColors from "../TransitHunterColors.js";
 import { RockOrGasModel } from "./model/RockOrGasModel.js";
 import { RockOrGasKeyboardHelpContent } from "./view/RockOrGasKeyboardHelpContent.js";
 import { RockOrGasScreenView } from "./view/RockOrGasScreenView.js";
 
 // Require tandem to be explicit — accidental omission would break PhET-iO.
-type RockOrGasScreenOptions = ScreenOptions & { tandem: Tandem };
+type RockOrGasScreenOptions = ScreenOptions & { tandem: Tandem; preferences: TransitHunterPreferencesModel };
 
 export class RockOrGasScreen extends Screen<RockOrGasModel, RockOrGasScreenView> {
   public constructor(options: RockOrGasScreenOptions) {
@@ -28,7 +30,7 @@ export class RockOrGasScreen extends Screen<RockOrGasModel, RockOrGasScreenView>
       () => new RockOrGasModel(),
       // View factory — receives the model instance
       (model) =>
-        new RockOrGasScreenView(model, {
+        new RockOrGasScreenView(model, options.preferences, {
           tandem: options.tandem.createTandem("view"),
         }),
       optionize<RockOrGasScreenOptions, EmptySelfOptions, ScreenOptions>()(

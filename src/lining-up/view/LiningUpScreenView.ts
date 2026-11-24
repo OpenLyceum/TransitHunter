@@ -1,3 +1,4 @@
+import type { TransitHunterPreferencesModel } from "../../preferences/TransitHunterPreferencesModel.js";
 import { LINING_UP_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LiningUpScreenView.ts
@@ -60,7 +61,11 @@ const STEP_SECONDS: number = LINING_UP_SCREEN_VIEW_SETTINGS.STEP_SECONDS;
 export class LiningUpScreenView extends ScreenView {
   private readonly orbitView: Orbit3DViewNode;
 
-  public constructor(model: LiningUpModel, providedOptions?: LiningUpScreenViewOptions) {
+  public constructor(
+    model: LiningUpModel,
+    preferences: TransitHunterPreferencesModel,
+    providedOptions?: LiningUpScreenViewOptions,
+  ) {
     const options = optionize<LiningUpScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       {
         screenSummaryContent: new LiningUpScreenSummaryContent(model),
@@ -199,7 +204,11 @@ export class LiningUpScreenView extends ScreenView {
         ),
       }),
     );
-    const equation = createEquationNode(strings.equationStringProperty, READOUT_WIDTH);
+    const equation = createEquationNode(
+      preferences.showEquationsProperty,
+      strings.equationStringProperty,
+      READOUT_WIDTH,
+    );
     const explanationButton = createExplanationButton(
       strings.explanationTitleStringProperty,
       [

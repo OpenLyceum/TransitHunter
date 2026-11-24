@@ -8,18 +8,20 @@
  * Registered in the screens array in src/main.ts. Its home-screen and navigation-bar
  * icons come from createPlanetHuntIcon() in src/common/TransitHunterScreenIcons.ts.
  */
+
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import type { ScreenOptions } from "scenerystack/sim";
 import { Screen } from "scenerystack/sim";
 import type { Tandem } from "scenerystack/tandem";
 import { createPlanetHuntIcon } from "../common/TransitHunterScreenIcons.js";
+import type { TransitHunterPreferencesModel } from "../preferences/TransitHunterPreferencesModel.js";
 import TransitHunterColors from "../TransitHunterColors.js";
 import { PlanetHuntModel } from "./model/PlanetHuntModel.js";
 import { PlanetHuntKeyboardHelpContent } from "./view/PlanetHuntKeyboardHelpContent.js";
 import { PlanetHuntScreenView } from "./view/PlanetHuntScreenView.js";
 
 // Require tandem to be explicit — accidental omission would break PhET-iO.
-type PlanetHuntScreenOptions = ScreenOptions & { tandem: Tandem };
+type PlanetHuntScreenOptions = ScreenOptions & { tandem: Tandem; preferences: TransitHunterPreferencesModel };
 
 export class PlanetHuntScreen extends Screen<PlanetHuntModel, PlanetHuntScreenView> {
   public constructor(options: PlanetHuntScreenOptions) {
@@ -28,7 +30,7 @@ export class PlanetHuntScreen extends Screen<PlanetHuntModel, PlanetHuntScreenVi
       () => new PlanetHuntModel(),
       // View factory — receives the model instance
       (model) =>
-        new PlanetHuntScreenView(model, {
+        new PlanetHuntScreenView(model, options.preferences, {
           tandem: options.tandem.createTandem("view"),
         }),
       optionize<PlanetHuntScreenOptions, EmptySelfOptions, ScreenOptions>()(

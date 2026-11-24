@@ -5,11 +5,11 @@
  * Simulation. Each preference Property takes its initial value from the
  * corresponding query parameter in transitHunterQueryParameters.
  *
- * A single instance is shared by every screen (see {@link transitHunterPreferences}).
+ * main.ts shares one instance with the dialog and screens.
  */
 
 import { BooleanProperty } from "scenerystack/axon";
-import { Tandem } from "scenerystack/tandem";
+import type { Tandem } from "scenerystack/tandem";
 import TransitHunterNamespace from "../TransitHunterNamespace.js";
 import transitHunterQueryParameters from "./transitHunterQueryParameters.js";
 
@@ -28,8 +28,5 @@ export class TransitHunterPreferencesModel {
     this.showEquationsProperty.reset();
   }
 }
-
-/** The sim-wide preferences, shared by main.ts (the Preferences dialog) and the screen views. */
-export const transitHunterPreferences = new TransitHunterPreferencesModel(Tandem.ROOT.createTandem("preferences"));
 
 TransitHunterNamespace.register("TransitHunterPreferencesModel", TransitHunterPreferencesModel);

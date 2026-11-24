@@ -1,3 +1,4 @@
+import type { TransitHunterPreferencesModel } from "../../preferences/TransitHunterPreferencesModel.js";
 import { LIGHT_CURVE_SCREEN_VIEW_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * LightCurveScreenView.ts
@@ -78,7 +79,11 @@ const MARK_ARROW_OPTIONS = {
 export class LightCurveScreenView extends ScreenView {
   private readonly showMeasurementsProperty = new BooleanProperty(true);
 
-  public constructor(model: LightCurveModel, providedOptions?: LightCurveScreenViewOptions) {
+  public constructor(
+    model: LightCurveModel,
+    preferences: TransitHunterPreferencesModel,
+    providedOptions?: LightCurveScreenViewOptions,
+  ) {
     const options = optionize<LightCurveScreenViewOptions, EmptySelfOptions, ScreenViewOptions>()(
       {
         screenSummaryContent: new LightCurveScreenSummaryContent(model),
@@ -283,7 +288,11 @@ export class LightCurveScreenView extends ScreenView {
       }),
       { font: FONTS.SMALL, fill: TransitHunterColors.mutedTextColorProperty, lineWrap: READOUT_COLUMN_WIDTH },
     );
-    const equation = createEquationNode(strings.equationStringProperty, 2 * READOUT_COLUMN_WIDTH);
+    const equation = createEquationNode(
+      preferences.showEquationsProperty,
+      strings.equationStringProperty,
+      2 * READOUT_COLUMN_WIDTH,
+    );
     const explanationButton = createExplanationButton(
       strings.explanationTitleStringProperty,
       [

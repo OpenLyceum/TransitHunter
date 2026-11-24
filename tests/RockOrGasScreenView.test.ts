@@ -9,6 +9,7 @@ import { describe, expect, it } from "vitest";
 import { CompositionPlanet } from "../src/composition/model/CompositionPlanet.js";
 import { RockOrGasModel } from "../src/composition/model/RockOrGasModel.js";
 import { RockOrGasScreenView } from "../src/composition/view/RockOrGasScreenView.js";
+import { TransitHunterPreferencesModel } from "../src/preferences/TransitHunterPreferencesModel.js";
 import { forceGC } from "./helpers/memoryLeak.js";
 
 /** Weak references to every Text in the view that shows the current planet's name. */
@@ -27,7 +28,7 @@ function planetNameTexts(root: Node, name: string): WeakRef<Text>[] {
 describe("RockOrGasScreenView", () => {
   it("frees the old size-disc label when the planet changes", async () => {
     const model = new RockOrGasModel();
-    const view = new RockOrGasScreenView(model);
+    const view = new RockOrGasScreenView(model, new TransitHunterPreferencesModel());
     const planets = CompositionPlanet.enumeration.values;
 
     const refs: WeakRef<Text>[] = [];

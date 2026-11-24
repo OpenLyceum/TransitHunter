@@ -23,7 +23,7 @@ src/
   hunt/           PlanetHuntModel, HuntTarget, LightCurveData + data/*.json, boxSearch (BLS period search),
                   HuntChartNode, PeriodSearchNode (drawn in place of the chart), PointCloudNode, timeWindow
   composition/    RockOrGasModel, CompositionPlanet, DensityScaleNode, MassRadiusDiagramNode
-  preferences/    Show equations (?showEquations), a module-level singleton
+  preferences/    Show equations (?showEquations), shared by the dialog and screens
 scripts/lightcurves/  offline Python data pipeline (venv and cache gitignored)
 ```
 
