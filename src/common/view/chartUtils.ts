@@ -8,7 +8,7 @@ import { CHART_UTILS_SETTINGS } from "../../TransitHunterConstants.js";
  * values for display.
  */
 
-import { toFixed } from "scenerystack/dot";
+import { roundSymmetric, toFixed } from "scenerystack/dot";
 
 /**
  * Pick a "nice" step (1, 2, or 5 × 10ⁿ) that yields roughly `targetDivisions`
@@ -73,7 +73,8 @@ export const formatSignificant = (value: number, digits: number = CHART_UTILS_SE
 };
 
 /** Format an integer with thin-space thousands separators (1 000 000). */
-export const formatGrouped = (value: number): string => String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+export const formatGrouped = (value: number): string =>
+  String(roundSymmetric(value)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
 /** Strips rich-text markup for screen-reader text: "2 × 10<sup>−5</sup>" becomes "2 × 10^-5". */
 export const toPlainText = (text: string): string =>

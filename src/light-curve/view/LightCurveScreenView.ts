@@ -20,7 +20,7 @@ import {
   PatternStringProperty,
   type TReadOnlyProperty,
 } from "scenerystack/axon";
-import { Range } from "scenerystack/dot";
+import { Range, roundSymmetric } from "scenerystack/dot";
 import { type EmptySelfOptions, optionize } from "scenerystack/phet-core";
 import { StringUtils } from "scenerystack/phetcommon";
 import { HBox, Node, RichText, Text, VBox } from "scenerystack/scenery";
@@ -387,13 +387,13 @@ export class LightCurveScreenView extends ScreenView {
       significantFigures: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.NOISE_CONTROL_SIGNIFICANT_FIGURES,
       delta: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.NOISE_CONTROL_DELTA,
       accessibleName: a11y.controls.noiseStringProperty,
-      numberControlOptions: { sliderOptions: { constrainValue: (value: number) => Math.round(value / 10) * 10 } },
+      numberControlOptions: { sliderOptions: { constrainValue: (value: number) => roundSymmetric(value / 10) * 10 } },
     });
     const stackControl = createNumberControl(strings.stackStringProperty, model.stackProperty, STACK_RANGE, {
       significantFigures: LIGHT_CURVE_SCREEN_VIEW_SETTINGS.STACK_CONTROL_SIGNIFICANT_FIGURES,
       delta: 1,
       accessibleName: a11y.controls.stackStringProperty,
-      numberControlOptions: { sliderOptions: { constrainValue: (value: number) => Math.round(value) } },
+      numberControlOptions: { sliderOptions: { constrainValue: (value: number) => roundSymmetric(value) } },
     });
     const newObservationsButton = createPushButton(
       strings.newObservationsStringProperty,

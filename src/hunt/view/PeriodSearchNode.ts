@@ -1,3 +1,4 @@
+import { roundSymmetric } from "scenerystack/dot";
 import { PERIOD_SEARCH_NODE_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * PeriodSearchNode.ts
@@ -226,9 +227,9 @@ export class PeriodSearchNode extends Node {
         drawAxes();
       }
       const columns = new Float64Array(Math.ceil(width) + 1).fill(-1);
-      const count = Math.round(search.progress * periods.length);
+      const count = roundSymmetric(search.progress * periods.length);
       for (let k = 0; k < count; k++) {
-        const column = Math.round(periodToX(periods[k] ?? 1));
+        const column = roundSymmetric(periodToX(periods[k] ?? 1));
         if (column >= 0 && column < columns.length) {
           columns[column] = Math.max(columns[column] ?? -1, search.power[k] ?? 0);
         }

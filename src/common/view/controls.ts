@@ -67,15 +67,15 @@ const roundToFigures = (value: number, significantFigures: number): number =>
   value === 0 ? 0 : Number(value.toPrecision(significantFigures));
 
 /**
- * A log₁₀ proxy of `property` for a logarithmic slider, kept in step both ways.
- * A value the proxy sets is rounded to the readout's figures and kept in range.
+ * A log₁₀ proxyProperty of `property` for a logarithmic slider, kept in step both ways.
+ * A value the proxyProperty sets is rounded to the readout's figures and kept in range.
  */
 function createLogarithmicProxy(property: PhetioProperty<number>, range: Range, figures: number): NumberProperty {
-  const proxy = new NumberProperty(Math.log10(property.value), {
+  const proxyProperty = new NumberProperty(Math.log10(property.value), {
     range: new Range(Math.log10(range.min), Math.log10(range.max)),
   });
   let updating = false;
-  proxy.lazyLink((log) => {
+  proxyProperty.lazyLink((log) => {
     if (!updating) {
       updating = true;
       property.value = range.constrainValue(roundToFigures(10 ** log, figures));
@@ -85,11 +85,11 @@ function createLogarithmicProxy(property: PhetioProperty<number>, range: Range, 
   property.lazyLink((value) => {
     if (!updating) {
       updating = true;
-      proxy.value = proxy.range.constrainValue(Math.log10(value));
+      proxyProperty.value = proxyProperty.range.constrainValue(Math.log10(value));
       updating = false;
     }
   });
-  return proxy;
+  return proxyProperty;
 }
 
 export function createNumberControl(

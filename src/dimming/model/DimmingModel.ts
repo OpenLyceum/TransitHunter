@@ -1,3 +1,4 @@
+import { roundSymmetric } from "scenerystack/dot";
 import { DIMMING_MODEL_SETTINGS } from "../../TransitHunterConstants.js";
 /**
  * DimmingModel.ts
@@ -145,7 +146,7 @@ export class DimmingModel implements TModel {
    */
   public setSkyX(x: number): void {
     const sine = Math.max(-1, Math.min(1, x / DIMMING_ORBIT_IN_STAR_RADII));
-    const orbit = Math.round(this.phaseProperty.value);
+    const orbit = roundSymmetric(this.phaseProperty.value);
     this.setPhase(orbit + Math.asin(sine) / (2 * Math.PI));
   }
 

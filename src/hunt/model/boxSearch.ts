@@ -1,3 +1,4 @@
+import { roundSymmetric } from "scenerystack/dot";
 import { BOX_SEARCH_SETTINGS } from "../../TransitHunterConstants.js";
 
 /**
@@ -313,7 +314,7 @@ export class BoxSearch {
       if (duration > MAX_DURATION_FRACTION * period) {
         break;
       }
-      const width = Math.max(1, Math.round(duration / binTime));
+      const width = Math.max(1, roundSymmetric(duration / binTime));
       // Sliding window round the circular fold.
       let s = 0;
       let n = 0;
